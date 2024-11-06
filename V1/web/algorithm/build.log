@@ -1,0 +1,43 @@
+rm -f bubble.o connectivity.o edge.o gfa.o graph.o main.o path.o vertex.o
+rm -f gfaGlimpse.exe
+g++ -Wall -Ofast -std=c++1z -fopenmp -o bubble.o -c bubble.cpp
+g++ -Wall -Ofast -std=c++1z -fopenmp -o connectivity.o -c connectivity.cpp
+g++ -Wall -Ofast -std=c++1z -fopenmp -o edge.o -c edge.cpp
+g++ -Wall -Ofast -std=c++1z -fopenmp -o gfa.o -c gfa.cpp
+g++ -Wall -Ofast -std=c++1z -fopenmp -o graph.o -c graph.cpp
+g++ -Wall -Ofast -std=c++1z -fopenmp -o main.o -c main.cpp
+g++ -Wall -Ofast -std=c++1z -fopenmp -o path.o -c path.cpp
+g++ -Wall -Ofast -std=c++1z -fopenmp -o vertex.o -c vertex.cpp
+edge.cpp: In member function ‘void Cycle::statCycle(const DiGraph&)’:
+edge.cpp:178:41: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<long long int>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+  178 |     for (int i = 0; i < numThreads && i < vertexVal.size(); ++i) {
+      |                                       ~~^~~~~~~~~~~~~~~~~~
+edge.cpp:183:32: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<long long int>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+  183 |     for (int i = numThreads; i < vertexVal.size(); ++i) {
+      |                              ~~^~~~~~~~~~~~~~~~~~
+edge.cpp: In member function ‘void Cycle::findCycleInDirected(int, const std::vector<long long int>&, const std::vector<std::set<int> >&)’:
+edge.cpp:317:21: warning: unused variable ‘preFinished’ [-Wunused-variable]
+  317 |                 int preFinished = path.back();
+      |                     ^~~~~~~~~~~
+edge.cpp:249:14: warning: variable ‘found’ set but not used [-Wunused-but-set-variable]
+  249 |         bool found = 1;
+      |              ^~~~~
+path.cpp: In member function ‘void Growth::statGrowth(const std::string&)’:
+path.cpp:203:11: warning: unused variable ‘pipe1’ [-Wunused-variable]
+  203 |     FILE* pipe1 = popen(commandHtml.c_str(), "r");
+      |           ^~~~~
+bubble.cpp: In member function ‘void Bubble::bfs(long long int, int, const BiedgedGraph&, int)’:
+bubble.cpp:202:29: warning: unused variable ‘nowdi’ [-Wunused-variable]
+  202 |                         int nowdi = q.front().second;
+      |                             ^~~~~
+bubble.cpp: In member function ‘void Bubble::findBubble(const BiedgedGraph&, int)’:
+bubble.cpp:249:37: warning: suggest parentheses around ‘-’ in operand of ‘&’ [-Wparentheses]
+  249 |                 bfs((i + 1) >> 1, 1 - i & 1, biedgedGraph, is_dibigraph);
+      |                                   ~~^~~
+bubble.cpp:275:49: warning: comparison of integer expressions of different signedness: ‘long long int’ and ‘std::vector<long long int>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+  275 |                         for (long long i = 1; i < p.inside.size(); i++) {
+      |                                               ~~^~~~~~~~~~~~~~~~~
+bubble.cpp:289:49: warning: comparison of integer expressions of different signedness: ‘long long int’ and ‘std::vector<long long int>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+  289 |                         for (long long i = 1; i < p.inside.size(); i++) {
+      |                                               ~~^~~~~~~~~~~~~~~~~
+g++ -Wall -Ofast -std=c++1z -fopenmp -o gfaGlimpse.exe bubble.o connectivity.o edge.o gfa.o graph.o main.o path.o vertex.o
