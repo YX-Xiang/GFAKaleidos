@@ -1,7 +1,7 @@
-# gfaGlimpse
+# GFA Kaleidos
 
 ## Description
-```gfaGlimpse``` is a tool designed to analyze graph statistics using GFA format input. We characterized the GFA file by modeling it with four different graph representations: **directed graph, bidirected graph, biedged graph, and directed biedged graph**. For each model, we computed statistics on vertices, edges, and subgraphs.
+```GFA Kaleidos``` is a tool designed to analyze graph statistics using GFA format input. We characterized the GFA file by modeling it with four different graph representations: **directed graph, bidirected graph, biedged graph, and directed biedged graph**. For each model, we computed statistics on vertices, edges, and subgraphs.
 
 ![Different Graph Models](./structure/gfaGlimpse.png)
 
@@ -15,7 +15,7 @@ The command-line version is now fully implemented. You can clone the repository,
 
 **Git**
 ```
-git clone https://github.com/YX-Xiang/gfaGlimpse.git
+git clone https://github.com/YX-Xiang/GFAKaleidos.git
 cd V0
 # Replace the GFA file and output folder address in run.sh
 bash run.sh
