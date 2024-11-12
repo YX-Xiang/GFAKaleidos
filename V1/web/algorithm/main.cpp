@@ -71,7 +71,7 @@ int main(int argc, char* argv[]) {
 
 	gfa.printDigraphInfo(outputFolderPath, diGraph);
 	gfa.printBigraphInfo(outputFolderPath, biedgedGraph);
-	gfa.printDibigraphInfo(outputFolderPath, diBiedgedGraph);
+	// gfa.printDibigraphInfo(outputFolderPath, diBiedgedGraph);
 
     return 0;
 }

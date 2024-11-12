@@ -2,6 +2,7 @@ const express = require('express');
 const { exec } = require('child_process');
 const cors = require('cors');
 const multer = require('multer');
+const path = require('path');
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads/'); // 文件保存的目录
@@ -26,7 +27,7 @@ app.use((req, res, next) => {
     next();
 });
 
-app.get('/api/gfaGlimpse', (req, res) => {
+app.get('/api/gfaKaleidos', (req, res) => {
     const uploadPath = req.query.uploadPath;
     console.log(789);
     console.log(uploadPath);
@@ -44,17 +45,15 @@ app.get('/api/gfaGlimpse', (req, res) => {
     });
 });
 
-
-
 app.post('/api/upload', upload.single('file'), (req, res) => {
     console.log('123456');
     if (req.file) {
         const filePath = `uploads/${req.file.filename}`;
-      res.send({ message: '文件上传成功！', filePath: filePath });
+      res.send({ message: '文件上传成功', filePath: filePath });
     } else {
       res.status(400).send('文件上传失败');
     }
-  });
+});
 
 app.listen(port, () => {
     console.log(`服务器正在运行在 http://localhost:${port}`);

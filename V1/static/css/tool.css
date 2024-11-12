@@ -1,0 +1,382 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+}
+
+/* 主容器布局 */
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+/* 侧边栏样式 */
+.sidebar {
+    width: 20%;
+    background-color: #5dae87;
+    color: rgb(0, 0, 0);
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    position: relative;
+}
+
+.sidebar h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar ul li {
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #80d5d4;
+    text-align: center;
+    border-radius: 5px;
+    position: relative;
+}
+
+.sidebar ul li:hover {
+    background-color: #93e2e1;
+}
+
+.sidebar ul li ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: none; /* 隐藏子菜单 */
+}
+
+.sidebar ul li ul li {
+    background-color: #93e2e1;
+    padding: 8px;
+    margin: 5px 0;
+    text-align: left;
+}
+
+.menu-logo {
+    max-height: 40px; /* 限制logo高度 */
+    margin-right: 10px; /* 图标与文本的间距 */
+    vertical-align: middle; /* 确保图标与文字对齐 */
+    cursor: pointer; /* 鼠标悬停时显示为手形 */
+    transition: transform 0.2s ease; /* 添加交互效果 */
+}
+
+.menu-logo:hover {
+    transform: scale(1.1); /* 鼠标悬停时放大 */
+    opacity: 0.8; /* 鼠标悬停时稍微变透明 */
+}
+
+.icon {
+    position: absolute; /* 使用绝对定位 */
+    right: 15px; /* 距离父容器右侧 10px */
+    cursor: pointer; /* 鼠标悬停时变为手型 */
+    font-size: 16px; /* 图标大小 */
+    transition: transform 0.2s; /* 增加交互效果 */
+}
+
+.icon:hover {
+    transform: scale(1.2); /* 悬停时放大 */
+    color: #666; /* 悬停时更改颜色 */
+}
+
+/* 设定按钮样式 */
+.select-all-btn {
+    background-color: #80d5d4; /* 按钮背景色 */
+    color: rgb(0, 0, 0); /* 按钮文字颜色 */
+    border: none; /* 去除边框 */
+    padding: 10px 20px; /* 设置内边距 */
+    font-size: 16px; /* 设置字体大小 */
+    font-weight: bold; /* 文字加粗 */
+    border-radius: 5px; /* 圆角效果 */
+    cursor: pointer; /* 鼠标悬停时显示为手型 */
+    margin-bottom: 20px; /* 下方增加间距 */
+    transition: background-color 0.3s ease, transform 0.2s; /* 添加过渡效果 */
+}
+
+/* 鼠标悬停效果 */
+.select-all-btn:hover {
+    background-color: #93e2e1; /* 鼠标悬停时的背景色 */
+    transform: scale(1.05); /* 增大按钮的大小 */
+}
+
+/* 鼠标按下时的效果 */
+.select-all-btn:active {
+    transform: scale(0.98); /* 按下按钮时缩小 */
+}
+
+/* 设置按钮在小屏幕下的自适应布局 */
+@media (max-width: 768px) {
+    .select-all-btn {
+        width: 100%; /* 在小屏幕下占满一行 */
+        padding: 12px 0;
+    }
+}
+
+
+/* 中间可变内容区域 */
+/* 标签页样式 */
+.tab-bar {
+    display: flex;
+    gap: 10px;
+    background-color: #eee;
+    padding: 10px;
+}
+
+.tab {
+    padding: 10px 20px;
+    background-color: #ccc;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.tab.active {
+    background-color: #5dae87;
+    color: white;
+}
+
+.tab-content {
+    padding: 20px;
+    background-color: #f9f9f9;
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+    background-color: #f4f4f4;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+#logo-placeholder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%; /* 占满父容器 */
+    background-color: #f4f4f4; /* 与背景一致 */
+}
+
+#logo-placeholder img {
+    max-width: 100%; /* 自适应大小 */
+    height: auto;
+    opacity: 0.3; /* 半透明效果（可选） */
+}
+
+#gfa-info {
+    margin-bottom: 20px; /* 与表格之间的间距 */
+    text-align: center; /* 内容居中 */
+}
+
+#gfa-info table {
+    width: 100%; /* 占满表格宽度 */
+    border-collapse: collapse; /* 去除单元格之间的间隙 */
+    margin: 0 auto; /* 居中显示 */
+    font-family: Arial, sans-serif;
+}
+
+#gfa-info th,
+#gfa-info td {
+    border: 1px solid #ddd; /* 边框 */
+    padding: 10px; /* 内边距 */
+    text-align: center; /* 内容居中 */
+}
+
+#gfa-info th {
+    background-color: #555; /* 表头背景色 */
+    color: #fff; /* 表头文字颜色 */
+}
+
+/* 右侧固定内容区域 */
+.fixed-content {
+    width: 20%;
+    background-color: #5dae87;
+    color: white;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    position: relative;
+}
+
+.fixed-content h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* 表格样式 */
+table {
+    width: 100%;
+    border-collapse: collapse; /* 合并边框 */
+    margin: 20px auto; /* 居中显示 */
+    font-family: Arial, sans-serif; /* 字体样式 */
+}
+
+th {
+    background-color: #555; /* 背景色 */
+    border: 1px solid #ddd; /* 边框 */
+    color: rgb(0, 0, 0); /* 文字颜色 */
+    padding: 10px; /* 内边距 */
+    text-align: center; /* 居中对齐 */
+}
+
+td {
+    border: 1px solid #ddd; /* 边框 */
+    padding: 10px; /* 内边距 */
+    text-align: center; /* 居中对齐 */
+}
+
+th:first-child, 
+td:first-child {
+    width: 230px; /* 固定宽度，可根据需要调整 */
+}
+
+#graphTable th:nth-child(1),
+#graphTable td:nth-child(1) {
+    background-color: #ffffff; /* 白色背景 */
+}
+
+#graphTable tr:nth-child(odd) td:nth-child(1) {
+    background-color: rgba(209, 208, 207, 0.3);
+}
+
+#graphTable thead th:nth-child(2) {
+    background-color: rgba(229, 19, 0, 0.2); /* 红色背景 */
+}
+
+#graphTable tr:nth-child(odd) td:nth-child(2) {
+    background-color: rgba(229, 19, 0, 0.3);
+}
+
+#graphTable tr:nth-child(even) td:nth-child(2) {
+    background-color: rgba(229, 19, 0, 0.2);
+}
+
+
+#graphTable th:nth-child(3),
+#graphTable td:nth-child(3) {
+    background-color: rgba(240, 150, 9, 0.2); /* 橙色背景 */
+}
+
+#graphTable tr:nth-child(odd) td:nth-child(3) {
+    background-color: rgba(240, 150, 9, 0.3);
+}
+
+#graphTable tr:nth-child(even) td:nth-child(3) {
+    background-color: rgba(240, 150, 9, 0.2);
+}
+
+#graphTable th:nth-child(4),
+#graphTable td:nth-child(4) {
+    background-color: rgba(27, 161, 226, 0.3); /* 蓝色背景 */
+}
+
+#graphTable tr:nth-child(odd) td:nth-child(4) {
+    background-color: rgba(27, 161, 226, 0.3);
+}
+
+#graphTable tr:nth-child(even) td:nth-child(4) {
+    background-color: rgba(27, 161, 226, 0.2);
+}
+
+#graphTable tr:nth-child(odd) #mergedCell {
+    background-color:  rgba(249,217,234);
+}
+
+#graphTable tr:nth-child(even) #mergedCell {
+    background-color: #ffffff;
+}
+
+
+tr:hover {
+    background-color: #f3f2f2; /* 悬停背景色 */
+}
+
+/* 复选框样式 */
+input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #ffffff;
+    border-radius: 4px;
+    background-color: #fff;
+    cursor: pointer;
+    outline: none;
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+input[type="checkbox"]:checked {
+    background-color: #ddd;
+    border-color: #ddd;
+}
+
+input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 6px;
+    height: 12px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: translate(-50%,-50%)rotate(45deg);
+}
+
+input[type="checkbox"]:hover {
+    border-color: #333;
+}
+
+label {
+    display: inline-flex;
+    align-items: center;
+    font-size: 14px;
+    color: #555;
+    cursor: pointer;
+}
+
+li {
+    text-align: center; /* 水平居中对齐文本 */
+    list-style-type: none; /* 去掉列表前的默认符号 */
+}
+
+.upload-container {
+    text-align: center;
+    margin: 20px 0;
+}
+
+/* 隐藏文件输入框 */
+input[type="file"] {
+    display: none;
+}
+
+/* 自定义文件上传按钮 */
+.custom-file-input {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.file-name {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #ffffff;
+}
