@@ -25,20 +25,28 @@
 
             <ul>
                 <li onclick="toggleMenu('menu1', 'icon-toggle1')">
-                    <input type="checkbox" onclick="toggleMenuCheckbox('menu1', this);"> GFA file
-                    <img class="icon" id="icon-toggle1" src="static/styles/add.png" alt="Expand" title="Click to expand" style="width: 14px; height: 14px;">
+                    <!-- <input type="checkbox" onclick="toggleMenuCheckbox('menu1', this);"> GFA file -->
+                    <div class="checkbox-container">
+                        <input class="Check" type="checkbox" onclick="toggleMenuCheckbox('menu1', this);">
+                        <span>GFA file</span>
+                        <img class="icon" id="icon-toggle1" src="static/styles/add.png" alt="Expand" title="Click to expand" style="width: 14px; height: 14px;">
+                    </div>
                     <ul id="menu1" onclick="event.stopPropagation();">
                         <li ><input type="checkbox" id = "file_size" onchange="toggleTableRow(this)"> File size </li>
                         <li ><input type="checkbox" id = "segments" onchange="toggleTableRow(this)"> The number of segments </li>
                         <li ><input type="checkbox" id = "links" onchange="toggleTableRow(this)"> The number of links </li>
                         <li ><input type="checkbox" id = "paths" onchange="toggleTableRow(this)"> The number of paths </li>
-                        <li ><input type="checkbox" id = "single_direction_segment" onchange="toggleTableRow(this)"> The number of single_direction_segment </li>
-                        <li ><input type="checkbox" id = "bidirectional_direction_segment" onchange="toggleTableRow(this)"> The number of bidirectional_direction_segment </li>
+                        <li ><input type="checkbox" id = "single_direction_segment" onchange="toggleTableRow(this)"> The number of single direction segment </li>
+                        <li ><input type="checkbox" id = "bidirectional_direction_segment" onchange="toggleTableRow(this)"> The number of bidirectional direction segment </li>
                     </ul>
                 </li>
 
-                <li onclick="toggleMenu('menu2', 'icon-toggle2')">Vertices on the graph
-                    <img class="icon" id="icon-toggle2" src="static/styles/add.png" alt="Expand" title="Click to expand" style="width: 14px; height: 14px;">
+                <li onclick="toggleMenu('menu2', 'icon-toggle2')">
+                    <div class="checkbox-container">
+                        <input class="Check" type="checkbox" onclick="toggleMenuCheckbox('menu2', this);">
+                        <span>Vertices on the graph</span>
+                        <img class="icon" id="icon-toggle1" src="static/styles/add.png" alt="Expand" title="Click to expand" style="width: 14px; height: 14px;">
+                    </div>
                     <ul id="menu2" onclick="event.stopPropagation();">
                         <li ><input type="checkbox" id = "vertices" onchange="toggleTableRow(this)"> The number of vertices </li>
                         <li ><input type="checkbox" id = "total_length" onchange="toggleTableRow(this)"> Total Length</li>
@@ -52,8 +60,12 @@
                     </ul>
                 </li>
 
-                <li onclick="toggleMenu('menu3', 'icon-toggle3')">Vertices on the graph
-                    <img class="icon" id="icon-toggle3" src="static/styles/add.png" alt="Expand" title="Click to expand" style="width: 14px; height: 14px;">
+                <li onclick="toggleMenu('menu3', 'icon-toggle3')">
+                    <div class="checkbox-container">
+                        <input class="Check" type="checkbox" onclick="toggleMenuCheckbox('menu3', this);">
+                        <span>Edges on the graph</span>
+                        <img class="icon" id="icon-toggle1" src="static/styles/add.png" alt="Expand" title="Click to expand" style="width: 14px; height: 14px;">
+                    </div>
                     <ul id="menu3" onclick="event.stopPropagation();">
                         <li ><input type="checkbox" id = "edges" onchange="toggleTableRow(this)"> The number of edges</li>
                         <li ><input type="checkbox" id = "loops" onchange="toggleTableRow(this)"> Loops</li>
@@ -63,8 +75,12 @@
                         <li ><input type="checkbox" id = "CycleDistribution" onchange="toggleTableRow(this)"> Cycle Distribution</li>
                     </ul>
                 </li>
-                <li onclick="toggleMenu('menu4', 'icon-toggle4')">Vertices on the graph
-                    <img class="icon" id="icon-toggle4" src="static/styles/add.png" alt="Expand" title="Click to expand" style="width: 14px; height: 14px;">
+                <li onclick="toggleMenu('menu4', 'icon-toggle4')">
+                    <div class="checkbox-container">
+                        <input class="Check" type="checkbox" onclick="toggleMenuCheckbox('menu4', this);">
+                        <span>Subgraphs on the graph</span>
+                        <img class="icon" id="icon-toggle1" src="static/styles/add.png" alt="Expand" title="Click to expand" style="width: 14px; height: 14px;">
+                    </div>
                     <ul id="menu4" onclick="event.stopPropagation();">
                         <li ><input type="checkbox" id = "cuts" onchange="toggleTableRow(this)"> Cuts</li>
                         <li ><input type="checkbox" id = "connected_components" onchange="toggleTableRow(this)"> Connected Components</li>
@@ -75,9 +91,9 @@
                         <li ><input type="checkbox" id = "NestedBubbles" onchange="toggleTableRow(this)"> Nested Bubbles</li>
                         <li ><input type="checkbox" id = "BubbleChains" onchange="toggleTableRow(this)"> Bubble Chains</li>
                         <li ><input type="checkbox" id = "sequence_coverage_of_chains" onchange="toggleTableRow(this)"> Sequence_coverage_of_chains</li>
-                        <li ><input type="checkbox" id = "node_coverage_of_chains" onchange="toggleTableRow(this)"> Node_coverage_of_chains</li>
-                        <li ><input type="checkbox" id = "longest_chain_seq_wise" onchange="toggleTableRow(this)"> Longest_chain_seq_wise</li>
-                        <li ><input type="checkbox" id = "longest_chain_bubble_wise" onchange="toggleTableRow(this)"> Longest_chain_bubble_wise</li>
+                        <li ><input type="checkbox" id = "node_coverage_of_chains" onchange="toggleTableRow(this)"> Node coverage of chains</li>
+                        <li ><input type="checkbox" id = "longest_chain_seq_wise" onchange="toggleTableRow(this)"> Longest chain seq wise</li>
+                        <li ><input type="checkbox" id = "longest_chain_bubble_wise" onchange="toggleTableRow(this)"> Longest chain bubble wise</li>
                     </ul>
                 </li>
             </ul>
@@ -363,8 +379,15 @@
         <!-- 右侧固定内容区域 -->
         <div class="fixed-content">
             <div class="upload-container">
-                <input type="file" id="fileInput" accept =".gfa" name="file" required onchange="uploadFile()">
-                <button class="custom-file-input" onclick="document.getElementById('fileInput').click()">Upload</button>
+                <div class="example-buttons">
+                    <button class="example-button" onclick="uploadExampleFile('Upload/01_dm_pggb.gfa')">Example 1</button>
+                    <button class="example-button" onclick="uploadExampleFile('Upload/02_dm_mc.gfa')">Example 2</button>
+                </div>
+
+                <input type="file" id="fileInput" accept=".gfa" name="file" required onchange="uploadFile()" style="display: none;">
+                <button class="custom-file-input" onclick="document.getElementById('fileInput').click()">
+                    Upload
+                </button>
                 <div class="file-name" id="fileName"></div>
             </div>
             <div id="status"></div>

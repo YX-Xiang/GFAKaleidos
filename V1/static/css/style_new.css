@@ -1180,7 +1180,7 @@ footer a.logo {
 	float: left;
 	color: #fff;
 	text-indent: -4999px;
-	background: url(../static/styles/icon_56x57.png) no-repeat;
+	background: url(../styles/icon_56x57.png) no-repeat;
 	margin: 0 0 0 40px;
 	padding: 0 0 40px 0;
 	width: 56px;
@@ -1246,13 +1246,13 @@ footer .footer-right a.social:hover {
 }
 
 footer a.social.github {
-	background-image: url(../static/styles/github.png);
+	background-image: url(../styles/github.png);
 }
 footer a.social.nankai {
-	background-image: url(../static/styles/nk.png);
+	background-image: url(../styles/nk.png);
 }
 footer a.social.nkcs {
-	background-image: url(../static/styles/nkcs.png);
+	background-image: url(../styles/nkcs.png);
 }
 
 @media only screen and (max-width: 960px) {

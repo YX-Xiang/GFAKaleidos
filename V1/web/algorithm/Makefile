@@ -1,7 +1,7 @@
 SRCS := ${wildcard *.cpp}
 OBJS := $(SRCS:.cpp=.o)
 
-PROG := gfaGlimpse.exe
+PROG := gfaKaleidos.exe
 CXX := g++
 CFLAGS := -Wall -Ofast -std=c++1z -fopenmp
 

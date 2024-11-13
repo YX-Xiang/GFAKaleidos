@@ -42,10 +42,6 @@ body, html {
     position: relative;
 }
 
-.sidebar ul li:hover {
-    background-color: #93e2e1;
-}
-
 .sidebar ul li ul {
     list-style-type: none;
     padding: 0;
@@ -75,7 +71,8 @@ body, html {
 
 .icon {
     position: absolute; /* 使用绝对定位 */
-    right: 15px; /* 距离父容器右侧 10px */
+    right: 15px; /* 距离父容器右侧 15px */
+    align-items: center; /* 垂直居中对齐 */
     cursor: pointer; /* 鼠标悬停时变为手型 */
     font-size: 16px; /* 图标大小 */
     transition: transform 0.2s; /* 增加交互效果 */
@@ -84,6 +81,22 @@ body, html {
 .icon:hover {
     transform: scale(1.2); /* 悬停时放大 */
     color: #666; /* 悬停时更改颜色 */
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center; /* 垂直居中对齐文字 */
+    justify-content: flex-start; /* 将内容左对齐 */
+    padding-left: 8px; /* 设置复选框距离左侧的固定间距 */
+}
+
+.checkbox-container .Check {
+    margin-right: 0px; /* 复选框和文字之间的间距 */
+}
+
+.checkbox-container span {
+    flex-grow: 1;
+    text-align: center; /* 文字居中对齐 */
 }
 
 /* 设定按钮样式 */
@@ -118,7 +131,6 @@ body, html {
         padding: 12px 0;
     }
 }
-
 
 /* 中间可变内容区域 */
 /* 标签页样式 */
@@ -367,6 +379,7 @@ input[type="file"] {
 .custom-file-input {
     padding: 10px 20px;
     font-size: 16px;
+    font-weight: bold;
     background-color: #ffffff;
     color: rgb(0, 0, 0);
     border: none;
@@ -379,4 +392,24 @@ input[type="file"] {
     margin-top: 10px;
     font-size: 14px;
     color: #ffffff;
+}
+
+.example-buttons {
+    display: flex;
+    flex-direction: column; /* 上下布局 */
+    align-items: center; /* 使按钮整体居中对齐 */
+}
+
+.example-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 120px; /* 固定按钮宽度 */
+    height: 40px; /* 固定按钮高度 */
+    margin-bottom: 10px; /* 增加按钮之间的间距 */
 }
