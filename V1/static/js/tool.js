@@ -1,20 +1,71 @@
+let fileUploaded = false;
+
 function uploadFile() {
-const fileInput = document.getElementById('fileInput');
-const file = fileInput.files[0]; // 获取选中的文件
-            if (!file) {
-                alert("请选择一个文件!");
-                return;
+    const fileInput = document.getElementById('fileInput');
+    const file = fileInput.files[0]; // 获取选中的文件
+
+    if (!file) {
+        alert("请选择一个文件!");
+        return;
+    }
+
+    // 创建 FormData 对象并将文件添加进去
+    const formData = new FormData();
+    formData.append('file', file);
+
+    // 更新文件名显示
+    document.getElementById("fileName").textContent = file.name;
+
+    // 隐藏 Logo 并显示加载状态（可选）
+    const logoPlaceholder = document.getElementById('logo-placeholder');
+    logoPlaceholder.style.display = 'none';
+
+    axios.post('/api/upload', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data' // 设置请求头，表明是文件上传
+        }
+    })
+    .then(function (response) {
+        // 成功回调
+        alert('文件上传成功！');
+        const filePath = response.data.filePath;
+        fileUploaded = true;
+        runcommand(filePath);
+    })
+    .catch(function (error) {
+        // 错误回调
+        console.error('文件上传失败:', error);
+        alert('文件上传失败');
+
+        // 上传失败时恢复 Logo 显示，隐藏表格
+        logoPlaceholder.style.display = 'flex'; // 恢复占位元素显示
+    });
+}
+
+function uploadExampleFile(filePath) {
+    // 文件未上传时弹出提示
+    if (!filePath) {
+        alert("Error: Please select a valid example file path!");
+        return;
+    }
+
+    fetch(filePath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("File not found.");
             }
+            return response.blob(); // 获取文件为 Blob 对象
+        })
+        .then(fileBlob => {
+            const file = new File([fileBlob], filePath.split('/').pop(), { type: 'application/gfa' });
 
-// 创建 FormData 对象并将文件添加进去
-const formData = new FormData();
-formData.append('file', file);
+            // 更新文件名显示
+            document.getElementById("fileName").textContent = file.name;
 
-// 隐藏 Logo 并显示加载状态（可选）
-const logoPlaceholder = document.getElementById('logo-placeholder');
-logoPlaceholder.style.display = 'none';
+            const formData = new FormData();
+            formData.append('file', file);
 
-axios.post('/api/upload', formData, {
+            axios.post('/api/upload', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data' // 设置请求头，表明是文件上传
                 }
@@ -22,6 +73,7 @@ axios.post('/api/upload', formData, {
             .then(function (response) {
                 // 成功回调
                 alert('文件上传成功！');
+                fileUploaded = true;
                 const filePath = response.data.filePath;
                 runcommand(filePath);
             })
@@ -29,31 +81,36 @@ axios.post('/api/upload', formData, {
                 // 错误回调
                 console.error('文件上传失败:', error);
                 alert('文件上传失败');
-
+        
                 // 上传失败时恢复 Logo 显示，隐藏表格
                 logoPlaceholder.style.display = 'flex'; // 恢复占位元素显示
             });
+        })
+        .catch(error => {
+            console.error("Error loading example file:", error);
+            alert("Error loading the example file.");
+        });
 }
 
 function runcommand(filePath){
-    axios.get('/api/gfaKaleidos', {
-    params: {
-        uploadPath: filePath  // 将文件路径作为查询参数传递
-    }
-})
-.then(function (response) {
-    // 成功回调
-    console.log('命令执行输出:', response.data);
-    loadAllData();
-    loadGFAData('web/data/gfa/basicStatistics.txt');
-})
-.catch(function (error) {
-    // 错误回调
-    console.error('命令执行失败:', error);
-    loadAllData();
-    loadGFAData('web/data/gfa/basicStatistics.txt');
-    
-});
+        axios.get('/api/gfaKaleidos', {
+        params: {
+            uploadPath: filePath  // 将文件路径作为查询参数传递
+        }
+    })
+    .then(function (response) {
+        // 成功回调
+        console.log('命令执行输出:', response.data);
+        loadAllData();
+        loadGFAData('web/data/gfa/basicStatistics.txt');
+    })
+    .catch(function (error) {
+        // 错误回调
+        console.error('命令执行失败:', error);
+        loadAllData();
+        loadGFAData('web/data/gfa/basicStatistics.txt');
+        
+    });
 }
 
 const graphData = {
@@ -136,8 +193,9 @@ function loadAllData() {
 
 // 检查文件是否已上传
 function isFileUploaded() {
-    const fileInput = document.getElementById('fileInput');
-    return fileInput.files.length > 0; // 如果文件已上传，返回 true
+    // const fileInput = document.getElementById('fileInput');
+    // return fileInput.files.length > 0; // 如果文件已上传，返回 true
+    return fileUploaded;
 }
 
 // 监听复选框状态并填充表格
@@ -1010,9 +1068,16 @@ function toggleMenuCheckbox(menuId, checkbox) {
     const menuItems = document.querySelectorAll(`#${menuId} input[type="checkbox"]`);
 
     menuItems.forEach(function(item) {
-        if (item.checked == false) {
-            item.checked = true;
-            toggleTableRow(item); // 调用 toggleTableRow 函数处理每个复选框的变化
+        if (checkbox.checked == true) {
+            if (item.checked == false) {
+                item.checked = true;
+                toggleTableRow(item); // 调用 toggleTableRow 函数处理每个复选框的变化
+            }
+        } else {
+            if (item.checked == true) {
+                item.checked = false;
+                toggleTableRow(item);
+            }
         }
     });
 }
