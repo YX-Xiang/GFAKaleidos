@@ -1,0 +1,6 @@
+file_size	4.87KB
+#segments	0
+#links		0
+#paths		0
+#single_direction_segment			0
+#bidirectional_direction_segment	0

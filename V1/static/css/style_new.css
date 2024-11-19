@@ -151,8 +151,8 @@ a.button-2:hover {
 /*Header*/
 
 header#top {
-	background: #fff;
-	height: 160px;
+	background: #5dae87;
+	height: 140px;
 }
 
 h1.logo a {
@@ -161,10 +161,10 @@ h1.logo a {
 	color: #444;
 	line-height: 2.25;
 	text-indent: -4999px;
-	background: url(../static/styles/icon_56x57.png) no-repeat;
-	margin: 40px 0 0 40px;
-	width: 56px;
-	height: 74px;
+	background: url(../styles/header_293x80.png) no-repeat;
+	margin: 40px 0 0 0;
+	width: 293px;
+	height: 80px;
 }
 
 header#top nav {
@@ -184,7 +184,7 @@ header#top nav ul li a {
 	display: inline-block;
 	background: none;
 	padding:  10px 15px;
-	color: #777;
+	color: #fff;
 	font-weight: 700;
 	text-transform: uppercase;
 	letter-spacing: 0.03em;

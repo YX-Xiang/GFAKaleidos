@@ -9,6 +9,7 @@
     <link rel="icon" type="image/x-icon" href= "static/styles/icon.png">
     <link rel="stylesheet" href="static/css/tool.css">
     <script type="text/javascript" src="static/js/tool.js"></script> 
+    <script src="static/js/jquery.min.js"></script>
 </head>
 
 <body>
@@ -101,6 +102,19 @@
 
         <!-- 中间可变内容区域 -->
         <div class="main-content" id="main-content">
+            <div id="page-tab">
+                <button class="tab-btn" id="page-prev"></button>
+                <nav id="page-tab-content">
+                    <div id="menu-list">                </div>
+                </nav>
+                <button class="tab-btn" id="page-next"></button>
+                <div id="page-operation">
+                    <div id="menu-all">
+                        <ul id="menu-all-ul">
+                        </ul>
+                    </div>
+                </div>
+            </div>
                 <table id="graphTable">
                     <thead>
                         <tr id="file_sizeRow">
@@ -207,14 +221,14 @@
                         <tr id="CoverageRow" style="display: none;"  style="visibility: hidden;">
                             <td>Coverage</td>
                             <td data-graph="digraph"> 
-                                <button onclick="showcoverageGraph('digraph','web/data/digraph/coverage.txt','bp')">bp</button>
-                                <button onclick="showcoverageGraph('digraph','web/data/digraph/coverage.txt','Node')">Node</button>
-                                <button onclick="showcoverageGraph('digraph','web/data/digraph/coverage.txt','Edge')">Edge</button>
+                                <button onclick="showcoverageGraph('digraph',`../../data/${flag}/data/digraph/coverage.txt`,'bp')">bp</button>
+                                <button onclick="showcoverageGraph('digraph',`../../data/${flag}/data/digraph/coverage.txt`,'Node')">Node</button>
+                                <button onclick="showcoverageGraph('digraph',`../../data/${flag}/data/digraph/coverage.txt`,'Edge')">Edge</button>
                             </td>
                             <td data-graph="bidirectedGraph">
-                                <button onclick="showcoverageGraph('bidirectedGraph','web/data/bidirectedGraph/coverage.txt','bp')">bp</button>
-                                <button onclick="showcoverageGraph('bidirectedGraph','web/data/bidirectedGraph/coverage.txt','Node')">Node</button>
-                                <button onclick="showcoverageGraph('bidirectedGraph','web/data/bidirectedGraph/coverage.txt','Edge')">Edge</button>
+                                <button onclick="showcoverageGraph('bidirectedGraph',`../../data/${flag}/data/bidirectedGraph/coverage.txt`,'bp')">bp</button>
+                                <button onclick="showcoverageGraph('bidirectedGraph',`../../data/${flag}/data/bidirectedGraph/coverage.txt`,'Node')">Node</button>
+                                <button onclick="showcoverageGraph('bidirectedGraph',`../../data/${flag}/data/bidirectedGraph/coverage.txt`,'Edge')">Edge</button>
                             </td>
                             <td data-graph="biedgedGraph">/</td>
                             <!-- <td data-graph="dibigraph">\</td> -->
