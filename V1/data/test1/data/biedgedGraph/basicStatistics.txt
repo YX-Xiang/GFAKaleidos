@@ -1,0 +1,4 @@
+#vertices		8
+#edges			10
+#loops			1
+#cuts			2

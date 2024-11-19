@@ -1,4 +1,5 @@
 let fileUploaded = false;
+var flag ="";
 
 function uploadFile() {
     const fileInput = document.getElementById('fileInput');
@@ -8,38 +9,49 @@ function uploadFile() {
         alert("请选择一个文件!");
         return;
     }
+    var selDom = $("#menu-list a[FileName='" + file.name.split('.')[0] + "']");//menu-list是标签栏
+    if (selDom.length === 0) { // 如果标签页不存在，则创建新的标签
+        // 创建 FormData 对象并将文件添加进去
+        const formData = new FormData();
+        formData.append('file', file);
 
-    // 创建 FormData 对象并将文件添加进去
-    const formData = new FormData();
-    formData.append('file', file);
+        // 更新文件名显示
+        document.getElementById("fileName").textContent = file.name;
+        console.log(file.name);
+        // 隐藏 Logo 并显示加载状态（可选）
+        const logoPlaceholder = document.getElementById('logo-placeholder');
+        logoPlaceholder.style.display = 'none';
 
-    // 更新文件名显示
-    document.getElementById("fileName").textContent = file.name;
+        axios.post('/api/upload', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data' // 设置请求头，表明是文件上传
+            }
+        })
+        .then(function (response) {
+            // 成功回调
+            alert('文件上传成功！');
+            const filePath = response.data.filePath;
+            fileUploaded = true;
+            runcommand(filePath);
+            const FileName = filePath.split('/')[1].split('.')[0];
+            console.log(FileName);
+            openTab(FileName);
+            flag = FileName;
+        })
+        .catch(function (error) {
+            // 错误回调
+            console.error('文件上传失败:', error);
+            alert('文件上传失败');
 
-    // 隐藏 Logo 并显示加载状态（可选）
-    const logoPlaceholder = document.getElementById('logo-placeholder');
-    logoPlaceholder.style.display = 'none';
+            // 上传失败时恢复 Logo 显示，隐藏表格
+            logoPlaceholder.style.display = 'flex'; // 恢复占位元素显示
+        });
+    }
+    else{
+        flag = file.name;
+        openTab(file.name.split('.')[0]);
+    }
 
-    axios.post('/api/upload', formData, {
-        headers: {
-            'Content-Type': 'multipart/form-data' // 设置请求头，表明是文件上传
-        }
-    })
-    .then(function (response) {
-        // 成功回调
-        alert('文件上传成功！');
-        const filePath = response.data.filePath;
-        fileUploaded = true;
-        runcommand(filePath);
-    })
-    .catch(function (error) {
-        // 错误回调
-        console.error('文件上传失败:', error);
-        alert('文件上传失败');
-
-        // 上传失败时恢复 Logo 显示，隐藏表格
-        logoPlaceholder.style.display = 'flex'; // 恢复占位元素显示
-    });
 }
 
 function uploadExampleFile(filePath) {
@@ -64,6 +76,9 @@ function uploadExampleFile(filePath) {
 
             const formData = new FormData();
             formData.append('file', file);
+
+            const logoPlaceholder = document.getElementById('logo-placeholder');
+            logoPlaceholder.style.display = 'none';
 
             axios.post('/api/upload', formData, {
                 headers: {
@@ -92,47 +107,217 @@ function uploadExampleFile(filePath) {
         });
 }
 
-function runcommand(filePath){
-        axios.get('/api/gfaKaleidos', {
-        params: {
-            uploadPath: filePath  // 将文件路径作为查询参数传递
+var scrollSetp = 500,
+operationWidth = 90,
+leftOperationWidth = 30,
+animatSpeed = 150,
+linkframe = function(FileName) {
+    $("#menu-list a.active").removeClass("active");
+    $("#menu-list a[FileName='" + FileName + "']").addClass("active");
+    $("#menu-all-ul li.active").removeClass("active");
+    $("#menu-all-ul li[FileName='" + FileName + "']").addClass("active");
+    flag = FileName;
+    unselectAllCheckboxes();
+    load();
+},
+move = function(selDom) {
+    var nav = $("#menu-list");
+    var releft = selDom.offset().left;
+    var wwidth = parseInt($("#page-tab").width());
+    var left = parseInt(nav.css("margin-left"));
+    if (releft < 0 && releft <= wwidth) {
+        nav.animate({
+            "margin-left": (left - releft + leftOperationWidth) + "px"
+        },
+        animatSpeed)
+    } else {
+        if (releft + selDom.width() > wwidth - operationWidth) {
+            nav.animate({
+                "margin-left": (left - releft + wwidth - selDom.width() - operationWidth) + "px"
+            },
+            animatSpeed)
         }
-    })
-    .then(function (response) {
-        // 成功回调
-        console.log('命令执行输出:', response.data);
-        loadAllData();
-        loadGFAData('web/data/gfa/basicStatistics.txt');
-    })
-    .catch(function (error) {
-        // 错误回调
-        console.error('命令执行失败:', error);
-        loadAllData();
-        loadGFAData('web/data/gfa/basicStatistics.txt');
-        
+    }
+},
+createmove = function() {
+    var nav = $("#menu-list");
+    var wwidth = parseInt($("#page-tab").width());
+    var navwidth = parseInt(nav.width());
+    if (wwidth - operationWidth < navwidth) {
+        nav.animate({
+            "margin-left": "-" + (navwidth - wwidth + operationWidth) + "px"
+        },
+        animatSpeed)
+    }
+},
+closemenu = function() {
+    $(this.parentElement).animate({
+        "width": "0",
+        "padding": "0"
+    },
+    0,
+    function() {
+        flag = "";
+        unselectAllCheckboxes();
+        var jthis = $(this);
+        if (jthis.hasClass("active")) {
+            var linext = jthis.next();
+            if (linext.length > 0) {
+                linext.click();
+                move(linext)
+            } else {
+                var liprev = jthis.prev();
+                if (liprev.length > 0) {
+                    liprev.click();
+                    move(liprev)
+                }
+            }
+        }
+        this.remove();
+        $("#page-content .iframe-content[data-url='" + jthis.data("url") + "'][data-value='" + jthis.data("value") + "']").remove()
+    });
+    event.stopPropagation()
+}
+
+function init() {
+    $("#page-prev").bind("click",
+        function() {
+            var nav = $("#menu-list");
+            var left = parseInt(nav.css("margin-left"));
+            if (left !== 0) {
+                nav.animate({
+                    "margin-left": (left + scrollSetp > 0 ? 0 : (left + scrollSetp)) + "px"
+                },
+                animatSpeed)
+            }
+        });
+        $("#page-next").bind("click",
+        function() {
+            var nav = $("#menu-list");
+            var left = parseInt(nav.css("margin-left"));
+            var wwidth = parseInt($("#page-tab").width());
+            var navwidth = parseInt(nav.width());
+            var allshowleft = -(navwidth - wwidth + operationWidth);
+            if (allshowleft !== left && navwidth > wwidth - operationWidth) {
+                var temp = (left - scrollSetp);
+                nav.animate({
+                    "margin-left": (temp < allshowleft ? allshowleft: temp) + "px"
+                },
+                animatSpeed)
+            }
+        });
+        $("#page-operation").bind("click",
+        function() {
+            var menuall = $("#menu-all");
+            if (menuall.is(":visible")) {
+                menuall.hide()
+            } else {
+                menuall.show()
+            }
+        });
+        $("body").bind("mousedown",
+        function(event) {
+            if (! (event.target.id === "menu-all" || event.target.id === "menu-all-ul" || event.target.id === "page-operation" || event.target.id === "page-operation" || event.target.parentElement.id === "menu-all-ul")) {
+                $("#menu-all").hide()
+            }
+        })
+}
+
+function openTab(FileName) {
+    init();
+    var selDom = $("#menu-list a[FileName='" + FileName + "']"); // menu-list是标签栏
+    if (selDom.length === 0) { // 如果标签页不存在，则创建新的标签
+        var iel = $("<i>", { // i是关闭的标签
+            "class": "menu-close"
+        }).bind("click", closemenu);
+        $("<a>", { // a是标签页
+            "html": FileName,
+            "href": "javascript:void(0);",
+            "FileName": FileName,
+        }).bind("click", function() {
+            linkframe(FileName);
+        }).append(iel).appendTo("#menu-list");
+
+        // 创建侧边栏项
+        $("<li>", {
+            "html": FileName,
+            "FileName": FileName,
+        }).bind("click", function() {
+            linkframe(FileName);
+            move($("#menu-list a[FileName='" + FileName + "']"));
+            $("#menu-all").hide(); // menu-all是侧边栏
+            event.stopPropagation();
+        }).appendTo("#menu-all-ul");
+        createmove();
+    } else {
+        move(selDom);
+    }
+    
+    linkframe(FileName);
+}
+
+function unselectAllCheckboxes() {
+    // 检查是否已上传文件
+
+    // 获取所有复选框元素
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    console.log(checkboxes);
+    // 遍历每个复选框并设置为未选中状态
+    checkboxes.forEach(function(checkbox) {
+        if (checkbox.checked == true) {
+            checkbox.checked = false;
+            if(checkbox.id)
+                toggleTableRow(checkbox); 
+// 调用现有的 toggleTableRow 函数，处理复选框状态变化
+        }
     });
 }
 
-const graphData = {
+
+function runcommand(filePath){
+    axios.get('/api/gfaKaleidos', {
+    params: {
+        uploadPath: filePath  // 将文件路径作为查询参数传递
+    }
+})
+.then(function (response) {
+    // 成功回调
+    const FileName = filePath.split('/')[1].split('.')[0];
+    console.log('命令执行输出:', response.data);
+    load();
+})
+.catch(function (error) {
+    // 错误回调
+    const FileName = filePath.split('/')[1].split('.')[0];
+    console.error('命令执行失败:', error);
+    load();
+});
+}
+
+let graphData = {
     bidirectedGraph: {},
     biedgedGraph: {},
     dibigraph: {},
     digraph: {},
 };
 
-const GFAData={};
+let GFAData={};
 
-const fileMap = {
-    bidirectedGraph: ['web/data/bidirectedGraph/basicStatistics.txt',
-    'web/data/bidirectedGraph/bubbleChainLength.txt',
-    'web/data/bidirectedGraph/vertexval.txt'],
-    biedgedGraph: ['web/data/biedgedGraph/basicStatistics.txt'],
-    dibigraph: ['web/data/dibigraph/basicStatistics.txt',
-    'web/data/dibigraph/bubbleChainLength.txt'],
-    digraph:['web/data/digraph/basicStatistics.txt',
-    'web/data/digraph/cycle.txt',
-    'web/data/digraph/vertexval.txt']
-};
+let fileMap = {};
+
+
+function loadAllData() {
+    const loadPromises = [];
+    for (const graphType in fileMap) {
+        //console.log(graphType);
+        fileMap[graphType].forEach(filePath => {
+         console.log(filePath);
+            loadPromises.push(loadFileData(graphType, filePath));
+        });
+    }
+    console.log(graphData);
+    return Promise.all(loadPromises);
+}
 
 function loadFileData(graphType, filePath) {
     return fetch(filePath)
@@ -178,18 +363,17 @@ function loadGFAData(filePath) {
         .catch(error => console.error(`Error: Loading data from ${filePath}:`, error));
 }
 
-// 批量加载每个图的数据
-function loadAllData() {
-    const loadPromises = [];
-    for (const graphType in fileMap) {
-        //console.log(graphType);
-        fileMap[graphType].forEach(filePath => {
-        //  console.log(filePath);
-            loadPromises.push(loadFileData(graphType, filePath));
-        });
-    }
-    return Promise.all(loadPromises);
+function load(){
+    console.log(753);
+    fileMap={
+        bidirectedGraph: [`../../data/${flag}/data/bidirectedGraph/basicStatistics.txt`],
+        biedgedGraph: [`../../data/${flag}/data/biedgedGraph/basicStatistics.txt`],
+        digraph:[`../../data/${flag}/data/digraph/basicStatistics.txt`]
+    };
+    loadAllData();
+    loadGFAData(`../../data/${flag}/data/gfa/basicStatistics.txt`);
 }
+
 
 // 检查文件是否已上传
 function isFileUploaded() {
@@ -701,10 +885,9 @@ function loaddegree4GraphData(filePath1,filePath2) {
 }       
 
 function DegreeFunction(){
-    loaddegree1GraphData('web/data/bidirectedGraph/degree.txt');
-    loaddegree2GraphData('web/data/biedgedGraph/degree.txt');
-    //loaddegree3GraphData('web/data/dibigraph/degree.txt');
-    loaddegree4GraphData('web/data/digraph/inDegree.txt','web/data/digraph/outDegree.txt');
+    loaddegree1GraphData(`../../data/${flag}/data/bidirectedGraph/degree.txt`);
+    loaddegree2GraphData(`../../data/${flag}/data/biedgedGraph/degree.txt`);
+    loaddegree4GraphData(`../../data/${flag}/data/digraph/inDegree.txt`,`../../data/${flag}/data/digraph/outDegree.txt`);
 }
 
 function loadloopdata(index,filepath){
@@ -994,25 +1177,24 @@ function loadNestedBubblesdata(index,filepath){
 }
 
 function cycleFunction(){
-    loadcycledata(1,'web/data/digraph/cycle.txt');
-    loadcycledata(4,'web/data/dibigraph/cycle.txt');
+    loadcycledata(1,`../../data/${flag}/data/digraph/cycle.txt`);
+    loadcycledata(4,`../../data/${flag}/data/dibigraph/cycle.txt`);
 }
 
 function NestedBubblesFunction(){
-    loadNestedBubblesdata(2,'web/data/bidirectedGraph/nestedBubblesLevel.txt');
-    loadNestedBubblesdata(4,'web/data/dibigraph/nestedBubblesLevel.txt');
+    loadNestedBubblesdata(2,`../../data/${flag}data/bidirectedGraph/nestedBubblesLevel.txt`);
+    loadNestedBubblesdata(4,`../../data/${flag}data/dibigraph/nestedBubblesLevel.txt`);
 }
 
 function BubbleChainsFunction(){
-    loadBubbleChainsdata(2,'web/data/bidirectedGraph/bubbleChainLength.txt');
-    loadBubbleChainsdata(4,'web/data/dibigraph/bubbleChainLength.txt');
+    loadBubbleChainsdata(2,`../../data/${flag}/data/bidirectedGraph/bubbleChainLength.txt`);
+    loadBubbleChainsdata(4,`../../data/${flag}/data/dibigraph/bubbleChainLength.txt`);
 }
 function loopFunction(){
     pathsum = [
-    'web/data/digraph/loop.txt',
-    'web/data/bidirectedGraph/loop.txt',
-    'web/data/biedgedGraph/loop.txt',
-    'web/data/dibigraph/loop.txt',
+    `../../data/${flag}/data/digraph/loop.txt`,
+    `../../data/${flag}/data/bidirectedGraph/loop.txt`,
+    `../../data/${flag}/data/biedgedGraph/loop.txt`,
     ]
     pathsum.forEach((filepath,index)=>{
         loadloopdata(index+1,filepath);
@@ -1043,14 +1225,24 @@ function selectAllCheckboxes() {
         return; // 文件未上传时，停止执行后续操作
     }
 
-    // 获取所有复选框元素
-    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    const allMenus = document.querySelectorAll('ul[id^="menu"]');  // 获取所有菜单（每个菜单的ID以 "menu" 开头）
     
-    // 遍历每个复选框并设置为选中状态
+    allMenus.forEach(function(menu) {
+        const subCheckboxes = menu.querySelectorAll('input[type="checkbox"]');  // 获取该菜单下所有子复选框
+        
+        subCheckboxes.forEach(function(subCheckbox) {
+            if (subCheckbox.checked == false) {
+                subCheckbox.checked = true; // 选中子复选框
+                toggleTableRow(subCheckbox); // 调用toggleTableRow处理每个复选框的变化
+            }
+        });
+    });
+
+    const checkboxes = document.querySelectorAll('.Check');
+
     checkboxes.forEach(function(checkbox) {
         if (checkbox.checked == false) {
-            checkbox.checked = true;
-            toggleTableRow(checkbox); // 调用你现有的 toggleTableRow 函数，处理勾选框的变化
+            checkbox.checked = true;  // 设置复选框为选中
         }
     });
 }
