@@ -131,6 +131,36 @@ function CheckData(){
     const table = document.getElementById('graphTable');
     const tableHead = table.tHead;
     const tableBody = table.tBodies[0];
+    const GFAtds=GFANameRow.querySelectorAll('td');
+    GFAtds.forEach(td =>{
+        if(td.textContent){
+            td.style.display ="none";
+        }
+    })
+    const Typetds=TypeNameRow.querySelectorAll('td');
+    Typetds.forEach(td =>{
+        if(td.textContent){
+            td.style.display ="none";
+        }
+    })
+    const alltds=table.querySelectorAll('td');
+    alltds.forEach(x=>{
+        if (x.id.includes('Cell')||x.getAttribute('data-graph')||x.id =="GFARow") {
+            x.style.display = "none";
+        }
+        else{
+            if(x.parentNode.id =="GFANameRow"||x.parentNode.id =="TypeNameRow")
+                return;
+            if(x.style.backgroundColor){
+                console.log(x);
+                x.parentNode.removeChild(x);
+            }
+            if(x.querySelector('canvas')){
+                console.log(x);
+                x.parentNode.removeChild(x);
+            }
+        }
+    })
     if(type.includes('0')){
         GFAcell.style.display ="";
         GFANameRow.style.display ="";
@@ -164,30 +194,34 @@ function CheckData(){
             groupedData[key].forEach(value => {
                 const newtd = document.createElement('td');
                 newtd.textContent = value;
-                
                 if(key =='0'){
                     if(array[1]||array[2]||array[3])
                         newtd.setAttribute('colspan',(array[1]+array[2]+array[3])/array[0]);
-                    newtd.style.width = "auto"; 
+                    newtd.style.display ="";
                     newtd.style.backgroundColor =  "#ffffff";
                     GFANameRow.appendChild(newtd);
                 }
                 else if(key =='1'){
+                    newtd.style.display ="";
                     newtd.style.backgroundColor =   "rgba(229, 19, 0, 0.3)";
                     TypeNameRow.appendChild(newtd);
                 }
                 else if(key =='2'){
+                    newtd.style.display ="";
                     newtd.style.backgroundColor =  "rgba(240, 150, 9, 0.3)";
                     TypeNameRow.appendChild(newtd);
                 }
                 else if(key =='3'){
+                    newtd.style.display ="";
                     newtd.style.backgroundColor =  "rgba(27, 161, 226, 0.3)";
                     TypeNameRow.appendChild(newtd);
                 }
             });
         }
     }
-    console.log(groupedData);
+    
+    
+    
     for (const key in groupedData) {
         if (groupedData.hasOwnProperty(key)) { // 确保 key 是对象自身的属性
             groupedData[key].forEach(value => {
@@ -201,11 +235,11 @@ function CheckData(){
                             console.log(GFAData);
                             trs.forEach((item,index) =>{
                                 if(item.id && item.id !='GFANameRow' && item.id !='TypeNameRow' && item.id !='headRow'){
-                                    Array.from(item.children).forEach(x => {
-                                        if (x.id.includes('Cell')) {
-                                            x.style.display = "none";
-                                        }
-                                    });
+                                    // Array.from(item.children).forEach(x => {
+                                    //     if (x.id.includes('Cell')) {
+                                    //         x.style.display = "none";
+                                    //     }
+                                    // });
                                     const newtd = document.createElement('td');
                                     const realId = item.id.replace(/Row/g, '');
                                     
@@ -260,11 +294,11 @@ function CheckData(){
                             // 处理完数据后继续执行其他操作
                             trs.forEach((item, index) => {
                                 if (item.id) {
-                                    Array.from(item.children).forEach(x => {
-                                        if (x.id.includes('raph')) {
-                                            x.style.display = "none";
-                                        }
-                                    });
+                                    // Array.from(item.children).forEach(x => {
+                                    //     if (x.getAttribute('data-graph').includes('raph')) {
+                                    //         x.style.display = "none";
+                                    //     }
+                                    // });
 
                                     if (item.id == 'DegreeDistributionRow') {
                                         appenddegree(value,`../../data/${value}/data/digraph/inDegree.txt`, `../../data/${value}/data/digraph/outDegree.txt`);
@@ -361,11 +395,16 @@ function CheckData(){
 
                             trs.forEach((item,index) =>{
                                 if(item.id){
-                                    Array.from(item.children).forEach(x => {
-                                        if (x.id.includes('raph')) {
-                                            x.style.display = "none";
-                                        }
-                                    });
+                                    // Array.from(item.children).forEach(x => {
+                                    //     if (x.id.includes('raph')) {
+                                    //         x.style.display = "none";
+                                    //     }
+                                    //     else{
+                                    //         if(x.style.backgroundColor){
+                                    //             item.removeChild(x);
+                                    //         }
+                                    //     }
+                                    // });
                                     if(item.id == 'DegreeDistributionRow'){
                                         appenddegree2('bidirectedGraph',value,`../../data/${value}/data/bidirectedGraph/degree.txt`);
                                     }
@@ -490,11 +529,16 @@ function CheckData(){
                          });
                         trs.forEach((item,index) =>{
                             if(item.id){
-                                Array.from(item.children).forEach(x => {
-                                    if (x.id.includes('raph')) {
-                                        x.style.display = "none";
-                                    }
-                                });
+                                // Array.from(item.children).forEach(x => {
+                                //     if (x.id.includes('raph')) {
+                                //         x.style.display = "none";
+                                //     }
+                                //     else{
+                                //         if(x.style.backgroundColor){
+                                //             item.removeChild(x);
+                                //         }
+                                //     }
+                                // });
                                 if(item.id == 'DegreeDistributionRow'){
                                     appenddegree2('biedgedGraph',value,`../../data/${value}/data/biedgedGraph/degree.txt`);
                                 }
@@ -546,64 +590,6 @@ function CheckData(){
     }
 }
 
-async function test(value){
-    const table = document.getElementById('graphTable');
-    const tableBody = table.tBodies[0]
-    const trs = tableBody.querySelectorAll('tr');
-    graphData = {
-        bidirectedGraph: {},
-        biedgedGraph: {},
-        dibigraph: {},
-        digraph: {},
-    };
-    console.log(value);
-    try {
-        // 等待 loadFileData 完成
-        await loadFileData('digraph', `../../data/${value}/data/digraph/basicStatistics.txt`);
-        
-        // 输出 graphData
-        console.log(graphData);
-
-        // 遍历表格行并进行处理
-        trs.forEach((item, index) => {
-            if (item.id) {
-                // 隐藏包含 "raph" 的子元素
-                Array.from(item.children).forEach(x => {
-                    if (x.id.includes('raph')) {
-                        x.style.display = "none";
-                    }
-                });
-
-                // 处理不同的行 id
-                if (item.id == 'DegreeDistributionRow') {
-                    appenddegree(`../../data/${value}/data/digraph/inDegree.txt`, `../../data/${value}/data/digraph/outDegree.txt`);
-                } else if (item.id == 'LoopLengthRow') {
-                    appendLoop(`../../data/${value}/data/digraph/loop.txt`);
-                } else if (item.id == 'CycleDistributionRow') {
-                    appendcycle(`../../data/${value}/data/digraph/cycle.txt`);
-                } else if (item.id == 'NestedBubblesRow' || item.id == 'BubbleChainsRow' || item.id == 'CoverageRow') {
-                    return;  // 如果是这些行，直接跳过
-                } else {
-                    // 对其他行进行处理
-                    const newtd = document.createElement('td');
-                    const realId = item.id.replace(/Row/g, '');
-                    newtd.textContent = graphData['digraph'][realId] || '/';
-
-                    // 根据索引设置背景色
-                    if (index % 2 === 0) {
-                        newtd.style.backgroundColor = "rgba(229, 19, 0, 0.2)";
-                    } else {
-                        newtd.style.backgroundColor = "rgba(229, 19, 0, 0.3)";
-                    }
-
-                    item.appendChild(newtd);
-                }
-            }
-        });
-    } catch (error) {
-        console.error("Error loading digraph data:", error);
-    }
-}
 
 
 function uploadExampleFile(filePath) {
@@ -640,17 +626,51 @@ operationWidth = 90,
 leftOperationWidth = 30,
 animatSpeed = 150,
 linkframe = function(FileName) {
+    $("#menu-list a.active").each(function(){
+        if($(this).text().includes("+")){
+            $(this).remove();
+        }
+    })
     $("#menu-list a.active").removeClass("active");
     $("#menu-list a[FileName='" + FileName + "']").addClass("active");
     $("#menu-all-ul li.active").removeClass("active");
     $("#menu-all-ul li[FileName='" + FileName + "']").addClass("active");
     flag = FileName;
-    // const GFARow = document.querySelector('#GFARow');
-    // GFARow.style.display ="none";
-    // const GFANameRow = document.querySelector('#GFANameRow');
-    // GFANameRow.style.display ="none";
-    // const TypeNameRow = document.querySelector('#GFANameRow');
-    // TypeNameRow.style.display ="none";
+    if(!flag.includes('+')){
+        const headRow=document.querySelector('#headRow');
+        const ths = headRow.querySelectorAll('th');
+        ths.forEach(th=>{
+            th.style.display="";
+            th.setAttribute('colspan',1);
+        })
+        const GFARow = document.querySelector('#GFARow');
+        GFARow.style.display ="none";
+        const GFANameRow = document.querySelector('#GFANameRow');
+        GFANameRow.style.display ="none";
+        const TypeNameRow = document.querySelector('#TypeNameRow');
+        TypeNameRow.style.display ="none";
+        const table = document.getElementById('graphTable');
+        const alltds=table.querySelectorAll('td');
+        alltds.forEach(x=>{
+            if (x.id.includes('Cell')||x.getAttribute('data-graph')) {
+                x.style.display = "";
+            }
+            else{
+                if(x.id == "GFARow")
+                    return;
+                if(x.style.backgroundColor){
+                    // console.log(x);
+                    x.parentNode.removeChild(x);
+                }
+                if(x.querySelector('canvas')){
+                    // console.log(x);
+                    x.parentNode.removeChild(x);
+                }
+            }
+        })
+
+    }
+    
     unselectAllCheckboxes();
     load();
 },
