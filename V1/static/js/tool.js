@@ -711,8 +711,11 @@ closemenu = function() {
     },
     0,
     function() {
+        // 清理选中状态
         flag = "";
         unselectAllCheckboxes();
+
+        // 如果菜单项有类 "active"，找到下一个或上一个项并触发点击
         var jthis = $(this);
         if (jthis.hasClass("active")) {
             var linext = jthis.next();
@@ -727,7 +730,11 @@ closemenu = function() {
                 }
             }
         }
+
+        // 删除当前菜单项
         this.remove();
+
+        // 删除 iframe 内容
         $("#page-content .iframe-content[data-url='" + jthis.data("url") + "'][data-value='" + jthis.data("value") + "']").remove()
     });
     event.stopPropagation()
@@ -768,6 +775,9 @@ function init() {
             } else {
                 menuall.show()
             }
+
+            // 阻止事件冒泡，避免触发父元素的其他事件
+            event.stopPropagation();
         });
         $("body").bind("mousedown",
         function(event) {

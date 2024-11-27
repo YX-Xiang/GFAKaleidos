@@ -380,7 +380,7 @@ input[type="file"] {
     padding: 10px 20px;
     font-size: 16px;
     font-weight: bold;
-    background-color: #ffffff;
+    background-color: #80d5d4;
     color: rgb(0, 0, 0);
     border: none;
     border-radius: 5px;
@@ -396,8 +396,10 @@ input[type="file"] {
 
 .example-buttons {
     display: flex;
-    flex-direction: column; /* 上下布局 */
-    align-items: center; /* 使按钮整体居中对齐 */
+    /* flex-direction: column; 上下布局 */
+    /* align-items: center; 使按钮整体居中对齐 */
+    gap: 10px; /* 可以调整按钮之间的间距 */
+    justify-content: center; /* 居中对齐按钮 */
 }
 
 .example-button {
@@ -410,6 +412,27 @@ input[type="file"] {
     cursor: pointer;
     transition: background-color 0.3s;
     width: 120px; /* 固定按钮宽度 */
+    height: 40px; /* 固定按钮高度 */
+    margin-bottom: 10px; /* 增加按钮之间的间距 */
+}
+
+.example-button2s {
+    display: flex;
+    justify-content: center; /* 水平居中 */
+    height: 100vh; /* 父容器高度设置为视口高度，确保按钮垂直居中 */
+}
+
+.example-button2 {
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #80d5d4;
+    color: rgb(0, 0, 0);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 200px; /* 固定按钮宽度 */
     height: 40px; /* 固定按钮高度 */
     margin-bottom: 10px; /* 增加按钮之间的间距 */
 }
@@ -515,7 +538,7 @@ input[type="file"] {
 
 #page-tab #menu-list a.active {
     background-color: #5dae87;
-    color: #bdbcbc;
+    color: #ffffff;
     border-right: 0;
     transition: color .5s, background-color .5s;
     -moz-transition: color .5s, background-color .5s;
@@ -524,14 +547,14 @@ input[type="file"] {
 }
 
 #page-tab #menu-list a.active:hover {
-    color: #fff;
+    color: #000000;
 }
 
 #page-tab .menu-close {
     width: 15px;
     height: 15px;
     display: inline-block;
-    background-image: url(../styles/close.png);
+    background-image: url(../styles/closehover.png);
     background-size: 15px;
     background-repeat: no-repeat;
     vertical-align: middle;
@@ -540,7 +563,7 @@ input[type="file"] {
 }
 
 #page-tab .menu-close:hover {
-    background-image: url(../styles/closehover.png);
+    background-image: url(../styles/close.png);
 }
 
 #menu-all {
