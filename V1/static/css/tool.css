@@ -596,3 +596,46 @@ input[type="file"] {
 #page-content .active {
     display: block;
 }
+
+
+#custom-table {
+    width: 100%;
+    margin: 10px 0;
+    background-color: white;
+}
+#custom-table th, #custom-table td {
+    border: 1px solid #ddd;
+    padding: 4px;
+    font-size: 10px; /* 只改当前表格的字体大小 */
+    text-align: center;
+    white-space: normal; /* 允许换行 */
+    word-wrap: break-word; /* 自动换行 */
+}
+#custom-table th {
+    color: black;
+    font-weight: bold;
+}
+#custom-table th:nth-child(1),
+#custom-table td:nth-child(1) {
+    background-color: #ffffff; /* 白色背景 */
+    color: #000;
+    font-size: 12px; /* 只改当前表格的字体大小 */
+}
+#custom-table th:nth-child(2),
+#custom-table td:nth-child(2) {
+    background-color:  rgba(249,217,234);
+    
+}
+#custom-table th:nth-child(3),
+#custom-table td:nth-child(3) {
+    background-color: rgba(229, 19, 0, 0.2); /* 红色背景 */
+}
+
+#custom-table th:nth-child(4),
+#custom-table td:nth-child(4) {
+    background-color: rgba(240, 150, 9, 0.2); /* 橙色背景 */
+}
+#custom-table th:nth-child(5),
+#custom-table td:nth-child(5) {
+    background-color: rgba(27, 161, 226, 0.3); /* 蓝色背景 */
+}
