@@ -1,0 +1,261 @@
+<!-- about.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GFA Kaleidos</title>
+
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+	<script type="text/javascript" src="static/js/featherlight.min.js"></script>
+    <script type="text/javascript" src="static/js/footer.js"></script>
+
+    <link rel="icon" type="image/x-icon" href= "static/styles/icon.png">
+    <link rel="stylesheet" href="static/css/normalize.css">
+	<link rel="stylesheet" href="static/css/style_new.css">
+	<link rel="stylesheet" href="static/css/featherlight.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Arimo:400,700' rel='stylesheet' type='text/css'>
+</head>
+
+<body>
+    <header id="top">
+		<div class="wrapper">
+			<h1 class="logo"><a href="/">GFA Kaleidos</a></h1>
+			<nav>
+				<ul id="navigation">
+					<li><a href="/home">Home</a></li>
+					<li><a href="/help">Wiki</a></li>
+					<li><a href="/about">About</a></li>
+					<!-- <li><a class="nav-cta" href="/tool">Try Now</a></li> -->
+				</ul>
+			</nav>
+		</div>
+	</header>
+
+    <section class="help">
+        <h1>Learn how to use GFA Kaleidos</h1>
+            <div>
+                <h2 style="text-align: left" >Table of Contents</h2>
+                <ul class="table-contents-element-list">
+                    <li class="table-contents-element"><a href="#introduction">INTRODUCTION</a></li>
+                    <li class="table-contents-element"><a href="#quickstart">QUICK START</a></li>
+                    <li class="table-contents-element"><a href="#required1">[Required] - GFA files</a></li>
+                    <li class="table-contents-element"><a href="#results">Explore the results</a></li>
+                    <li class="table-contents-element"><a href="#stranalysis">Structural analysis</a></li>
+                    <li class="table-contents-element"><a href="#stranalysisresults">Compare Multiple GFA Files</a></li>
+                    <li class="table-contents-element"><a href="#implementation">WORKFLOW & IMPLEMENTATION</a></li>
+                </ul>
+            </div>
+
+        <main>
+            <section id="introduction" class="documentation-section">
+                <h2>INTRODUCTION</h2>
+                <p>
+                    <span class="highlight">GFA Kaleidos</span> is a tool designed to analyze graph statistics using GFA format input.
+                    We characterized the GFA file by modeling it with four different graph representations:
+                    <strong>directed graph, bidirected graph,</strong> and <strong>biedged graph</strong>.
+                    For each model, we computed statistics on vertices, edges, and subgraphs.
+                </p>
+            </section>
+
+            <section id="quickstart" class="documentation-section">
+                <h2>QUICK START</h2>
+                <p>Running GFA Kaleidos is straightforward. Read these pictures for a quick start!</p>
+                <div class="video-container">
+                    <img src="static/styles/project-1.jpg" width="700" height="460">
+                    <img src="static/styles/project-2.jpg" width="700" height="460">
+                </div>
+                <p></p>
+            </section>
+
+            <section id="required1" class="documentation-section">
+                <div class="grid-container">
+                    <div class="grid-item">
+                        <h2>[Required] - GFA files</h2>
+
+                        <p>The tool supports GFA format versions <strong>v1.0</strong> and <strong>v1.1</strong>. Certain indicators may not function without path or walk information.  </p>
+                            <ul class = "document-section-list" >
+                                <li class = "document-section-element" > <p> <b style="color: #00839F;">Segment</b> lines start with <strong>S</strong>, a continuous sequence or subsequence.</p></li>
+                                <li class = "document-section-element" > <p> <b style="color: #00839F;">Link</b> lines start with <strong>L</strong>, an overlap between two segments. Each link is from the end of one segment to the beginning of another segment. The link stores the orientation of each segment and the amount of basepairs overlapping. </p></li>
+                                <li class = "document-section-element" > <p> <b style="color: #00839F;">(Optional) Path</b> lines start with <strong>P</strong>, an ordered list of oriented segments, where each consecutive pair of oriented segments are supported by a link record.</p></li>
+                                <li class = "document-section-element" > <p> <b style="color: #00839F;">(Optional) Walk</b> lines start with <strong>W</strong>,  an ordered list of oriented segments, intended for pangenome use cases. Each consecutive pair of oriented segments must correspond to a 0-overlap link record.</p></li>
+                            </ul>
+               
+                            <p>Currently, the software performs well on graphs generated by <a href="https://github.com/pangenome/pggb?tab=readme-ov-file">pggb</a>
+                                and <a href="https://github.com/ComparativeGenomicsToolkit/cactus">Minigraph-Cactus</a>. 
+                                If you encounter compatibility issues with graphs generated by other software, feel free to reach out to us.
+                            </p>
+
+                    </div>
+                    <div class="grid-item">
+                        <img src="static/styles/example.png" height="500">
+                    </div>
+                </div>
+            </section>
+
+            <section id="results" class="documentation-section">
+                <h2>Explore the results</h2>
+                <p>After running GFA Kaleidos, you can explore comprehensive results on the dedicated results page. 
+                    This page provides detailed insights into the pangenome graph statistics and analysis associated with your input query. 
+                    Within the results page, you can navigate through various panels, each highlighting essential aspects of the graph. In these panels, you will find:
+                </p>
+                    <ul class = "document-section-list" >
+                        <li class = "document-section-element" > <p>A detailed overview of pangenome graph statistics, including:
+                            <ul> <li>The number of vertices, edges, and paths within the graph.</li> <li>Cycle and bubble structures representing key genomic variations.</li> 
+                            <li>Metrics like N50, L50, and U50 to assess graph quality.</li> </ul>
+                        </p></li>
+                    </ul>    
+            <p>Visualization of the graph using models like bidirected and biedged graphs, enabling the representation of complex genomic rearrangements.</p>
+            <p> A dedicated filtering tool to refine results by specific criteria, such as graph segments, link properties, or genomic paths.</p> 
+            <p>Comprehensive statistical metrics presented in a user-friendly web interface.</p>  
+            </section>
+
+            <section id="stranalysis" class="documentation-section">
+                <h2>Structural analysis</h2>
+                <p>GFA Kaleidos helps identify structural variations in the pangenome by analyzing the graph topology. 
+                    The specific topological structures and their corresponding physical meanings are as follows:</p>
+
+                    <div class="grid-container">
+                        <div class="grid-item">
+                            <ul class = "document-section-list" >
+                                <li class = "document-section-element" >  <p> <b style="color: #00839F;">Degree Distribution:</b> High-degree vertices are often mutation hotspots. </p>
+                                </li>
+                                <li class = "document-section-element"> <p><b style="color: #00839F;">Strongly Connected Components: </b> Regions of high complexity within the graph. </p>
+                                </li>
+                                <li class = "document-section-element"><p><b style="color: #00839F;">Cycle Distribution:</b> Cycles represent tandem repeats but also increase the graph’s path complexity.</p>
+                                </li>       
+                                <li class = "document-section-element">
+                                    <p><b style="color: #00839F;">Nested Bubbles: </b> Genomic variation creates nested bubble structures, which help organize graph elements spatially.</p>
+                                </li>
+                            </ul> 
+                        </div>
+                        <div class="grid-item">
+                            <img src="static/styles/bubble.png" width="800" height="300">         
+                        </div>
+                    </div>  
+            </section>
+
+            <section id="stranalysisresults" class="documentation-section">
+                <h2>Compare Multiple GFA Files</h2>
+                <p></p>
+                    <div>
+                        <div>
+                            <ul class = "document-section-list" >
+                                <li class = "document-section-element" >  <p> <b style="color: #00839F;">Upload and Display:</b> You can upload multiple GFA files to the platform. Each file will open in its dedicated tab within the web interface, enabling easy navigation and comparison of graph models.</p></li>
+                                <img src="static/styles/Multiple file upload.png" style="width: 50%">
+
+                                <li class = "document-section-element"> <p><b style="color: #00839F;">Combine and Visualize:</b> Users can select multiple GFA files and their associated graph models to combine and visualize on a single page. This feature allows for side-by-side comparisons and better contextual analysis of structural variations.</p>
+                                    
+                                <ul class = "document-section-list">
+                                    <li class = "document-section-element">
+                                        Graph models include digraph, bidirected graph and biedged graph. You can choose to display one or more models simultaneously, depending on your analysis needs.
+                                    </li>
+                                </ul>
+                                  
+                                <li class = "document-section-element"> <p><b style="color: #00839F;">Interactive Features:</b> Each graph visualization is fully interactive, allowing users to zoom, pan, and explore the connections and structural variations within the graph. Hovering over nodes or edges displays additional details such as sequence lengths and adjacency relationships.</p></li>
+                                
+                                <li class="document-section-element">
+                                    <p><b style="color: #00839F;">Download Options:</b> After comparing and analyzing the files, you can download:
+                                        <ul class="document-section-list">
+                                            <li class="document-section-element">A summary table of the combined analysis in PDF format.</li>
+                                            <li class="document-section-element">All graph visualizations as high-resolution images or JSON files for further processing.</li>
+                                        </ul>
+                                    </p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>  
+            </section>
+
+            <section id="implementation" class="documentation-section">
+                <h2>WORKFLOW & IMPLEMENTATION</h2>
+
+                <div class="grid-item">
+                    <p>Here is a workflow scheme for GFA Kaleidos. As explained in other sections, the <span style="color:grey; font-weight: bold;">input/methods</span> of the analysis are shown in <span style="color:grey; font-weight: bold;">grey</span>, while the <span style="color:orange; font-weight: bold;">optional inputs</span> are highlighted in <span style="color:orange; font-weight: bold;">orange</span>. The outputs are presented in <span style="color:lightskyblue; font-weight: bold;">light blue</span>.</p>
+                    <ul class = "document-section-list">
+                        <li class = "document-section-element" ><p> <b>Input:</b> GFA Kaleidos integrates pangenome graphs in GFA format.</p>
+                        </li>
+                        
+                        <li id= "range" class = "document-section-element"><p> <b>Graph Analysis Protocol:</b> The workflow is implemented in C++ and designed to analyze complex graph structures. By cross-referencing GFA files with statistical metrics and graph models, the protocol extracts insights such as vertex connectivity, structural variations, and adjacency relationships. 
+                            For each graph, the workflow evaluates:
+                            <ul class="document-section-list">
+                                <li class="document-section-element">The alignment of sequences and their associated structural variations.</li>
+                                <li class="document-section-element">Forward and reverse paths within the graph, identifying key genomic elements.</li>
+                                <li class="document-section-element">Critical regions such as superbubbles and cycles, highlighting polymorphisms and tandem repeats.</li>
+                            </ul>
+                        </p></li>
+                    </ul>
+                </div>
+
+                <div class="grid-item">
+                    <img src="static/styles/workflow.png" width="700" height="300">
+                </div>
+
+                <h2>Browser compatibility</h2>
+                <div class="grid-container">
+                    <div class="grid-item">
+                        <table id="browserTable">
+                            <!-- The CSV data will be loaded here -->
+                        </table>
+                    </div>
+                </div>
+
+            </section>
+
+    <footer>
+		<div class="wrapper">
+			<a class="logo" href="#">Chase</a>
+			<div class="footer-left">
+				<p class="copyright">Copyright 2024 &copy; GFA Kaleidos</p>
+				<p class="footer-links"><span id="visits"></span></p>
+			</div>
+			<div class="footer-right">
+				<a href="https://github.com/YX-Xiang/GFAKaleidos" class="social github">Facebook</a>
+				<a href="https://www.nankai.edu.cn" class="social nankai">Facebook</a>
+				<a href="https://cs.nankai.edu.cn/index.htm" class="social nkcs">Facebook</a>
+			</div>
+			<div class="clear"></div>
+		</div>
+    </footer>
+</body>
+
+<!--------------Javascript for Toggle menu ------------>
+
+<script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Define a function to load the CSV data into the table
+    function loadCSVToTable() {
+        const table = document.getElementById('csvTable');
+
+        const csvbrowser = [["OS", "Chrome", "Edge", "Firefox", "Safari"], ["Linux", "Not tested", "Not tested", "Not tested", "Not tested"], ["MacOS", "Not tested", "Not tested", "Not tested", "Not tested"], ["Windows", "Not tested", "OK", "Not tested", "Not tested"], []];
+        const tablebrowser = document.getElementById('browserTable');
+
+        for (let i = 0; i < csvbrowser.length; i++) {
+            const row = document.createElement('tr');
+            for (let j = 0; j < csvbrowser[i].length; j++) {
+                const cell = i === 0 ? 'th' : 'td'; // Use th for the header row
+                const element = document.createElement(cell);
+                element.textContent = csvbrowser[i][j];
+                row.appendChild(element);
+            }
+            tablebrowser.appendChild(row);
+        }
+
+        for (let i = 0; i < csvData.length; i++) {
+            const row = document.createElement('tr');
+            for (let j = 0; j < csvData[i].length; j++) {
+                const cell = i === 0 ? 'th' : 'td'; // Use th for the header row
+                const element = document.createElement(cell);
+                element.textContent = csvData[i][j];
+                row.appendChild(element);
+            }
+            table.appendChild(row);
+        }
+    }
+
+    // Call the function when the page is loaded
+    window.onload = loadCSVToTable;
+</script>
+</html>

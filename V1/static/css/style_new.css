@@ -1,0 +1,1277 @@
+/*Basics*/
+
+* {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box; 
+}
+
+html, html a {
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004); }
+
+html, body {
+	min-height: 100%; 
+}
+
+body {
+	font-size: 17px;
+	color: #444;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	background: #fff; 
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: 'Arimo', sans-serif;
+	text-transform: uppercase;
+	font-weight: 700;
+	color: #444;
+	margin: 0;
+	padding: 0; 
+}
+
+h2 { font-size: 60px;}
+h3 { font-size: 54px;}
+h4 { font-size: 32px;}
+h5 { font-size: 21px;}
+h6 { font-size: 18px;}
+
+p {
+	line-height: 1.4;
+	margin: 20px 0;
+}
+
+p.subtitle {
+	font-family: 'Arimo', sans-serif;
+	text-transform: uppercase;
+	font-weight: 700;
+	letter-spacing: 0.03em;
+	color: #777;
+	text-align: center;
+}
+
+img, embed, object, video {
+	max-width: 100%; }
+
+
+ul, li {
+	list-style: none;
+	margin: 0;
+	padding: 0; 
+}
+
+a {
+	text-decoration: none; 
+	color: #5dae87;
+}
+
+a:hover {
+	text-decoration: none; 
+	color: #42966e;
+}
+
+::selection {
+	background: #444;
+	color: #fff;
+}
+
+.clear {
+	clear: both;
+}
+	
+.wrapper {
+	max-width: 1190px;
+	margin: 0 auto;
+	position: relative; 
+}
+
+input[type=text] {
+	border: 2px solid #444;
+	background: #fff;
+	font-size: 17px;
+	color: #444;
+	padding: 16px;
+	border-radius: 999px;
+	width: 280px;
+	font-family: 'Arimo', sans-serif;
+	font-weight: 700;
+	text-transform: uppercase;
+}
+
+.buttons {
+	width: auto;
+	margin: 0 auto;
+	text-align: center;
+}
+
+a.button-1, a.button-2, button {
+	color: #fff;
+	background: #5dae87;
+	border: 2px solid #5dae87;
+	border-radius: 999px;
+	margin-top: -2px;
+	margin-left: 10px;
+	font-family: 'Arimo', sans-serif;
+	text-transform: uppercase;
+	font-weight: 700;
+	font-size: 18px;
+	letter-spacing: 0.03em;
+	display: inline-block;
+	width: 220px;
+	margin: 10px;
+	text-align: center;
+	padding: 18px 0;
+}
+
+a.button-1:hover {
+	border-color: #42966e;
+	background: #42966e;
+}
+
+a.button-2 {
+	border-color: #444;
+	background: none;
+	color: #444;
+}
+
+a.button-2:hover {
+	background: #444;
+	color: #fff;
+}
+
+@media only screen and (max-width: 640px) {
+	a.button-1, a.button-2 {
+		font-size: 16px;
+		margin: 5px;
+	}
+}
+
+
+/*Header*/
+
+header#top {
+	background: #5dae87;
+	height: 140px;
+}
+
+h1.logo a {
+	display: inline-block;
+	float: left;
+	color: #444;
+	line-height: 2.25;
+	text-indent: -4999px;
+	background: url(../styles/header_293x80.png) no-repeat;
+	margin: 40px 0 0 0;
+	width: 293px;
+	height: 80px;
+}
+
+header#top nav {
+	display: inline-block;
+	float: right;
+	width: auto;
+	margin-top: 60px;
+	margin-right: 40px;
+}
+
+header#top nav ul li {
+	display: inline-block;
+	float: left;
+}
+
+header#top nav ul li a {
+	display: inline-block;
+	background: none;
+	padding:  10px 15px;
+	color: #fff;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.03em;
+}
+
+header#top nav ul li a:hover {
+	color: #444;
+}
+
+header#top nav ul li a.nav-cta {
+	color: #5dae87;
+	border: 2px solid #5dae87;
+	border-radius: 999px;
+	margin-top: -2px;
+	margin-left: 10px;
+}
+
+
+@media only screen and (max-width: 1024px) {
+	header#top {
+		height: auto;
+		padding-top: 20px;
+		padding-bottom: 20px;
+	}
+	h1.logo {
+	}
+	header#top nav {
+		float: none;
+		text-align: center;
+		width: 100%;
+		margin: 20px auto 0 auto;
+	}
+	header#top nav ul li {
+		float: none;
+		font-size: 15px;
+	}
+	h1.logo a {
+		display: block;
+		float: none;
+		margin: 0 auto;
+		text-align: center;
+	}
+}
+
+/* -------------contact page------------ */
+.contact-page {
+width: 80%;
+margin: auto;
+text-align: justify;
+}
+.contact-page h1 {
+font-weight: 300;
+font-size: 50px;
+text-align: center;
+line-height: 1.5; /* Adjust line spacing as needed */
+}
+.contact-page p {
+margin-top: 3%;
+margin-bottom: 3%;
+font-size: 20px;
+}
+.contact-page a {
+text-decoration: none;
+color:#00839f;
+font-weight: bold;
+}
+.contact-page .contact-text {
+font-size: 18px;
+color: #555;
+line-height: 1.5; /* Adjust line spacing as needed */
+}
+
+.contact-page .contact-list {
+list-style: none;
+padding: 0;
+}
+.contact-center{
+text-align: center;
+}
+
+.contact-page .contact-email {
+font-size: 20px;
+color: #586a74;
+cursor: pointer;
+transition: color 0.3s;
+line-height: 1.6;
+position: relative;
+text-align: center;
+font-family: Lato;
+}
+
+.contact-page .contact-email::after {
+content: " (click to copy)";
+display: none;
+position: absolute;
+background-color: #0077b6;
+color: rgb(255, 255, 255);
+padding: 5px;
+border-radius: 5px;
+top: -30px;
+left: 50%;
+transform: translateX(-50%);
+font-size: 16px;
+}
+
+.copiedtooltip {
+display: none;
+position: fixed;
+top: 300px;
+left: 50%;
+transform: translateX(-50%);
+background-color: lightgray;
+color: rgb(0, 0, 0);
+padding: 5px 10px;
+border-radius: 5px;
+z-index: 1000;
+}
+
+.comment-box {
+border: 1px solid #ccc;
+margin: 50px 0;
+padding: 10px 20px;
+}
+.comment-box h3 {
+text-align: left;
+font-weight: 600;
+text-transform: uppercase;
+}
+.comment-form input,
+.comment-form textarea {
+width: 100%;
+padding: 10px;
+margin: 15px 0;
+box-sizing: border-box;
+border: none;
+outline: none;
+background: #f0f0f0;
+}
+.comment-form button {
+margin: 10px 0;
+}
+@media (max-width: 700px) {
+.sub-header h1 {
+    font-size: 24px;
+}
+}
+.hero-btn {
+display: inline-block;
+text-decoration: none;
+color: #fff;
+border: 1px solid #fff;
+padding: 12px 34px;
+font-size: 13px;
+background: transparent;
+position: relative;
+cursor: pointer;
+}
+.hero-btn:hover {
+border: 1px solid #00839f;
+background: #00839f;
+transition: 1s;
+}
+.red-btn {
+border: 1px solid #00839f;
+background: transparent;
+color: #00839f;
+}
+.red-btn:hover {
+color: #fff;
+}
+
+/* -----------------------finder page--------------- */
+.finder-page {
+width: 80%;
+margin: auto;
+text-align: center;
+font-family: Lato;
+font-size: 18px;
+}
+.finder-page h1 {
+text-transform: capitalize;
+font-weight: 300;
+font-size: 50px;
+}
+.finder-page h6 {
+margin-top: 2%;
+text-align: center;
+margin-bottom: 50px;
+font-weight: 300;
+font-size: 16px;
+}
+.finder-box {
+border: 2px solid #ccc;
+margin: auto;
+padding: 20px 20px;
+width: 50%;
+margin-bottom: 70px;
+border-radius: 15px;
+}
+.finder-box h3 {
+margin-top: 10px;
+text-align: left;
+font-weight: 600;
+color: #00839f;
+}
+.finder-box i:hover {
+color: #555;
+}
+
+.finder-box input:disabled {
+background-color: #cdcccc; /* Default button background color */
+color: #000000; /* Default text color */
+}
+
+.finder-page button {
+background-color: #ffffff; /* Default button background color */
+color: #000000; /* Default text color */
+padding: 10px 20px; /* Adjust padding as needed */
+border: none;
+border-radius: 4px;
+border: 1px solid #999999; /* Add a border around the button */
+border-radius: 4px;
+cursor: pointer;
+transition: background-color 0.3s; /* Smooth color transition on hover */
+margin-top: 20px; /* Add margin to the top */
+margin-left: 10px; /* Add margin to the left */
+}
+
+.finder-page select {
+background-color: #fff; /* Default select background color */
+color: #000000; /* Default text color */
+padding: 10px; /* Adjust padding as needed */
+border: 1px solid #3498db; /* Add a border around the select */
+border-radius: 4px;
+cursor: pointer;
+transition: background-color 0.3s; /* Smooth color transition on hover */
+margin-left: 10px; /* Add margin to the left */
+}
+.finder-box label {
+margin-top: 10px;
+text-align: left;
+font-weight: 600;
+color: #00839f;
+}
+.finder-form input,
+.comment-form textarea {
+width: 100%;
+padding: 10px;
+margin: 15px 0;
+box-sizing: border-box;
+border: none;
+outline: none;
+background: #f0f0f0;
+}
+.finder-form button {
+margin: 10px 0;
+}
+.form-row {
+display: flex;
+align-items: center;
+margin-bottom: 10px;
+}
+.form-row label {
+margin-right: 10px;
+}
+.tooltip-container {
+position: relative;
+display: inline-block;
+}
+
+.info-icon {
+cursor: pointer;
+}
+
+.tooltip {
+display: none;
+position: absolute;
+bottom: 100%; /* Position the tooltip just above the parent element */
+left: 0;
+background-color: #a2d3df;
+color: #000000;
+padding: 5px;
+border-radius: 5px;
+font-size: 14px;
+}
+
+.info-icon:hover + .tooltip {
+display: block;
+}
+
+@media (max-width: 900px) {
+.finder-box {
+    width: 80%;
+}
+}
+.input-wrapper {
+display: flex;
+align-items: center;
+margin-bottom: 10px;
+}
+
+.input-wrapper label {
+margin-right: 10px;
+}
+.input-wrapper input {
+margin-right: 10px;
+}
+
+.input-wrapper .remove-btn {
+margin-left: auto;
+margin-right: 10px;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+padding: 5px;
+}
+.input-wrapper-seq {
+display: flex;
+align-items: center;
+margin-bottom: 10px;
+}
+
+.input-wrapper-seq label {
+margin-right: 10px;
+}
+.input-wrapper-seq input {
+margin-right: 10px;
+}
+
+.input-wrapper-seq .remove-btn {
+margin-left: auto;
+margin-right: 10px;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+padding: 5px;
+}
+
+.loader {
+border: 16px solid #f3f3f3;
+/* Light grey */
+border-top: 16px solid rgb(0, 131, 159);
+/* Blue */
+border-radius: 50%;
+width: 120px;
+height: 120px;
+animation: spin 2s linear infinite;
+font-family: Lato;
+}
+.loader::before {
+content: "";
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+background-image: url("favicon.png");
+background-size: cover;
+border-radius: 50%;
+width: 80px;
+height: 80px;
+}
+
+@keyframes spin {
+0% {
+    transform: rotate(0deg);
+}
+
+100% {
+    transform: rotate(360deg);
+}
+}
+
+.hr_middle {
+width: 100%;
+text-align: center;
+border-top: 1px solid #eeeeee;
+border-bottom: 1px solid #ffffff;
+line-height: 0.1em;
+margin: 10px 0 20px;
+font-weight: 400;
+}
+
+.hr_middle span {
+background: #fff;
+padding: 0 10px;
+}
+
+.p-clickable {
+font-size: 12px;
+text-decoration: underline;
+text-align: left;
+}
+
+.p-clickable:hover {
+color: grey;
+cursor: pointer;
+}
+.container2 {
+display: flex;
+align-items: center;
+}
+
+.container2 p {
+margin-right: 10px;
+font-weight: bold;
+}
+.container2 button {
+margin-right: 10px;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+padding: 5px;
+}
+.container2 input {
+margin-right: 10px;
+}
+
+#csvFileInput {
+background-color: #f4f5f6; /* Change this color to your desired background color */
+color: #111010; /* Change this color to your desired text color */
+border: none; /* Remove the border if desired */
+border-radius: 5px; /* Add border radius if desired */
+padding: 10px 15px; /* Adjust padding as needed */
+cursor: pointer;
+transition: background-color 0.3s;
+}
+
+/* -----------------tools page------------- */
+.tools {
+width: 80%;
+margin: auto;
+text-align: center;
+/* padding-top: 100px; */
+}
+.tools h1 {
+font-weight: 300;
+font-size: 50px;
+text-align: center;
+}
+.tools p {
+margin-top: 2%;
+text-align: center;
+}
+.tools-col {
+flex-basis: 31%;
+border-radius: 10px;
+margin-bottom: 5%;
+text-align: left;
+}
+.tools-col img {
+width: 100%;
+border-radius: 10px;
+}
+.tools-col p {
+padding: 0;
+font-weight: 200;
+}
+.tools-col h3 {
+font-weight: 300;
+font-size: 30px;
+margin-top: 16px;
+margin-bottom: 15px;
+text-align: center;
+}
+
+/* ----------------------help page-------------- */
+
+.help {
+width: 80%;
+margin: auto;
+text-align: center;
+}
+.help h1 {
+text-transform: capitalize;
+font-weight: 300;
+font-size: 50px;
+line-height: 1.5; /* Adjust line spacing as needed */
+}
+
+.help h3 {
+text-transform: capitalize;
+font-weight: 400;
+font-size: 20px;
+line-height: 1.5; /* Adjust line spacing as needed */
+}
+.help p {
+margin-top: 2%;
+font-weight: 400;
+font-size: 16px;
+font-family: "Lato", sans-serif; /* Use 'Megrim' font, and fallback to a sans-serif font */
+}
+
+.help h2 {
+text-transform: capitalize;
+font-weight: 400;
+font-size: 25px;
+line-height: 2; /* Adjust line spacing as needed */
+}
+
+.grid-container {
+display: grid;
+align-items: center;
+grid-template-columns: repeat(2, 1fr); /* Three equal-width columns */
+grid-gap: 10px; /* Gap between grid items */
+}
+
+.grid-item {
+padding: 20px;
+text-align: center;
+font-weight: 400;
+font-size: 20px
+}
+
+.table-contents-element-list {
+list-style: none;
+padding: 0;
+}
+
+.table-contents-element {
+margin-bottom: 10px;
+text-align: left; /* Align text to the left */
+}
+
+.table-contents-element a {
+text-decoration: none;
+color: #586a74;
+transition: color 0.3s;
+line-height: 1.5; /* Adjust line spacing as needed */
+}
+.table-contents-element a:hover {
+color: #00a5c9;
+}
+
+.help table {
+border-collapse: collapse;
+width: 100%;
+border: 1px solid #ccc;
+}
+
+/* Style the table header (th) */
+.help table th {
+background-color: #f2f2f2;
+border: 1px solid #ccc;
+padding: 8px;
+text-align: center;
+}
+
+/* Style the table rows (td) */
+.help table td {
+border: 1px solid #ccc;
+padding: 2px;
+text-align: center;
+}
+
+/* Define alternate row background colors for better readability */
+.help table tr:nth-child(even) {
+background-color: #f2f2f2;
+}
+.documentation-section {
+background-color: #fff;
+margin: 20px 0;
+padding: 20px;
+/* box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); */
+text-align: left; /* Align text to the left */
+line-height: 1.5; /* Adjust line spacing as needed */
+}
+
+.documentation-section p {
+text-align: justify; /* Align text to the left */
+line-height: 1.5; /* Adjust line spacing as needed */
+margin-bottom: 10px; /* Add some spacing between paragraphs */
+font-size: 18px;
+font-family: "Lato", sans-serif; /* Use 'Megrim' font, and fallback to a sans-serif font */
+}
+
+.document-section-list {
+padding: 0;
+margin-left: 20px; /* Adjust the indentation as needed */
+font-weight: 400; /* Set the font-weight to normal */
+font-size: 16px;
+font-family: "Lato", sans-serif; /* Use 'Megrim' font, and fallback to a sans-serif font */
+}
+.help-image-container {
+display: flex;
+flex-wrap: wrap;
+}
+
+.help-image-container .image-wrapper {
+flex: 1;
+box-sizing: border-box;
+padding: 5px;
+background-repeat: no-repeat;
+background-position: center;
+background-size: contain;
+margin: 5px;
+width: calc(50% - 10px);
+height: 300px; /* Imposta l'altezza desiderata */
+}
+.help .document-section-element {
+margin-bottom: 10px;
+text-align: left; /* Align text to the left */
+font-size: 18px;
+font-weight: 400;
+font-family: "Lato", sans-serif; /* Use 'Megrim' font, and fallback to a sans-serif font */
+}
+
+.underline-text {
+text-decoration: underline;
+}
+.video-container {
+display: flex;
+flex-wrap: wrap;
+justify-content: space-between; /* Aggiunge spazio tra i video */
+}
+
+.video-container video {
+width: calc(50% - 10px); /* Larghezza del 50% con margini per lo spazio tra i video */
+margin-bottom: 20px; /* Spazio tra i video verticalmente */
+box-sizing: border-box; /* Considera margini e padding nella larghezza totale */
+box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Aggiunge un'ombra per evidenziare i video */
+
+}
+
+/* ----------------------results-------------- */
+.results {
+width: 80%;
+margin: auto;
+text-align: center;
+font-size: 18px;
+}
+.results h1 {
+text-transform: capitalize;
+font-weight: 300;
+font-size: 50px;
+line-height: 1.5; /* Adjust line spacing as needed */
+}
+.results p {
+margin-top: 2%;
+font-weight: 400;
+font-size: 20px;
+}
+
+.results h2 {
+text-transform: capitalize;
+font-weight: 400;
+font-size: 25px;
+line-height: 2; /* Adjust line spacing as needed */
+}
+
+.results button {
+background-color: #ffffff; /* Default button background color */
+color: #000000; /* Default text color */
+padding: 10px 20px; /* Adjust padding as needed */
+border: none;
+border-radius: 4px;
+border: 1px solid #999999; /* Add a border around the button */
+border-radius: 4px;
+cursor: pointer;
+transition: background-color 0.3s; /* Smooth color transition on hover */
+margin-top: 20px; /* Add margin to the top */
+margin-left: 10px; /* Add margin to the left */
+}
+
+.results button:disabled {
+background-color: #cdcccc; /* Default button background color */
+color: #000000; /* Default text color */
+padding: 10px 20px; /* Adjust padding as needed */
+border: none;
+border-radius: 4px;
+border: 1px solid #999999; /* Add a border around the button */
+border-radius: 4px;
+margin-top: 20px; /* Add margin to the top */
+margin-left: 10px; /* Add margin to the left */
+cursor: default;
+}
+
+/* Hover effect */
+.results button:not(:disabled):hover {
+background-color: #fcf5e5; /* New background color on hover */
+}
+
+/* Select styles */
+.results select {
+background-color: #fff; /* Default select background color */
+color: #000000; /* Default text color */
+padding: 10px; /* Adjust padding as needed */
+border: 1px solid #3498db; /* Add a border around the select */
+border-radius: 4px;
+cursor: pointer;
+transition: background-color 0.3s; /* Smooth color transition on hover */
+margin-left: 10px; /* Add margin to the left */
+}
+
+/* Hover effect */
+
+/* Additional styles (optional) */
+.results select:focus {
+outline: none; /* Remove focus outline on click */
+}
+
+/* Additional styles (optional) */
+.results button:focus {
+outline: none; /* Remove focus outline on click */
+}
+
+.divider {
+margin-top: 2%;
+display: flex;
+align-items: center;
+text-align: center;
+font-weight: 400;
+font-size: larger;
+}
+.divider::after,
+.divider::before {
+content: "";
+border: 1px solid #cccccc80;
+flex: 1;
+}
+.divider:not(:empty)::before {
+margin-right: 0.5em;
+}
+
+.divider:not(:empty)::after {
+margin-left: 0.5em;
+}
+#menu-icon {
+transition: transform 0.3s;
+}
+
+#display-options[style="display: none;"] #menu-icon {
+transform: rotate(-90deg);
+}
+.results-box {
+border: 1px solid #ccc;
+margin: 10px 0;
+padding: 10px 20px;
+transition-duration: 0.5s;
+border-radius: 20px;
+margin-bottom: 2%;
+}
+.results-box:hover {
+box-shadow: 0 0 20px 0px rgba(0, 0, 0, 0.2);
+}
+.results-row {
+display: flex;
+justify-content: space-between;
+}
+.sub-col h3 {
+margin-top: 8px;
+margin-bottom: 8px;
+text-align: left;
+color: #00839f;
+/* margin-top:2%; */
+/* margin-bottom: 2%; */
+font-size: 16px;
+}
+.sub-col div {
+display: flex;
+justify-content: space-between;
+color: #555;
+box-sizing: border-box;
+}
+.highlight {
+    background-color: #dad7d7; /* 背景色 */
+    border: 1px solid #cccccc00; /* 边框 */
+    padding: 2px 6px; /* 内边距 */
+    border-radius: 4px; /* 圆角边框 */
+    font-family: monospace; /* 字体样式（可选） */
+}
+.highlightorange {
+background-color: #ffae42;
+}
+.highlightgreen {
+background-color: #90ee90;
+}
+.delight {
+background-color: white;
+}
+
+.page {
+color: #00839f;
+}
+
+.page-item {
+font-size: 20px;
+color: #00839f;
+}
+.different {
+color: red;
+}
+/* Style the page selection */
+.page-current {
+font-size: 30px;
+color: inherit;
+text-decoration: none;
+}
+
+a.page-link {
+color: inherit;
+text-decoration: none;
+}
+
+a.result-link {
+color: inherit;
+text-decoration: underline;
+}
+
+a.result-link:hover {
+color: blue;
+}
+.different-color {
+color: red;
+font-weight: bold;
+}
+.box-row {
+display: flex;
+justify-content: flex-end;
+}
+.monospace {
+font-family: "Courier Prime", monospace;
+}
+/* --------------------------------------------- */
+.row {
+justify-content: space-evenly;
+}
+.sub-col {
+margin-top: 10px;
+margin-bottom: 10px;
+text-align: left;
+}
+
+.sub-col h4 {
+font-size: small;
+margin-top: 10px;
+text-transform: uppercase;
+}
+.container {
+display: block;
+/* display: inline-block; */
+width: 50%;
+position: relative;
+padding-left: 20px;
+margin-top: 10px;
+cursor: pointer;
+font-size: 12px;
+-webkit-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.container input {
+position: absolute;
+opacity: 0;
+cursor: pointer;
+height: 0;
+width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+position: absolute;
+top: 0;
+left: 0;
+height: 12px;
+width: 12px;
+background-color: #fff;
+border: 1px solid #00839f;
+}
+
+/* On mouse-over, add a grey background color */
+.container:hover input ~ .checkmark {
+background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.container input:checked ~ .checkmark {
+background-color: #00839f;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+content: "";
+position: absolute;
+display: none;
+}
+
+/* Show the checkmark when checked */
+.container input:checked ~ .checkmark:after {
+display: block;
+}
+
+/* Style the checkmark/indicator */
+.container .checkmark:after {
+left: 3px;
+top: 1px;
+width: 3px;
+height: 6px;
+border: solid white;
+border-width: 0 2px 2px 0;
+-webkit-transform: rotate(45deg);
+-ms-transform: rotate(45deg);
+transform: rotate(45deg);
+}
+
+/* -------------------- Molecular Visualization with 3Dmol.js -------------- */
+.mol-container {
+width: 70%;
+height: 700px;
+position: relative;
+}
+
+/* Container for the two columns */
+.mol-vis-layout {
+display: flex;
+}
+
+/* Styles for the other content column */
+.mol-container-info {
+width: 60%; /* Adjust the width as needed */
+margin: 0 auto;
+max-height: 600px; /* Set a maximum height for the container */
+overflow-y: auto; /* Enable vertical scrolling */
+
+/* Center vertically using flexbox */
+display: flex;
+align-items: center;
+}
+
+
+
+
+.image-container {
+display: flex;
+flex-wrap: wrap;
+justify-content: space-evenly;
+margin-bottom: 5%;
+}
+
+.image-container figure {
+width: 15%; /* Larghezza delle immagini */
+margin: 5px; /* Spazio tra le immagini */
+text-align: center; /* Centra il testo */
+position: relative; /* Per allineare correttamente */
+}
+
+.image-container img {
+width: 100%; /* Occupa tutta la larghezza dell'elemento figure */
+}
+
+.image-container figcaption {
+margin-top: 5%; /* Aggiusta lo spazio sopra la didascalia */
+width: 100%;
+text-align: center;
+font-size: 20px;
+font-weight: 300;
+}
+
+
+/* Media query per la responsività */
+@media (max-width: 700px) {
+.image-container {
+    flex-direction: column; /* Disposizione delle immagini e didascalie in colonna */
+    align-items: center; /* Centra le immagini e didascalie quando sono in colonna */
+}
+
+.image-container figure {
+    width: 80%; /* Larghezza delle immagini quando sono in colonna */
+}
+
+.image-container figcaption {
+    width: 100%;
+    margin-top: 10px; /* Aggiusta lo spazio sopra la didascalia in colonna */
+}
+}
+  
+  
+  
+  /* --------------------footer-------------- */
+
+footer {
+	background: #444;
+	margin-top: 0px;
+	color: #fff;
+	text-align: center;
+	padding: 60px 0;
+}
+
+footer a.logo {
+	display: block;
+	float: left;
+	color: #fff;
+	text-indent: -4999px;
+	background: url(../styles/icon_56x57.png) no-repeat;
+	margin: 0 0 0 40px;
+	padding: 0 0 40px 0;
+	width: 56px;
+	height: 74px;
+}
+
+footer .footer-left {
+	float: left;
+	text-align: left;
+	margin-top: 5px;
+	margin-left: 50px;
+}
+
+footer .footer-right {
+	float: right;
+	margin-top: 20px;
+	text-align: right;
+}
+
+footer p {
+	font-size: 17px;
+	margin: 5px;
+}
+
+footer p.copyright {
+	font-family: 'Arimo', sans-serif;
+	text-transform: uppercase;
+	font-weight: 700;
+}
+
+footer .footer-links {
+	color: #777;
+}
+
+footer .footer-links a {
+	color: #777;
+	margin: 0 20px;
+}
+
+footer .footer-links a:hover {
+	color: #5dae87;
+}
+
+footer .footer-links a:first-of-type {
+	margin: 0 20px 0 0;
+}
+
+footer .footer-right a.social {
+	display: inline-block;
+	width: 44px;
+	height: 44px;
+	background: no-repeat center;
+	text-indent: -4999px;
+	overflow: hidden;
+	text-align: left;
+	background-color: #363636;
+	border-radius: 999px;
+	margin-left: 10px;
+}
+
+footer .footer-right a.social:hover {
+	background-color: #5dae87;
+}
+
+footer a.social.github {
+	background-image: url(../styles/github.png);
+}
+footer a.social.nankai {
+	background-image: url(../styles/nk.png);
+}
+footer a.social.nkcs {
+	background-image: url(../styles/nkcs.png);
+}
+
+@media only screen and (max-width: 960px) {
+	footer {
+		padding: 30px 0;
+	}
+	footer .footer-left, footer .footer-right, footer a.logo {
+		float: none;
+		text-align: center;
+		margin: 0 auto;
+	}
+	footer .footer-left {
+		margin-bottom: 20px;
+	}
+	footer a.logo {
+		 margin: 10px auto 40px auto;
+	}
+	footer .footer-links a {
+		margin: 0 5px!important;
+		font-size: 14px;
+	}
+}
