@@ -323,21 +323,27 @@ header#top nav ul li a.nav-cta {
 ul.services-list {
 	width: 90%;
 	margin: 100px auto 60px;
+	display: flex; /* 使用 flex 布局 */
+	flex-wrap: wrap; /* 支持多行 */
+	justify-content: space-between;
+	padding: 0;
 }
 
 ul.services-list li {
-	display: inline-block;
-	justify-content: space-between; /* 确保内容在顶部和底部对齐 */
-	float: left;
-	height: 500px; /* 固定高度确保每个列表项高度相同 */
+	display: flex;
+	flex-direction: column; /* 让子元素从上到下排列 */
+	align-items: center;
+	justify-content: space-between; /* 确保内容顶部和底部对齐 */
+	height: 500px; /* 保持固定高度 */
 	width: 30.66%;
 	background: #fff;
-	padding: 60px 0;
-	margin: 0 2%;
+	padding: 60px 20px; /* 增加水平内边距 */
+	margin: 0 2% 40px; /* 增加底部间距 */
+	box-sizing: border-box; /* 包括 padding 和 border */
 }
 
 ul.services-list li:hover {
-	box-shadow: 0px 0px 40px rgba(0,0,0,.1);
+	box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);
 }
 
 ul.services-list li .image-container {
@@ -358,14 +364,18 @@ ul.services-list li .image-container img {
 ul.services-list li p {
 	width: 80%;
 	margin: 20px auto 40px auto;
+	text-align: center; /* 居中段落内容 */
+	flex-grow: 1; /* 占据剩余空间，推开按钮 */
 }
 
 ul.services-list li a {
-	margin-top: auto; /* 将链接推到底部对齐 */
 	font-family: 'Arimo', sans-serif;
 	text-transform: uppercase;
 	font-weight: 700;
 	color: #5dae87;
+	margin-top: auto; /* 确保按钮对齐到底部 */
+	text-align: center;
+	text-decoration: none;
 }
 
 ul.services-list li a:hover {

@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 10 * 1024 * 1024 } // 50 MB
+    limits: { fileSize: 500 * 1024 * 1024 } // 500 MB
 });
 const app = express();
 const port = 3738;
@@ -28,7 +28,9 @@ app.use((req, res, next) => {
 });
 
 app.get('/api/gfaKaleidos', (req, res) => {
+    console.log('852369');
     const uploadPath = req.query.uploadPath;
+    console.log(uploadPath);
     exec('bash algorithm/run.sh '+uploadPath, (error, stdout, stderr) => {
         if (error) {
             console.error(`执行错误: ${error.message}`);

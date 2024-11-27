@@ -1,0 +1,6 @@
+file_size	2.59MB
+#segments	13173
+#links		17772
+#paths		10
+#single_direction_segment			13173
+#bidirectional_direction_segment	0
