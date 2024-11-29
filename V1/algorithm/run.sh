@@ -3,8 +3,8 @@
 INPUT_GFA=$1
 FILENAME=$(basename "$INPUT_GFA" | sed 's/\.[^.]*$//')
 
-mkdir -p "data/$FILENAME/data"
-OUTPUT_PATH="data/$FILENAME/data"
+mkdir -p "data/$FILENAME"
+OUTPUT_PATH="data/$FILENAME"
 
 make  -C ./algorithm clean > build.log 2>&1
 make  -C ./algorithm -j >> build.log 2>&1

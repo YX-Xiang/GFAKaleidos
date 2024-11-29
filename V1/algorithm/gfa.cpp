@@ -38,7 +38,7 @@ void Gfa::gfa2Graph (const std::string& gfaFile, const std::string& outputFolder
     std::vector <std::string> tempLine = std::vector <std::string> ();
     std::vector <std::string> tempPath = std::vector <std::string> ();
     std::vector <std::string> tempWalk = std::vector <std::string> ();
-    std::unordered_map <std::string, long long> segmentID;
+    std::unordered_map <std::string, long long> segmentID = std::unordered_map <std::string, long long> ();
 
     if(!ifs.is_open()) {
         std::cerr << "!!! Error: failed to open " << gfaFile << std::endl;
@@ -61,6 +61,7 @@ void Gfa::gfa2Graph (const std::string& gfaFile, const std::string& outputFolder
             }
 
             segmentID[tokens[1]] = segmentNumber;
+            // std::cout << tokens[1] << "-" << segmentNumber << "\n";
             
             // biedgedGraph加segment型边
             long long rnode = (segmentNumber << 1), lnode = rnode - 1;
@@ -240,11 +241,13 @@ void Gfa::gfa2Graph (const std::string& gfaFile, const std::string& outputFolder
         int length = tokens[6].size();
         for (int i = 0; i < length; i ++) {
             if (tokens[6][i] == '>' || tokens[6][i] == '<') {
-                std::string segmentName;
+                std::string segmentName = std::string();
                 char direction = tokens[6][i];
                 for (int j = i + 1; j < length; j ++) {
                     if (tokens[6][j] == '>' || tokens[6][j] == '<') {
                         i = j - 1;
+                        break;
+                    } else if ((tokens[6][j] < '!' || tokens[6][j] > '~')) {
                         break;
                     }
                     segmentName.push_back(tokens[6][j]);

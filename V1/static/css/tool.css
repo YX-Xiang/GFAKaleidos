@@ -169,6 +169,7 @@ body, html {
     background-color: #f4f4f4;
     box-sizing: border-box;
     overflow-y: auto;
+    overflow-x: visible;
 }
 
 #logo-placeholder {
@@ -249,7 +250,7 @@ td {
 
 th:first-child, 
 td:first-child {
-    width: 230px; /* 固定宽度，可根据需要调整 */
+    width: 240px; /* 固定宽度，可根据需要调整 */
 }
 
 #graphTable th:nth-child(1),
@@ -443,8 +444,7 @@ input[type="file"] {
     -webkit-font-smoothing: antialiased;
 }
 
-#page-tab, #page-tab #page-tab-content, #page-tab .tab-btn,
-#page-tab #page-operation, #page-tab #menu-list, #page-tab #menu-list a {
+#page-tab, #page-tab #page-tab-content, #page-tab .tab-btn{
     height: 30px;
     line-height: 30px;
 }
@@ -460,7 +460,7 @@ input[type="file"] {
 
 #page-tab-content {
     margin-left: 30px;
-    width: 100000px;
+    width:100%;
     overflow: hidden;
     background-color: #fff;
 }
@@ -490,7 +490,7 @@ input[type="file"] {
 }
 
 #page-tab #page-next {
-    right: 30px;
+    right: 0;
     border-left: 1px solid #f1f0f0;
     border-right: 1px solid #f1f0f0;
     background-image: url(../styles/next.png);
