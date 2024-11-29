@@ -1,4 +1,0 @@
-Count	bp		Node		Edge
-1		0		0		3
-2		5		1		3
-3		10		3		1

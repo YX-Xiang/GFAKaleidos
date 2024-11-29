@@ -15,7 +15,7 @@ Coverage::~Coverage() {}
 void Coverage::statCoverage(const DiGraph& diGraph) {
     long long vertexMaxNumber = diGraph.edge.size();
     std::vector <std::set <int> > vertexTravelledPathList = std::vector <std::set <int> > (vertexMaxNumber, std::set <int> ());
-    std::map <std::pair <std::pair <long long, char>, std::pair <long long, char> >, std::set <int> > edgeTravelledPathList;
+    std::map <std::pair <std::pair <long long, char>, std::pair <long long, char> >, std::set <int> > edgeTravelledPathList = std::map <std::pair <std::pair <long long, char>, std::pair <long long, char> >, std::set <int> > ();
 
     int pathCount = path.size();
     for (int pathID = 0; pathID < pathCount; pathID ++) {

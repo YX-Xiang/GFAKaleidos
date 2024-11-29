@@ -27,10 +27,10 @@
             <ul>
                 <li onclick="toggleMenu('menu1', 'icon-toggle1')">
                     <!-- <input type="checkbox" onclick="toggleMenuCheckbox('menu1', this);"> GFA file -->
-                    <div class="checkbox-container">
+                    <div class="checkbox-container" onclick="event.stopPropagation();">
                         <input class="Check" type="checkbox" onclick="toggleMenuCheckbox('menu1', this);">
                         <span>GFA file</span>
-                        <img class="icon" id="icon-toggle1" src="static/styles/add.png" alt="Expand" title="Click to expand" style="width: 14px; height: 14px;">
+                        <img class="icon" id="icon-toggle1" src="static/styles/add.png" alt="Expand" title="Click to expand" style="width: 14px; height: 14px;" onclick="toggleMenu('menu1', 'icon-toggle1'); event.stopPropagation();">
                     </div>
                     <ul id="menu1" onclick="event.stopPropagation();">
                         <li ><input type="checkbox" id = "file_size" onchange="toggleTableRow(this)"> File size </li>
@@ -43,11 +43,11 @@
                 </li>
 
                 <li onclick="toggleMenu('menu2', 'icon-toggle2')">
-                    <div class="checkbox-container">
+                    <div class="checkbox-container" onclick="event.stopPropagation();">
                         <input class="Check" type="checkbox" onclick="toggleMenuCheckbox('menu2', this);">
                         <span>Vertices on the graph</span>
-                        <img class="icon" id="icon-toggle1" src="static/styles/add.png" alt="Expand" title="Click to expand" style="width: 14px; height: 14px;">
-                    </div>
+                        <img class="icon" id="icon-toggle1" src="static/styles/add.png" alt="Expand" title="Click to expand" style="width: 14px; height: 14px;" onclick="toggleMenu('menu2', 'icon-toggle1'); event.stopPropagation();">
+                    </div>                    
                     <ul id="menu2" onclick="event.stopPropagation();">
                         <li ><input type="checkbox" id = "vertices" onchange="toggleTableRow(this)"> The number of vertices </li>
                         <li ><input type="checkbox" id = "total_length" onchange="toggleTableRow(this)"> Total Length</li>
@@ -62,11 +62,11 @@
                 </li>
 
                 <li onclick="toggleMenu('menu3', 'icon-toggle3')">
-                    <div class="checkbox-container">
+                    <div class="checkbox-container" onclick="event.stopPropagation();">
                         <input class="Check" type="checkbox" onclick="toggleMenuCheckbox('menu3', this);">
                         <span>Edges on the graph</span>
-                        <img class="icon" id="icon-toggle1" src="static/styles/add.png" alt="Expand" title="Click to expand" style="width: 14px; height: 14px;">
-                    </div>
+                        <img class="icon" id="icon-toggle1" src="static/styles/add.png" alt="Expand" title="Click to expand" style="width: 14px; height: 14px;" onclick="toggleMenu('menu3', 'icon-toggle1'); event.stopPropagation();">
+                    </div>                    
                     <ul id="menu3" onclick="event.stopPropagation();">
                         <li ><input type="checkbox" id = "edges" onchange="toggleTableRow(this)"> The number of edges</li>
                         <li ><input type="checkbox" id = "loops" onchange="toggleTableRow(this)"> Loops</li>
@@ -77,11 +77,11 @@
                     </ul>
                 </li>
                 <li onclick="toggleMenu('menu4', 'icon-toggle4')">
-                    <div class="checkbox-container">
+                    <div class="checkbox-container" onclick="event.stopPropagation();">
                         <input class="Check" type="checkbox" onclick="toggleMenuCheckbox('menu4', this);">
                         <span>Subgraphs on the graph</span>
-                        <img class="icon" id="icon-toggle1" src="static/styles/add.png" alt="Expand" title="Click to expand" style="width: 14px; height: 14px;">
-                    </div>
+                        <img class="icon" id="icon-toggle1" src="static/styles/add.png" alt="Expand" title="Click to expand" style="width: 14px; height: 14px;" onclick="toggleMenu('menu4', 'icon-toggle1'); event.stopPropagation();">
+                    </div>                    
                     <ul id="menu4" onclick="event.stopPropagation();">
                         <li ><input type="checkbox" id = "cuts" onchange="toggleTableRow(this)"> Cuts</li>
                         <li ><input type="checkbox" id = "connected_components" onchange="toggleTableRow(this)"> Connected Components</li>
@@ -108,12 +108,6 @@
                     <div id="menu-list">                </div>
                 </nav>
                 <button class="tab-btn" id="page-next"></button>
-                <div id="page-operation">
-                    <div id="menu-all">
-                        <ul id="menu-all-ul">
-                        </ul>
-                    </div>
-                </div>
             </div>
             <table id="graphTable">
                 <thead>
@@ -150,9 +144,18 @@
 
                     <tr id = "headRow" style="display:table-row;">
                         <th  style="display:table-cell;"></th>
-                        <th  style="display:table-cell;">Digraph</th>
-                        <th  style="display:table-cell;">BidirectedGraph</th>
-                        <th  style="display:table-cell;">BiedgedGraph</th>
+                        <th style="display:table-cell;">
+                            <img src="static/styles/dig.png" alt="Logo" style="width:16px; height:16px; vertical-align:middle; margin-right:5px;">
+                            Digraph
+                        </th>
+                        <th style="display:table-cell;">
+                            <img src="static/styles/bidig.png" alt="Logo" style="width:16px; height:16px; vertical-align:middle; margin-right:5px;">
+                            BidirectedGraph
+                        </th>
+                        <th style="display:table-cell;">
+                            <img src="static/styles/bieg.png" alt="Logo" style="width:16px; height:16px; vertical-align:middle; margin-right:5px;">
+                            BiedgedGraph
+                        </th>
                         <!-- <th>dibigraph</th> -->
                     </tr>
                     <tr id = "TypeNameRow" style ="display:none">
