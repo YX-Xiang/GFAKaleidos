@@ -8,8 +8,18 @@
 
     <link rel="icon" type="image/x-icon" href= "static/styles/icon.png">
     <link rel="stylesheet" href="static/css/tool.css">
-    <script type="text/javascript" src="static/js/tool.js"></script> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=PT+Serif:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap">
+    <link rel='stylesheet' href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css'>
+    <script src="static/js/tool.js" type="text/javascript"></script> 
     <script src="static/js/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style id="dynamic-styles">
+        
+    </style>
 </head>
 
 <body>
@@ -22,82 +32,182 @@
             </h2>  
             
             <!-- 全选按钮 -->
-            <button class="select-all-btn" onclick="selectAllCheckboxes()">Select All</button>
+            <button class="select-all-btn" style="font-family: 'Ubuntu', sans-serif;" onclick="selectAllCheckboxes()">
+                <i class="fas fa-check-circle"></i> Select All
+            </button>
 
             <ul>
                 <li onclick="toggleMenu('menu1', 'icon-toggle1')">
-                    <!-- <input type="checkbox" onclick="toggleMenuCheckbox('menu1', this);"> GFA file -->
                     <div class="checkbox-container" onclick="event.stopPropagation();">
                         <input class="Check" type="checkbox" onclick="toggleMenuCheckbox('menu1', this);">
-                        <span>GFA file</span>
+                        <span style="font-family: 'PT Serif', serif; font-weight: 700">GFA file</span>
                         <img class="icon" id="icon-toggle1" src="static/styles/add.png" alt="Expand" title="Click to expand" style="width: 14px; height: 14px;" onclick="toggleMenu('menu1', 'icon-toggle1'); event.stopPropagation();">
                     </div>
                     <ul id="menu1" onclick="event.stopPropagation();">
-                        <li ><input type="checkbox" id = "file_size" onchange="toggleTableRow(this)"> File size </li>
-                        <li ><input type="checkbox" id = "segments" onchange="toggleTableRow(this)"> The number of segments </li>
-                        <li ><input type="checkbox" id = "links" onchange="toggleTableRow(this)"> The number of links </li>
-                        <li ><input type="checkbox" id = "paths" onchange="toggleTableRow(this)"> The number of paths </li>
-                        <li ><input type="checkbox" id = "single_direction_segment" onchange="toggleTableRow(this)"> The number of single direction segment </li>
-                        <li ><input type="checkbox" id = "bidirectional_direction_segment" onchange="toggleTableRow(this)"> The number of bidirectional direction segment </li>
+                        <li><input class="Check" type="checkbox" id="file_size" onchange="toggleTableRow(this)"> 
+                            <span style="font-family: 'PT Serif', serif">File size </span>
+                        </li>
+                        <li>
+                            <input class="Check" type="checkbox" id="segments" onchange="toggleTableRow(this)">
+                            <span style="font-family: 'PT Serif', serif;">The number of segments</span>
+                        </li>
+                        <li>
+                            <input class="Check" type="checkbox" id="links" onchange="toggleTableRow(this)">
+                            <span style="font-family: 'PT Serif', serif;">The number of links</span>
+                        </li>
+                        <li>
+                            <input class="Check" type="checkbox" id="paths" onchange="toggleTableRow(this)">
+                            <span style="font-family: 'PT Serif', serif;">The number of paths</span>
+                        </li>
+                        <li>
+                            <input class="Check" type="checkbox" id="single_direction_segment" onchange="toggleTableRow(this)">
+                            <span style="font-family: 'PT Serif', serif;">The number of single direction segment</span>
+                        </li>
+                        <li>
+                            <input class="Check" type="checkbox" id="bidirectional_direction_segment" onchange="toggleTableRow(this)">
+                            <span style="font-family: 'PT Serif', serif;">The number of bidirectional direction segment</span>
+                        </li>
                     </ul>
                 </li>
-
+            
                 <li onclick="toggleMenu('menu2', 'icon-toggle2')">
                     <div class="checkbox-container" onclick="event.stopPropagation();">
                         <input class="Check" type="checkbox" onclick="toggleMenuCheckbox('menu2', this);">
-                        <span>Vertices on the graph</span>
-                        <img class="icon" id="icon-toggle1" src="static/styles/add.png" alt="Expand" title="Click to expand" style="width: 14px; height: 14px;" onclick="toggleMenu('menu2', 'icon-toggle1'); event.stopPropagation();">
+                        <span style="font-family: 'PT Serif', serif; font-weight: 700">Vertices on the graph</span>
+                        <img class="icon" id="icon-toggle2" src="static/styles/add.png" alt="Expand" title="Click to expand" style="width: 14px; height: 14px;" onclick="toggleMenu('menu2', 'icon-toggle2'); event.stopPropagation();">
                     </div>                    
                     <ul id="menu2" onclick="event.stopPropagation();">
-                        <li ><input type="checkbox" id = "vertices" onchange="toggleTableRow(this)"> The number of vertices </li>
-                        <li ><input type="checkbox" id = "total_length" onchange="toggleTableRow(this)"> Total Length</li>
-                        <li ><input type="checkbox" id = "N50" onchange="toggleTableRow(this)"> N50</li>
-                        <li ><input type="checkbox" id = "L50" onchange="toggleTableRow(this)"> L50</li>
-                        <li ><input type="checkbox" id = "U50" onchange="toggleTableRow(this)"> U50</li>
-                        <li ><input type="checkbox" id = "DegreeDistribution" onchange="toggleTableRow(this)"> Degree Distribution</li>
-                        <li ><input type="checkbox" id = "dead_ends" onchange="toggleTableRow(this)"> Dead Ends</li>
-                        <li ><input type="checkbox" id = "start_ends" onchange="toggleTableRow(this)"> Start Ends</li>
-                        <li ><input type="checkbox" id = "Coverage" onchange="toggleTableRow(this)"> Coverage</li>
+                        <li>
+                            <input class="Check" type="checkbox" id="vertices" onchange="toggleTableRow(this)">
+                            <span style="font-family: 'PT Serif', serif;">The number of vertices</span>
+                        </li>
+                        <li>
+                            <input class="Check" type="checkbox" id="total_length" onchange="toggleTableRow(this)">
+                            <span style="font-family: 'PT Serif', serif;">Total length</span>
+                        </li>
+                        <li>
+                            <input class="Check" type="checkbox" id="N50" onchange="toggleTableRow(this)">
+                            <span style="font-family: 'PT Serif', serif;">N50</span>
+                        </li>
+                        <li>
+                            <input class="Check" type="checkbox" id="L50" onchange="toggleTableRow(this)">
+                            <span style="font-family: 'PT Serif', serif;">L50</span>
+                        </li>
+                        <li>
+                            <input class="Check" type="checkbox" id="U50" onchange="toggleTableRow(this)">
+                            <span style="font-family: 'PT Serif', serif;">U50</span>
+                        </li>
+                        <li>
+                            <input class="Check" type="checkbox" id="DegreeDistribution" onchange="toggleTableRow(this)">
+                            <span style="font-family: 'PT Serif', serif;">Degree distribution</span>
+                        </li>
+                        <li>
+                            <input class="Check" type="checkbox" id="dead_ends" onchange="toggleTableRow(this)">
+                            <span style="font-family: 'PT Serif', serif;">Dead ends</span>
+                        </li>
+                        <li>
+                            <input class="Check" type="checkbox" id="start_ends" onchange="toggleTableRow(this)">
+                            <span style="font-family: 'PT Serif', serif;">Start ends</span>
+                        </li>
+                        <li>
+                            <input class="Check" type="checkbox" id="Coverage" onchange="toggleTableRow(this)">
+                            <span style="font-family: 'PT Serif', serif;">Coverage</span>
+                        </li>                        
                     </ul>
                 </li>
-
+            
                 <li onclick="toggleMenu('menu3', 'icon-toggle3')">
                     <div class="checkbox-container" onclick="event.stopPropagation();">
                         <input class="Check" type="checkbox" onclick="toggleMenuCheckbox('menu3', this);">
-                        <span>Edges on the graph</span>
-                        <img class="icon" id="icon-toggle1" src="static/styles/add.png" alt="Expand" title="Click to expand" style="width: 14px; height: 14px;" onclick="toggleMenu('menu3', 'icon-toggle1'); event.stopPropagation();">
+                        <span style="font-family: 'PT Serif', serif; font-weight: 700">Edges on the graph</span>
+                        <img class="icon" id="icon-toggle3" src="static/styles/add.png" alt="Expand" title="Click to expand" style="width: 14px; height: 14px;" onclick="toggleMenu('menu3', 'icon-toggle3'); event.stopPropagation();">
                     </div>                    
                     <ul id="menu3" onclick="event.stopPropagation();">
-                        <li ><input type="checkbox" id = "edges" onchange="toggleTableRow(this)"> The number of edges</li>
-                        <li ><input type="checkbox" id = "loops" onchange="toggleTableRow(this)"> Loops</li>
-                        <li ><input type="checkbox" id = "LoopLength" onchange="toggleTableRow(this)"> Loop Length</li>
-                        <li ><input type="checkbox" id = "cycles" onchange="toggleTableRow(this)"> Cycles</li>
-                        <li ><input type="checkbox" id = "minimum_weight_cycle_without_loop" onchange="toggleTableRow(this)"> Minimum Weight Cycle</li>
-                        <li ><input type="checkbox" id = "CycleDistribution" onchange="toggleTableRow(this)"> Cycle Distribution</li>
+                        <li>
+                            <input class="Check" type="checkbox" id="edges" onchange="toggleTableRow(this)">
+                            <span style="font-family: 'PT Serif', serif;">The number of edges</span>
+                        </li>
+                        <li>
+                            <input class="Check" type="checkbox" id="loops" onchange="toggleTableRow(this)">
+                            <span style="font-family: 'PT Serif', serif;">Loops</span>
+                        </li>
+                        <li>
+                            <input class="Check" type="checkbox" id="LoopLength" onchange="toggleTableRow(this)">
+                            <span style="font-family: 'PT Serif', serif;">Loop length</span>
+                        </li>
+                        <li>
+                            <input class="Check" type="checkbox" id="cycles" onchange="toggleTableRow(this)">
+                            <span style="font-family: 'PT Serif', serif;">Cycles</span>
+                        </li>
+                        <li>
+                            <input class="Check" type="checkbox" id="minimum_weight_cycle_without_loop" onchange="toggleTableRow(this)">
+                            <span style="font-family: 'PT Serif', serif;">Minimum weight cycle</span>
+                        </li>
+                        <li>
+                            <input class="Check" type="checkbox" id="CycleDistribution" onchange="toggleTableRow(this)">
+                            <span style="font-family: 'PT Serif', serif;">Cycle distribution</span>
+                        </li>                        
                     </ul>
                 </li>
+            
                 <li onclick="toggleMenu('menu4', 'icon-toggle4')">
                     <div class="checkbox-container" onclick="event.stopPropagation();">
                         <input class="Check" type="checkbox" onclick="toggleMenuCheckbox('menu4', this);">
-                        <span>Subgraphs on the graph</span>
-                        <img class="icon" id="icon-toggle1" src="static/styles/add.png" alt="Expand" title="Click to expand" style="width: 14px; height: 14px;" onclick="toggleMenu('menu4', 'icon-toggle1'); event.stopPropagation();">
+                        <span style="font-family: 'PT Serif', serif; font-weight: 700">Subgraphs on the graph</span>
+                        <img class="icon" id="icon-toggle4" src="static/styles/add.png" alt="Expand" title="Click to expand" style="width: 14px; height: 14px;" onclick="toggleMenu('menu4', 'icon-toggle4'); event.stopPropagation();">
                     </div>                    
                     <ul id="menu4" onclick="event.stopPropagation();">
-                        <li ><input type="checkbox" id = "cuts" onchange="toggleTableRow(this)"> Cuts</li>
-                        <li ><input type="checkbox" id = "connected_components" onchange="toggleTableRow(this)"> Connected Components</li>
-                        <li ><input type="checkbox" id = "weak_connected_components" onchange="toggleTableRow(this)"> Weak Connected Components</li>
-                        <li ><input type="checkbox" id = "strongly_connected_components" onchange="toggleTableRow(this)"> Strongly Connected Components</li>
-                        <li ><input type="checkbox" id = "supperbubbles" onchange="toggleTableRow(this)"> Supperbubbles</li>
-                        <li ><input type="checkbox" id = "simple_bubbles" onchange="toggleTableRow(this)"> Simple Bubbles</li>
-                        <li ><input type="checkbox" id = "NestedBubbles" onchange="toggleTableRow(this)"> Nested Bubbles</li>
-                        <li ><input type="checkbox" id = "BubbleChains" onchange="toggleTableRow(this)"> Bubble Chains</li>
-                        <li ><input type="checkbox" id = "sequence_coverage_of_chains" onchange="toggleTableRow(this)"> Sequence_coverage_of_chains</li>
-                        <li ><input type="checkbox" id = "node_coverage_of_chains" onchange="toggleTableRow(this)"> Node coverage of chains</li>
-                        <li ><input type="checkbox" id = "longest_chain_seq_wise" onchange="toggleTableRow(this)"> Longest chain seq wise</li>
-                        <li ><input type="checkbox" id = "longest_chain_bubble_wise" onchange="toggleTableRow(this)"> Longest chain bubble wise</li>
+                        <li>
+                            <input class="Check" type="checkbox" id="cuts" onchange="toggleTableRow(this)">
+                            <span style="font-family: 'PT Serif', serif;">Cuts</span>
+                        </li>
+                        <li>
+                            <input class="Check" type="checkbox" id="connected_components" onchange="toggleTableRow(this)">
+                            <span style="font-family: 'PT Serif', serif;">Connected components</span>
+                        </li>
+                        <li>
+                            <input class="Check" type="checkbox" id="weak_connected_components" onchange="toggleTableRow(this)">
+                            <span style="font-family: 'PT Serif', serif;">Weak connected components</span>
+                        </li>
+                        <li>
+                            <input class="Check" type="checkbox" id="strongly_connected_components" onchange="toggleTableRow(this)">
+                            <span style="font-family: 'PT Serif', serif;">Strongly connected components</span>
+                        </li>
+                        <li>
+                            <input class="Check" type="checkbox" id="supperbubbles" onchange="toggleTableRow(this)">
+                            <span style="font-family: 'PT Serif', serif;">Supperbubbles</span>
+                        </li>
+                        <li>
+                            <input class="Check" type="checkbox" id="simple_bubbles" onchange="toggleTableRow(this)">
+                            <span style="font-family: 'PT Serif', serif;">Simple bubbles</span>
+                        </li>
+                        <li>
+                            <input class="Check" type="checkbox" id="NestedBubbles" onchange="toggleTableRow(this)">
+                            <span style="font-family: 'PT Serif', serif;">Nested bubbles</span>
+                        </li>
+                        <li>
+                            <input class="Check" type="checkbox" id="BubbleChains" onchange="toggleTableRow(this)">
+                            <span style="font-family: 'PT Serif', serif;">Bubble chains</span>
+                        </li>
+                        <li>
+                            <input class="Check" type="checkbox" id="sequence_coverage_of_chains" onchange="toggleTableRow(this)">
+                            <span style="font-family: 'PT Serif', serif;">Sequence coverage of chains</span>
+                        </li>
+                        <li>
+                            <input class="Check" type="checkbox" id="node_coverage_of_chains" onchange="toggleTableRow(this)">
+                            <span style="font-family: 'PT Serif', serif;">Node coverage of chains</span>
+                        </li>
+                        <li>
+                            <input class="Check" type="checkbox" id="longest_chain_seq_wise" onchange="toggleTableRow(this)">
+                            <span style="font-family: 'PT Serif', serif;">Longest chain seq wise</span>
+                        </li>
+                        <li>
+                            <input class="Check" type="checkbox" id="longest_chain_bubble_wise" onchange="toggleTableRow(this)">
+                            <span style="font-family: 'PT Serif', serif;">Longest chain bubble wise</span>
+                        </li>                        
                     </ul>
                 </li>
-            </ul>
+            </ul>            
         </div>
 
         <!-- 中间可变内容区域 -->
@@ -105,40 +215,40 @@
             <div id="page-tab">
                 <button class="tab-btn" id="page-prev"></button>
                 <nav id="page-tab-content">
-                    <div id="menu-list">                </div>
+                    <div id="menu-list"></div>
                 </nav>
                 <button class="tab-btn" id="page-next"></button>
             </div>
             <table id="graphTable">
                 <thead>
                     <tr>
-                        <td  id ="GFARow" style ="text-align: center; background-color: rgba(249,217,234);display:none">GFA</td>
+                        <td id="GFARow" style="text-align: center; background-color: rgba(249,217,234); display:none; font-weight: bold;">GFA</td>
                     </tr>
-                    <tr id = "GFANameRow" style ="display:none" >
+                    <tr id = "GFANameRow" style="display:none; font-family: 'Noto Sans', sans-serif; font-style: italic; font-size: 14px;" >
                         <td></td>
                     </tr>
                     <tr id="file_sizeRow">
-                        <td>File size</td>
+                        <td><span style="font-family: 'PT Serif', serif;">File size</span></td>
                         <td colspan="3" id="mergedCell" style="text-align: center;" style="display: none;" style="visibility: hidden;"></td>
                     </tr>
                     <tr id="segmentsRow">
-                        <td>The number of segments</td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of segments</span></td>
                         <td colspan="3" id="mergedCell" style="text-align: center;" style="display: none;" style="visibility: hidden;"></td>
                     </tr>
                     <tr id="linksRow">
-                        <td>The number of links</td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of links</span></td>
                         <td colspan="3" id="mergedCell" style="text-align: center;" style="display: none;" style="visibility: hidden;"></td>
                     </tr>
                     <tr id="pathsRow">
-                        <td>The number of paths</td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of paths</span></td>
                         <td colspan="3" id="mergedCell" style="text-align: center;" style="display: none;" style="visibility: hidden;"></td>
                     </tr>
                     <tr id="single_direction_segmentRow">
-                        <td>The number of single_direction_segment</td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of single direction segment</span></td>
                         <td colspan="3" id="mergedCell" style="text-align: center;" style="display: none;" style="visibility: hidden;"></td>
                     </tr>
                     <tr id="bidirectional_direction_segmentRow">
-                        <td>The number of bidirectional_direction_segment</td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of bidirectional direction segment</span></td>
                         <td colspan="3" id="mergedCell" style="text-align: center;" style="display: none;" style="visibility: hidden;"></td>
                     </tr>
 
@@ -158,21 +268,21 @@
                         </th>
                         <!-- <th>dibigraph</th> -->
                     </tr>
-                    <tr id = "TypeNameRow" style ="display:none">
+                    <tr id = "TypeNameRow" style ="display:none; font-family: 'Noto Sans', serif; font-style: italic; font-size: 14px;">
                         <td></td>
                     </tr>
                 </thead>
 
                 <tbody>
                     <tr id="verticesRow" style="display: none;" style="visibility: hidden;">
-                        <td>The number of vertices</td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of vertices</span></td>
                         <td data-graph="digraph"  style="display: none;"></td>
                         <td data-graph="bidirectedGraph"  style="display: none;"></td>
                         <td data-graph="biedgedGraph"  style="display: none;"></td>
                         <!-- <td data-graph="dibigraph"></td> -->
                     </tr>
                     <tr id="total_lengthRow" style="display: none;" style="visibility: hidden;">
-                        <td>Total Length</td>
+                        <td><span style="font-family: 'PT Serif', serif;">Total length</span></td>
                         <td data-graph="digraph"  style="display: none;"></td>
                         <td data-graph="bidirectedGraph"  style="display: none;"></td>
                         <td data-graph="biedgedGraph"  style="display: none;"></td>
@@ -180,7 +290,7 @@
                     </tr>
                     
                     <tr id="N50Row" style="display: none;" style="visibility: hidden;">
-                        <td>N50</td>
+                        <td><span style="font-family: 'PT Serif', serif;">N50</span></td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -188,7 +298,7 @@
                     </tr>
                     
                     <tr id="L50Row"  style="display: none;" style="visibility: hidden;">
-                        <td>L50</td>
+                        <td><span style="font-family: 'PT Serif', serif;">L50</span></td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -196,7 +306,7 @@
                     </tr>
                     
                     <tr id="U50Row" style="display: none;" style="visibility: hidden;">
-                        <td>U50</td>
+                        <td><span style="font-family: 'PT Serif', serif;">U50</span></td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -204,7 +314,7 @@
                     </tr>
                     
                     <tr id="DegreeDistributionRow" style="display: none;" style="visibility: hidden;">
-                        <td>Degree Distribution</td>
+                        <td><span style="font-family: 'PT Serif', serif;">Degree distribution</span></td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -215,7 +325,7 @@
                     </tr>
                     
                     <tr id="dead_endsRow" style="display: none;"  style="visibility: hidden;">
-                        <td>The number of DeadEnds</td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of dead ends</span></td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -223,7 +333,7 @@
                     </tr>
     
                     <tr id="start_endsRow" style="display: none;"  style="visibility: hidden;">
-                        <td>The number of StartEnds</td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of start ends</span></td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -233,14 +343,14 @@
                     <tr id="CoverageRow" style="display: none;"  style="visibility: hidden;">
                         <td>Coverage</td>
                         <td data-graph="digraph" style="display: none;"> 
-                            <button onclick="showcoverageGraph('digraph',`../../data/${flag}/data/digraph/coverage.txt`,'bp')">bp</button>
-                            <button onclick="showcoverageGraph('digraph',`../../data/${flag}/data/digraph/coverage.txt`,'Node')">Node</button>
-                            <button onclick="showcoverageGraph('digraph',`../../data/${flag}/data/digraph/coverage.txt`,'Edge')">Edge</button>
+                            <button onclick="showcoverageGraph('digraph',`../../data/${flag}/digraph/coverage.txt`,'bp')">bp</button>
+                            <button onclick="showcoverageGraph('digraph',`../../data/${flag}/digraph/coverage.txt`,'Node')">Node</button>
+                            <button onclick="showcoverageGraph('digraph',`../../data/${flag}/digraph/coverage.txt`,'Edge')">Edge</button>
                         </td>
                         <td data-graph="bidirectedGraph" style="display: none;">
-                            <button onclick="showcoverageGraph('bidirectedGraph',`../../data/${flag}/data/bidirectedGraph/coverage.txt`,'bp')">bp</button>
-                            <button onclick="showcoverageGraph('bidirectedGraph',`../../data/${flag}/data/bidirectedGraph/coverage.txt`,'Node')">Node</button>
-                            <button onclick="showcoverageGraph('bidirectedGraph',`../../data/${flag}/data/bidirectedGraph/coverage.txt`,'Edge')">Edge</button>
+                            <button onclick="showcoverageGraph('bidirectedGraph',`../../data/${flag}/bidirectedGraph/coverage.txt`,'bp')">bp</button>
+                            <button onclick="showcoverageGraph('bidirectedGraph',`../../data/${flag}/bidirectedGraph/coverage.txt`,'Node')">Node</button>
+                            <button onclick="showcoverageGraph('bidirectedGraph',`../../data/${flag}/bidirectedGraph/coverage.txt`,'Edge')">Edge</button>
                         </td>
                         <td data-graph="biedgedGraph" style="display: none;">/</td>
                         <!-- <td data-graph="dibigraph">\</td> -->
@@ -248,7 +358,7 @@
                     
                     
                     <tr id="edgesRow" style="display: none;" style="visibility: hidden;">
-                        <td>The number of edges</td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of edges</span></td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -256,7 +366,7 @@
                     </tr>
                     
                     <tr id="loopsRow" style="display: none;" style="visibility: hidden;">
-                        <td>The number of loops</td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of loops</span></td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -264,7 +374,7 @@
                     </tr>
                 
                     <tr id="LoopLengthRow" style="display: none;" style="visibility: hidden;">
-                        <td>Loop Length</td>
+                        <td><span style="font-family: 'PT Serif', serif;">Loop length</span></td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -272,7 +382,7 @@
                     </tr>
                     
                     <tr id="cyclesRow" style="display: none;" style="visibility: hidden;">
-                        <td>The number of Cycles</td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of cycles</span></td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -280,7 +390,7 @@
                     </tr>
                     
                     <tr id="minimum_weight_cycle_without_loopRow" style="display: none;" style="visibility: hidden;">
-                    <td>Minimum Weight Cycle Without Loop</td>
+                    <td><span style="font-family: 'PT Serif', serif;">Minimum weight cycle</span></td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -288,7 +398,7 @@
                     </tr>
                     
                     <tr id="CycleDistributionRow" style="display: none;" style="visibility: hidden;">
-                        <td>Cycle Distribution</td>
+                        <td><span style="font-family: 'PT Serif', serif;">Cycle distribution</span></td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;">/</td>
                         <td data-graph="biedgedGraph" style="display: none;">/</td>
@@ -297,7 +407,7 @@
                 
                     
                     <tr id="cutsRow" style="display: none;" style="visibility: hidden;">
-                        <td>The number of cuts</td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of cuts</span></td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -305,7 +415,7 @@
                     </tr>
                     
                     <tr id="connected_componentsRow"  style="display: none;" style="visibility: hidden;">
-                        <td>The number of connected_components</td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of connected components</span></td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -313,7 +423,7 @@
                     </tr >
                     
                     <tr id="weak_connected_componentsRow"  style="display: none;" style="visibility: hidden;">
-                        <td>The number of weak_connected_components</td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of weak connected components</span></td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -321,7 +431,7 @@
                     </tr >
                     
                     <tr id="strongly_connected_componentsRow"  style="display: none;" style="visibility: hidden;">
-                        <td>The number of strongly_connected_components</td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of strongly connected components</span></td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -329,7 +439,7 @@
                     </tr >
                     
                     <tr id="supperbubblesRow" style="display: none;" style="visibility: hidden;">
-                        <td>The number of supperbubbles</td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of supperbubbles</span></td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -337,7 +447,7 @@
                     </tr>
                     
                     <tr id="simple_bubblesRow" style="display: none;" style="visibility: hidden;">
-                        <td>The number of simplebubbles</td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of simplebubbles</span></td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -346,7 +456,7 @@
                     
                     
                     <tr id="NestedBubblesRow" style="display: none;" style="visibility: hidden;">
-                        <td>Nested Bubbles Level</td>
+                        <td><span style="font-family: 'PT Serif', serif;">Nested bubbles level</span></td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -354,7 +464,7 @@
                     </tr>
                     
                     <tr id="BubbleChainsRow" style="display: none;" style="visibility: hidden;">
-                        <td>Bubble Chains Distribution</td>
+                        <td><span style="font-family: 'PT Serif', serif;">Bubble chains distribution</span></td>
                         <td data-graph="digraph"  style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -363,7 +473,7 @@
                     
                     
                     <tr id="sequence_coverage_of_chainsRow" style="display: none;" style="visibility: hidden;">
-                        <td>Sequence_coverage_of_chains</td>
+                        <td><span style="font-family: 'PT Serif', serif;">Sequence coverage of chains</span></td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -371,7 +481,7 @@
                     </tr>
                     
                     <tr id="node_coverage_of_chainsRow" style="display: none;" style="visibility: hidden;">
-                        <td>Node_coverage_of_chains</td>
+                        <td><span style="font-family: 'PT Serif', serif;">Node coverage of chains</span></td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -379,7 +489,7 @@
                     </tr>
                     
                     <tr id="longest_chain_seq_wiseRow" style="display: none;" style="visibility: hidden;">
-                        <td>Longest_chain_seq_wise</td>
+                        <td><span style="font-family: 'PT Serif', serif;">Longest chain seq wise</span></td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -387,7 +497,7 @@
                     </tr>
                     
                     <tr id="longest_chain_bubble_wiseRow" style="display: none;" style="visibility: hidden;">
-                    <td>Longest_chain_bubble_wise</td>
+                    <td><span style="font-family: 'PT Serif', serif;">Longest chain bubble wise</span></td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -406,15 +516,21 @@
         <div class="fixed-content">
             <div class="upload-container">
                 <div class="example-buttons">
-                    <button class="example-button" onclick="uploadExampleFile('uploads/01_dm_pggb.gfa')">Example 1</button>
-                    <button class="example-button" onclick="uploadExampleFile('uploads/02_dm_mc.gfa')">Example 2</button>
+                    <button class="example-button" style="font-family: 'Ubuntu', sans-serif; font-size: 13pt;" onclick="uploadExampleFile('uploads/01_dm_pggb.gfa')">Example 1</button>
+                    <button class="example-button" style="font-family: 'Ubuntu', sans-serif; font-size: 13pt;" onclick="uploadExampleFile('uploads/02_dm_mc.gfa')">Example 2</button>
                 </div>
 
                 <input type="file" id="fileInput" accept=".gfa" name="file" required onchange="uploadFile()" style="display: none;">
-                <button class="custom-file-input" onclick="document.getElementById('fileInput').click()">
+                <button class="custom-file-input" style="font-family: 'Ubuntu', sans-serif;" onclick="document.getElementById('fileInput').click()">
                     Upload
                 </button>
                 <div class="file-name" id="fileName"></div>
+            </div>
+            <div class="download-btn" onclick="downloadPage()">
+                <div class="content">
+                  <i class="bx bx-cloud-download"></i>
+                  <span class="button-text">Download</span>
+                </div>
             </div>
             <div id="status"></div>
                 <table id ="custom-table">
@@ -432,13 +548,34 @@
                     </tbody>
                 </table>
                 <div class="example-button2s">
-                    <button onclick="CheckData()" class="example-button2">Create New Page</button>
-                </div>                
+                    <button class="example-button2" style="font-family: 'Ubuntu', sans-serif;" onclick="CheckData()">
+                        Multi-GFA Compare
+                    </button>
+                </div>
             </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
+    <!-- 错误提示弹框 -->
+    <div id="errorModal" class="modal">
+        <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('errorModal')">&times;</span>
+        <h2>Error</h2>
+        <p id="errorMessage">The file upload failed.</p>
+        <button class="retry-btn" onclick="retryUpload()">Retry</button>
+        </div>
+    </div>
+    
+    <!-- 成功提示弹框 -->
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('successModal')">&times;</span>
+        <h2>Success</h2>
+        <p id="successMessage">The file upload was successful!</p>
+        <button class="retry-btn" onclick="closeModal('successModal')">OK</button>
+        </div>
+    </div>
+
 </body>
+
 </html>
 
