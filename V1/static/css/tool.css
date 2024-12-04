@@ -3,6 +3,8 @@ body, html {
     padding: 0;
     height: 100%;
     font-family: Arial, sans-serif;
+    box-sizing: border-box;
+    overflow-x: hidden; /* 防止水平滚动 */
 }
 
 /* 主容器布局 */
@@ -11,7 +13,10 @@ body, html {
     height: 100vh;
 }
 
-/* 侧边栏样式 */
+/* =======================================================
+                     左侧固定内容区域 
+======================================================= */
+
 .sidebar {
     width: 20%;
     background-color: #5dae87;
@@ -99,6 +104,23 @@ body, html {
     text-align: center; /* 文字居中对齐 */
 }
 
+#checkbox-container input[type="checkbox"]:checked {
+    background-color: #ffffff !important; /* 勾选时的背景颜色 */
+}
+
+#checkbox-container input[type="checkbox"]:checked::after {
+    border-color: #2983bb !important;
+}
+
+.Check:checked {
+    background-color: #ffffff !important;  /* 勾选时背景颜色 */
+}
+
+.Check:checked::after {
+    border-color: #2983bb !important; /* 勾选时勾的颜色 */
+}
+
+
 /* 设定按钮样式 */
 .select-all-btn {
     background-color: #80d5d4; /* 按钮背景色 */
@@ -132,7 +154,16 @@ body, html {
     }
 }
 
-/* 中间可变内容区域 */
+
+
+
+
+
+
+
+/* =======================================================
+                    中间可变内容区域 
+======================================================= */
 /* 标签页样式 */
 .tab-bar {
     display: flex;
@@ -169,14 +200,14 @@ body, html {
     background-color: #f4f4f4;
     box-sizing: border-box;
     overflow-y: auto;
-    overflow-x: visible;
+    overflow-x: auto;
 }
 
 #logo-placeholder {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%; /* 占满父容器 */
+    height: 80%; /* 占满父容器 */
     background-color: #f4f4f4; /* 与背景一致 */
 }
 
@@ -210,14 +241,43 @@ body, html {
     color: #fff; /* 表头文字颜色 */
 }
 
-/* 右侧固定内容区域 */
+#GFANameRow td:not(:first-child)::before {
+    content: ""; /* 不需要文本内容，只用伪元素显示图标 */
+    display: inline-block; /* 让伪元素变成块级元素，以便设置宽高 */
+    width: 16px; /* 设置图标宽度 */
+    height: 16px; /* 设置图标高度 */
+    background-image: url('../styles/file.png'); /* 设置图标路径 */
+    background-size: contain; /* 保证图标大小适应 */
+    background-repeat: no-repeat; /* 防止图标重复 */
+    margin-right: 5px; /* 图标和文件名之间的间距 */
+    vertical-align: middle; /* 垂直居中对齐 */
+}
+
+#TypeNameRow td:not(:first-child)::before {
+    content: ""; /* 不需要文本内容，只用伪元素显示图标 */
+    display: inline-block; /* 让伪元素变成块级元素，以便设置宽高 */
+    width: 16px; /* 设置图标宽度 */
+    height: 16px; /* 设置图标高度 */
+    background-image: url('../styles/file.png'); /* 设置图标路径 */
+    background-size: contain; /* 保证图标大小适应 */
+    background-repeat: no-repeat; /* 防止图标重复 */
+    margin-right: 5px; /* 图标和文件名之间的间距 */
+    vertical-align: middle; /* 垂直居中对齐 */
+}
+
+
+/* =======================================================
+                    右侧固定内容区域 
+======================================================= */
+
 .fixed-content {
     width: 20%;
     background-color: #5dae87;
     color: white;
+    height: 100vh; /* 满屏高度 */
     padding: 20px;
     box-sizing: border-box;
-    overflow-y: auto;
+    overflow: hidden; /* 防止溢出 */
     position: relative;
 }
 
@@ -385,8 +445,18 @@ input[type="file"] {
     color: rgb(0, 0, 0);
     border: none;
     border-radius: 5px;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.2);
     cursor: pointer;
     transition: background-color 0.3s;
+}
+
+.custom-file-input:hover {
+    background-color: #93e2e1; /* 鼠标悬停时的背景色 */
+    transform: scale(1.05); /* 增大按钮的大小 */
+}
+
+.custom-file-input:active {
+    transform: scale(0.98); /* 按下按钮时缩小 */
 }
 
 .file-name {
@@ -404,17 +474,60 @@ input[type="file"] {
 }
 
 .example-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #ffffff;
-    color: rgb(0, 0, 0);
+    display: inline-block;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    text-decoration: none;
+    font-family: sans-serif;
+    font-weight: 600;
+    font-size: 2em;
+    padding: 0.75em 1em;
+    color: #2983bb;
+    border: 0.15em solid #2983bb;
+    border-radius: 2em;
+    transition: 4s;
+    width: 130px; /* 固定按钮宽度 */
+    height: 50px; /* 固定按钮高度 */
+    margin-bottom: 15px; /* 增加按钮之间的间距 */
+    cursor: pointer; /* 鼠标悬停时变成手型 */
+}
+
+.example-button:before,
+.example-button:after {
+    content: "";
+    position: absolute;
+    top: -1.5em;
+    z-index: -1;
+    width: 200%;
+    aspect-ratio: 1;
     border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    width: 120px; /* 固定按钮宽度 */
-    height: 40px; /* 固定按钮高度 */
-    margin-bottom: 10px; /* 增加按钮之间的间距 */
+    border-radius: 40%;
+    background-color: rgba(34, 162, 195, 0.25);
+    transition: 4s;
+}
+
+.example-button:before {
+    left: -80%;
+    transform: translate3d(0, 5em, 0) rotate(-340deg);
+}
+
+.example-button:after {
+    right: -80%;
+    transform: translate3d(0, 5em, 0) rotate(390deg);
+}
+
+.example-button:hover,
+.example-button:focus {
+    color: white;
+}
+
+.example-button:hover:before,
+.example-button:hover:after,
+.example-button:focus:before,
+.example-button:focus:after {
+    transform: none;
+    background-color: rgba(34, 162, 195, 0.75);
 }
 
 .example-button2s {
@@ -431,12 +544,93 @@ input[type="file"] {
     color: rgb(0, 0, 0);
     border: none;
     border-radius: 5px;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.2);
     cursor: pointer;
     transition: background-color 0.3s;
     width: 200px; /* 固定按钮宽度 */
     height: 40px; /* 固定按钮高度 */
     margin-bottom: 10px; /* 增加按钮之间的间距 */
 }
+
+.example-button2:hover {
+    background-color: #93e2e1; /* 鼠标悬停时的背景色 */
+    transform: scale(1.05); /* 增大按钮的大小 */
+}
+
+.example-button2:active {
+    transform: scale(0.98); /* 按下按钮时缩小 */
+}
+
+.download-btn {
+    position: absolute;
+    bottom: 20px; /* 距离底部 20px */
+    left: 50%;
+    transform: translateX(-50%);
+    height: 40px;
+    width: 160px;
+    background: #80d5d4;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    overflow: hidden;
+    transform-origin: center; /* 确保从中心缩放 */
+}
+
+.download-btn:hover {
+    background-color: #93e2e1; /* 鼠标悬停时的背景色 */
+    transform: translateX(-50%) scale(1.05);
+}
+
+.download-btn.active{
+    height: 20px;
+    width: 160px;
+}
+.download-btn::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    height: 100%;
+    width: 100%;
+    background: #2983bb;
+    border-radius: 55px;
+    transition: all 6s ease-in-out;
+}
+.download-btn.active::before{
+    animation: layer 6s ease-in-out forwards;
+}
+@keyframes layer {
+    100%{
+        left: 0%;
+    }
+}
+.download-btn .content{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    transition-delay: 0.2s;
+}
+.download-btn.active .content{
+    transform: translateY(60px);
+}
+.download-btn .content i,
+.download-btn .content .button-text {
+    color: #000000;
+    font-size: 20px;
+    font-weight: bold;
+    font-family: 'Ubuntu', sans-serif; /* 添加字体 */
+}
+
+.download-btn .content .button-text {
+    font-size: 16px;
+    margin-left: 8px;
+    font-family: 'Ubuntu', sans-serif; /* 确保字体一致 */
+}
+
 
 #page-tab, #page-tab * {
     margin: 0;
@@ -460,8 +654,7 @@ input[type="file"] {
 
 #page-tab-content {
     margin-left: 30px;
-    width:100%;
-    overflow: hidden;
+    width:98%;
     background-color: #fff;
 }
 
@@ -574,7 +767,6 @@ input[type="file"] {
     z-index: 100;
     min-height: 25px;
     padding: 1px;
-    overflow-y: auto;
     display: none;
     max-height: 380px;
     top: 31px;
@@ -590,7 +782,6 @@ input[type="file"] {
     list-style: none;
     padding: 5px 19px 5px 7px;
     cursor: pointer;
-    overflow: hidden;
     font-size: 12px;
 }
 
@@ -606,7 +797,6 @@ input[type="file"] {
 #page-content {
     width: 100%;
     height: 100%;
-    overflow: hidden;
 }
 
 #page-content .iframe-content {
@@ -643,6 +833,8 @@ input[type="file"] {
     background-color: #ffffff; /* 白色背景 */
     color: #000;
     font-size: 12px; /* 只改当前表格的字体大小 */
+    font-family: 'Noto Sans', sans-serif;  /* 设置字体 */
+    font-style: italic;  /* 设置字体倾斜 */
 }
 #custom-table th:nth-child(2),
 #custom-table td:nth-child(2) {

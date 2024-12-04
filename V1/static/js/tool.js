@@ -120,6 +120,135 @@ function uploadExampleFile(filePath) {
 
 
 
+
+// =======================================================
+//                        文件下载
+// =======================================================
+
+function downloadPage() {
+    const button = document.querySelector(".download-btn");
+    
+    button.addEventListener("click", () => {
+        // 防止多次点击
+        if (button.classList.contains("active")) {
+            return;
+        }
+
+        // 激活动画
+        button.classList.add("active");
+
+        // 启动下载进度条动画，模拟下载过程
+        setTimeout(() => {
+            // 模拟进度条动画完成，开始下载
+            startDownload();
+        }, 1000); // 动画时长1秒
+    });
+
+    // 启动页面下载
+    function startDownload() {
+        // 获取页面内容
+        const pageContent = document.documentElement.outerHTML;
+
+        // 定义外部CSS样式
+        const externalCSS = `
+            #graphTable th:nth-child(1),
+            #graphTable td:nth-child(1) {
+                background-color: #ffffff; /* 白色背景 */
+            }
+
+            #graphTable tr:nth-child(odd) td:nth-child(1) {
+                background-color: rgba(209, 208, 207, 0.3);
+            }
+
+            #graphTable thead th:nth-child(2) {
+                background-color: rgba(229, 19, 0, 0.2); /* 红色背景 */
+            }
+
+            #graphTable tr:nth-child(odd) td:nth-child(2) {
+                background-color: rgba(229, 19, 0, 0.3);
+            }
+
+            #graphTable tr:nth-child(even) td:nth-child(2) {
+                background-color: rgba(229, 19, 0, 0.2);
+            }
+
+            #graphTable th:nth-child(3),
+            #graphTable td:nth-child(3) {
+                background-color: rgba(240, 150, 9, 0.2); /* 橙色背景 */
+            }
+
+            #graphTable tr:nth-child(odd) td:nth-child(3) {
+                background-color: rgba(240, 150, 9, 0.3);
+            }
+
+            #graphTable tr:nth-child(even) td:nth-child(3) {
+                background-color: rgba(240, 150, 9, 0.2);
+            }
+
+            #graphTable th:nth-child(4),
+            #graphTable td:nth-child(4) {
+                background-color: rgba(27, 161, 226, 0.3); /* 蓝色背景 */
+            }
+
+            #graphTable tr:nth-child(odd) td:nth-child(4) {
+                background-color: rgba(27, 161, 226, 0.3);
+            }
+
+            #graphTable tr:nth-child(even) td:nth-child(4) {
+                background-color: rgba(27, 161, 226, 0.2);
+            }
+
+            #graphTable tr:nth-child(odd) #mergedCell {
+                background-color: rgba(249,217,234);
+            }
+
+            #graphTable tr:nth-child(even) #mergedCell {
+                background-color: #ffffff;
+            }
+
+            tr:hover {
+                background-color: #f3f2f2; /* 悬停背景色 */
+            }
+        `;
+
+        // 将 CSS 动态注入到页面中
+        const styleTag = document.createElement('style');
+        styleTag.type = 'text/css';
+        styleTag.innerHTML = externalCSS;
+        document.head.appendChild(styleTag);
+
+        // 创建 Blob 对象，包含页面内容
+        const blob = new Blob([document.documentElement.outerHTML], { type: 'text/html' });
+
+        // 创建下载链接并触发下载
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'downloaded_page.html';
+        link.click();
+
+        // 下载完成后修改按钮状态
+        setTimeout(() => {
+            // 修改图标和按钮文字
+            button.querySelector("i").classList.replace("bx-cloud-download", "bx-check-circle");
+            button.querySelector("span").innerText = "Completed";
+            button.classList.remove("active"); // 移除动画
+            
+            // 恢复按钮状态为“Download”
+            setTimeout(() => {
+                button.querySelector("i").classList.replace("bx-check-circle", "bx-cloud-download");
+                button.querySelector("span").innerText = "Download";
+            }, 2000); // 设置2秒延迟来恢复按钮文本和图标
+        }, 1000); // 1秒后执行下载完成的操作
+    }
+}
+
+
+
+
+  
+
+
+
 // =======================================================
 //                  绘制左侧栏复选框
 // =======================================================
@@ -155,16 +284,21 @@ function toggleMenu(menuId, iconId) {
     var menu = document.getElementById(menuId);
     const icon = document.getElementById(iconId);
 
-    if (menu.style.display === "block") {
-        menu.style.display = "none";
-        icon.src = "static/styles/add.png"; // 更改为收起图标
-        icon.title = "Click to collapse"; // 更新图标标题
-    } else {
+    if (menu.style.display === 'none' || menu.style.display === '') {
         menu.style.display = "block";
         icon.src = "static/styles/reduce.png"; // 更改为展开图标
         icon.title = "Click to expand"; // 更新图标标题
+    } else {
+        menu.style.display = "none";
+        icon.src = "static/styles/add.png"; // 更改为收起图标
+        icon.title = "Click to collapse"; // 更新图标标题
     }
 }
+
+// 默认展开菜单
+document.addEventListener('DOMContentLoaded', function() {
+    toggleMenu('menu1', 'icon-toggle1'); // 调用 toggleMenu 以展开菜单
+});
 
 // 复选框全选按钮
 function selectAllCheckboxes() {
@@ -555,6 +689,19 @@ function toggleTableRow(checkbox) {
             } else if(rowId =='BubbleChains'){
                 BubbleChainsFunction();
             } else if(rowId =='Coverage'){
+                const digraph = row.querySelector('[data-graph="digraph"]');
+                digraph.innerHTML = `
+                <button onclick="showcoverageGraph('digraph','../../data/${flag}/digraph/coverage.txt','bp')">bp</button>
+                <button onclick="showcoverageGraph('digraph','../../data/${flag}/digraph/coverage.txt','Node')">Node</button>
+                <button onclick="showcoverageGraph('digraph','../../data/${flag}/digraph/coverage.txt','Edge')">Edge</button>
+            `;
+                const bidirectedGraph = row.querySelector('[data-graph="bidirectedGraph"]');
+                bidirectedGraph.innerHTML = `
+                <button onclick="showcoverageGraph('bidirectedGraph','../../data/${flag}/bidirectedGraph/coverage.txt','bp')">bp</button>
+                <button onclick="showcoverageGraph('bidirectedGraph','../../data/${flag}/bidirectedGraph/coverage.txt','Node')">Node</button>
+                <button onclick="showcoverageGraph('bidirectedGraph','../../data/${flag}/bidirectedGraph/coverage.txt','Edge')">Edge</button>
+            `;
+                
                 return ;
             } else{
                 row.querySelectorAll('td').forEach((cell, index) => {
@@ -1760,6 +1907,7 @@ function loopFunction(){
 //                    单GFA文件表格图像绘制
 // =======================================================
 function showcoverageGraph(graph,filepath,type){
+    // console.log(123456);
     return fetch(filepath)
     .then(response => {
             if (!response.ok) {
@@ -1799,6 +1947,7 @@ function showcoverageGraph(graph,filepath,type){
                 if(line.includes('Count')){
                     return;
                 }
+                // console.log(line);
                 let parts = line.trim().split(/\s+/); // 使用正则表达式来拆分每行的数字
                 let Count= parseInt(parts[0], 10);
                 let bp= parseInt(parts[1], 10);
@@ -1824,6 +1973,7 @@ function showcoverageGraph(graph,filepath,type){
             else if(type === 'Edge'){
                 formattedData = edgedata.map(item => ({ x: item[0], y: item[1] }));
             }
+            // console.log(formattedData);
             var ctx = document.getElementById('coverageCanvas'+graph).getContext('2d');  
             var coverageCanvas = new Chart(ctx, {
             type: 'bar',
@@ -2275,3 +2425,4 @@ function appenddegree2(type,index,filePath){
         })
         .catch(error => console.error(`Error loading data from ${filePath}:`, error));
 }
+
