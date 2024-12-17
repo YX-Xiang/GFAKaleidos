@@ -157,6 +157,42 @@ body, html {
 
 
 
+/* =======================================================
+                    表格样式
+======================================================= */
+
+table {
+    width: 100%;
+    border-collapse: collapse; /* 合并边框 */
+    margin: 20px auto; /* 居中显示 */
+    font-family: Arial, sans-serif; /* 字体样式 */
+    table-layout: fixed; 
+   
+}
+
+th {
+    background-color: #555; /* 背景色 */
+    border: 1px solid #ddd; /* 边框 */
+    color: rgb(0, 0, 0); /* 文字颜色 */
+    padding: 10px; /* 内边距 */
+    text-align: center; /* 居中对齐 */
+}
+
+td {
+    border: 1px solid #ddd; /* 边框 */
+    padding: 10px; /* 内边距 */
+    text-align: center; /* 居中对齐 */
+}
+
+th:first-child, 
+td:first-child {
+    /* 固定宽度，可根据需要调整 */
+    white-space: nowrap;
+}
+
+tr:hover {
+    background-color: #f3f2f2; /* 悬停背景色 */
+}
 
 
 
@@ -199,8 +235,7 @@ body, html {
     padding: 20px;
     background-color: #f4f4f4;
     box-sizing: border-box;
-    overflow-y: auto;
-    overflow-x: auto;
+     /* 启用水平滚动 */
 }
 
 #logo-placeholder {
@@ -217,105 +252,23 @@ body, html {
     opacity: 0.3; /* 半透明效果（可选） */
 }
 
-#gfa-info {
-    margin-bottom: 20px; /* 与表格之间的间距 */
-    text-align: center; /* 内容居中 */
-}
-
-#gfa-info table {
-    width: 100%; /* 占满表格宽度 */
-    border-collapse: collapse; /* 去除单元格之间的间隙 */
-    margin: 0 auto; /* 居中显示 */
-    font-family: Arial, sans-serif;
-}
-
-#gfa-info th,
-#gfa-info td {
-    border: 1px solid #ddd; /* 边框 */
-    padding: 10px; /* 内边距 */
-    text-align: center; /* 内容居中 */
-}
-
-#gfa-info th {
-    background-color: #555; /* 表头背景色 */
-    color: #fff; /* 表头文字颜色 */
-}
-
-#GFANameRow td:not(:first-child)::before {
-    content: ""; /* 不需要文本内容，只用伪元素显示图标 */
-    display: inline-block; /* 让伪元素变成块级元素，以便设置宽高 */
-    width: 16px; /* 设置图标宽度 */
-    height: 16px; /* 设置图标高度 */
-    background-image: url('../styles/file.png'); /* 设置图标路径 */
-    background-size: contain; /* 保证图标大小适应 */
-    background-repeat: no-repeat; /* 防止图标重复 */
-    margin-right: 5px; /* 图标和文件名之间的间距 */
-    vertical-align: middle; /* 垂直居中对齐 */
-}
-
-#TypeNameRow td:not(:first-child)::before {
-    content: ""; /* 不需要文本内容，只用伪元素显示图标 */
-    display: inline-block; /* 让伪元素变成块级元素，以便设置宽高 */
-    width: 16px; /* 设置图标宽度 */
-    height: 16px; /* 设置图标高度 */
-    background-image: url('../styles/file.png'); /* 设置图标路径 */
-    background-size: contain; /* 保证图标大小适应 */
-    background-repeat: no-repeat; /* 防止图标重复 */
-    margin-right: 5px; /* 图标和文件名之间的间距 */
-    vertical-align: middle; /* 垂直居中对齐 */
-}
 
 
-/* =======================================================
-                    右侧固定内容区域 
-======================================================= */
 
-.fixed-content {
-    width: 20%;
-    background-color: #5dae87;
-    color: white;
-    height: 100vh; /* 满屏高度 */
-    padding: 20px;
-    box-sizing: border-box;
-    overflow: hidden; /* 防止溢出 */
-    position: relative;
-}
-
-.fixed-content h2 {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-/* 表格样式 */
-table {
+#graphTable {
+    table-layout: fixed;
     width: 100%;
-    border-collapse: collapse; /* 合并边框 */
-    margin: 20px auto; /* 居中显示 */
-    font-family: Arial, sans-serif; /* 字体样式 */
-}
-
-th {
-    background-color: #555; /* 背景色 */
-    border: 1px solid #ddd; /* 边框 */
-    color: rgb(0, 0, 0); /* 文字颜色 */
-    padding: 10px; /* 内边距 */
-    text-align: center; /* 居中对齐 */
-}
-
-td {
-    border: 1px solid #ddd; /* 边框 */
-    padding: 10px; /* 内边距 */
-    text-align: center; /* 居中对齐 */
-}
-
-th:first-child, 
-td:first-child {
-    width: 240px; /* 固定宽度，可根据需要调整 */
+    height: auto;
+    width: auto; 
 }
 
 #graphTable th:nth-child(1),
 #graphTable td:nth-child(1) {
+    
     background-color: #ffffff; /* 白色背景 */
+    width:230px; /* 固定宽度，可根据需要调整 */
+    white-space: nowrap;
+    max-width: 100%; 
 }
 
 #graphTable tr:nth-child(odd) td:nth-child(1) {
@@ -370,8 +323,27 @@ td:first-child {
 }
 
 
-tr:hover {
-    background-color: #f3f2f2; /* 悬停背景色 */
+
+
+
+/* =======================================================
+                    右侧固定内容区域 
+======================================================= */
+
+.fixed-content {
+    width: 20%;
+    background-color: #5dae87;
+    color: white;
+    height: 100vh; /* 满屏高度 */
+    padding: 20px;
+    box-sizing: border-box;
+    overflow: hidden; /* 防止溢出 */
+    position: relative;
+}
+
+.fixed-content h2 {
+    text-align: center;
+    margin-bottom: 20px;
 }
 
 /* 复选框样式 */
@@ -676,7 +648,7 @@ input[type="file"] {
 #page-tab #page-prev {
     left: 0;
     border-right: 1px solid #f1f0f0;
-    background-image: url(../styles/prev.png);
+    /* background-image: url(../styles/prev.png); */
     background-position: 5px 50%;
     background-size: 20px;
     background-repeat: no-repeat;
@@ -686,7 +658,7 @@ input[type="file"] {
     right: 0;
     border-left: 1px solid #f1f0f0;
     border-right: 1px solid #f1f0f0;
-    background-image: url(../styles/next.png);
+    /* background-image: url(../styles/next.png); */
     background-position: 5px 50%;
     background-size: 20px;
     background-repeat: no-repeat;
@@ -741,18 +713,6 @@ input[type="file"] {
 
 #page-tab #menu-list a.active:hover {
     color: #000000;
-}
-
-#page-tab .menu-close {
-    width: 15px;
-    height: 15px;
-    display: inline-block;
-    background-image: url(../styles/closehover.png);
-    background-size: 15px;
-    background-repeat: no-repeat;
-    vertical-align: middle;
-    margin-left: 5px;
-    margin-top: -2px;
 }
 
 #page-tab .menu-close:hover {

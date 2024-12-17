@@ -32,6 +32,7 @@ app.get('/api/gfaKaleidos', (req, res) => {
     const uploadPath = req.query.uploadPath;
     console.log(uploadPath);
     exec('bash algorithm/run.sh '+uploadPath, (error, stdout, stderr) => {
+    // exec('python3 connect.py '+uploadPath, (error, stdout, stderr) => {
         if (error) {
             console.error(`执行错误: ${error.message}`);
             return res.status(500).send('命令执行失败');

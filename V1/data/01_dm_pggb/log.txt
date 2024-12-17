@@ -1,0 +1,24 @@
++++ Load gfa file from /home/yxxiang/data/gfaGlimpse/benchmark/data/01_dm_pggb.gfa
++++ Loading complete! The gfa file has 13290 segments (13290 unidirectional segments and 0 bidirectional segments) and 18076 links, with a total size of 2.40 MB. +++
++++ Growth calculation successful.
+
+--- The node size of the digraph has been successfully exported to the file: /home/yxxiang/data/GFAKaleidos/result/01_dm_pggb/digraph/vertexval.txt
+--- The distribution of in-degree in the digraph has been successfully exported to the file: /home/yxxiang/data/GFAKaleidos/result/01_dm_pggb/digraph/inDegree.txt
+--- The distribution of out-degree in the digraph has been successfully exported to the file: /home/yxxiang/data/GFAKaleidos/result/01_dm_pggb/digraph/outDegree.txt
+--- The coverage of the digraph has been successfully exported to the file: /home/yxxiang/data/GFAKaleidos/result/01_dm_pggb/digraph/coverage.txt
+--- The 0 loop(s) in the digraph has been successfully exported to the file: /home/yxxiang/data/GFAKaleidos/result/01_dm_pggb/digraph/loop.txt
+--- The 91 cycle(s) (including 0 loop(s)) in the digraph has been successfully exported to the file: /home/yxxiang/data/GFAKaleidos/result/01_dm_pggb/digraph/cycle.txt
++++ The statistics on the digraph are complete.
+
+--- The node size of the bidirected graph has been successfully exported to the file: /home/yxxiang/data/GFAKaleidos/result/01_dm_pggb/bidirectedGraph/vertexval.txt
+--- The distribution of degree in the bidirected graph has been successfully exported to the file: /home/yxxiang/data/GFAKaleidos/result/01_dm_pggb/bidirectedGraph/degree.txt
+--- The coverage of the bidirected graph has been successfully exported to the file: /home/yxxiang/data/GFAKaleidos/result/01_dm_pggb/bidirectedGraph/coverage.txt
+--- The 0 loop(s) in the bidirected graph has been successfully exported to the file: /home/yxxiang/data/GFAKaleidos/result/01_dm_pggb/bidirectedGraph/loop.txt
+--- The distribution of the nested bubble in the bidirected graph has been successfully exported to the file: /home/yxxiang/data/GFAKaleidos/result/01_dm_pggb/bidirectedGraph/nestedBubblesLevel.txt
+--- The distribution of the bubble chain length in the bidirected graph has been successfully exported to the file: /home/yxxiang/data/GFAKaleidos/result/01_dm_pggb/bidirectedGraph/bubbleChainLength.txt
++++ The statistics on the bidirected graph are complete.
+
+--- The distribution of degree in the biedged graph (only link edges) has been successfully exported to the file: /home/yxxiang/data/GFAKaleidos/result/01_dm_pggb/biedgedGraph/degree.txt
+--- The 0 loop(s) in the biedged graph has been successfully exported to the file: /home/yxxiang/data/GFAKaleidos/result/01_dm_pggb/biedgedGraph/loop.txt
++++ The statistics on the biedged graph are complete.
+

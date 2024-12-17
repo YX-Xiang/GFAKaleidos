@@ -17,6 +17,11 @@
     <script src="static/js/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+     <!-- 引入 html2canvas 库 -->
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+     <!-- 引入 jsPDF 库 -->
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
     <style id="dynamic-styles">
         
     </style>
@@ -33,7 +38,9 @@
             
             <!-- 全选按钮 -->
             <button class="select-all-btn" style="font-family: 'Ubuntu', sans-serif;" onclick="selectAllCheckboxes()">
-                <i class="fas fa-check-circle"></i> Select All
+                <!-- <i class="fas fa-check-circle"></i>  -->
+                <img src="static/styles/check.png" style="width: 16px; height: 16px;vertical-align:middle;">
+                Select All 
             </button>
 
             <ul>
@@ -211,13 +218,17 @@
         </div>
 
         <!-- 中间可变内容区域 -->
-        <div class="main-content" id="main-content">
+        <div class="main-content" id="main-content" style="overflow-y:auto;overflow-x: auto;">
             <div id="page-tab">
-                <button class="tab-btn" id="page-prev"></button>
+                <button class="tab-btn" id="page-prev">
+                    <img src="static/styles/prev.png" style="width: 20px; height: 20px; margin-top: 5px;">
+                </button>
                 <nav id="page-tab-content">
                     <div id="menu-list"></div>
                 </nav>
-                <button class="tab-btn" id="page-next"></button>
+                <button class="tab-btn" id="page-next">
+                    <img src="static/styles/next.png" style="width: 20px; height: 20px; margin-top: 5px;">
+                </button>
             </div>
             <table id="graphTable">
                 <thead>
@@ -228,27 +239,39 @@
                         <td></td>
                     </tr>
                     <tr id="file_sizeRow">
-                        <td><span style="font-family: 'PT Serif', serif;">File size</span></td>
+                        <td><span style="font-family: 'PT Serif', serif;">File size</span>
+                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                        </td>
                         <td colspan="3" id="mergedCell" style="text-align: center;" style="display: none;" style="visibility: hidden;"></td>
                     </tr>
                     <tr id="segmentsRow">
-                        <td><span style="font-family: 'PT Serif', serif;">The number of segments</span></td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of segments</span>
+                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                        </td>
                         <td colspan="3" id="mergedCell" style="text-align: center;" style="display: none;" style="visibility: hidden;"></td>
                     </tr>
                     <tr id="linksRow">
-                        <td><span style="font-family: 'PT Serif', serif;">The number of links</span></td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of links</span>
+                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                        </td>
                         <td colspan="3" id="mergedCell" style="text-align: center;" style="display: none;" style="visibility: hidden;"></td>
                     </tr>
                     <tr id="pathsRow">
-                        <td><span style="font-family: 'PT Serif', serif;">The number of paths</span></td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of paths</span>
+                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                        </td>
                         <td colspan="3" id="mergedCell" style="text-align: center;" style="display: none;" style="visibility: hidden;"></td>
                     </tr>
                     <tr id="single_direction_segmentRow">
-                        <td><span style="font-family: 'PT Serif', serif;">The number of single direction segment</span></td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of single direction segment</span>
+                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                        </td>
                         <td colspan="3" id="mergedCell" style="text-align: center;" style="display: none;" style="visibility: hidden;"></td>
                     </tr>
                     <tr id="bidirectional_direction_segmentRow">
-                        <td><span style="font-family: 'PT Serif', serif;">The number of bidirectional direction segment</span></td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of bidirectional direction segment</span>
+                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                        </td>
                         <td colspan="3" id="mergedCell" style="text-align: center;" style="display: none;" style="visibility: hidden;"></td>
                     </tr>
 
@@ -275,14 +298,18 @@
 
                 <tbody>
                     <tr id="verticesRow" style="display: none;" style="visibility: hidden;">
-                        <td><span style="font-family: 'PT Serif', serif;">The number of vertices</span></td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of vertices</span>
+                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                        </td>
                         <td data-graph="digraph"  style="display: none;"></td>
                         <td data-graph="bidirectedGraph"  style="display: none;"></td>
                         <td data-graph="biedgedGraph"  style="display: none;"></td>
                         <!-- <td data-graph="dibigraph"></td> -->
                     </tr>
                     <tr id="total_lengthRow" style="display: none;" style="visibility: hidden;">
-                        <td><span style="font-family: 'PT Serif', serif;">Total length</span></td>
+                        <td><span style="font-family: 'PT Serif', serif;">Total length</span>
+                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                        </td>
                         <td data-graph="digraph"  style="display: none;"></td>
                         <td data-graph="bidirectedGraph"  style="display: none;"></td>
                         <td data-graph="biedgedGraph"  style="display: none;"></td>
@@ -290,7 +317,9 @@
                     </tr>
                     
                     <tr id="N50Row" style="display: none;" style="visibility: hidden;">
-                        <td><span style="font-family: 'PT Serif', serif;">N50</span></td>
+                        <td><span style="font-family: 'PT Serif', serif;">N50</span>
+                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                        </td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -298,7 +327,9 @@
                     </tr>
                     
                     <tr id="L50Row"  style="display: none;" style="visibility: hidden;">
-                        <td><span style="font-family: 'PT Serif', serif;">L50</span></td>
+                        <td><span style="font-family: 'PT Serif', serif;">L50</span>
+                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                        </td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -306,7 +337,9 @@
                     </tr>
                     
                     <tr id="U50Row" style="display: none;" style="visibility: hidden;">
-                        <td><span style="font-family: 'PT Serif', serif;">U50</span></td>
+                        <td><span style="font-family: 'PT Serif', serif;">U50</span>
+                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                        </td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -314,7 +347,9 @@
                     </tr>
                     
                     <tr id="DegreeDistributionRow" style="display: none;" style="visibility: hidden;">
-                        <td><span style="font-family: 'PT Serif', serif;">Degree distribution</span></td>
+                        <td><span style="font-family: 'PT Serif', serif;">Degree distribution</span>
+                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                        </td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -325,7 +360,9 @@
                     </tr>
                     
                     <tr id="dead_endsRow" style="display: none;"  style="visibility: hidden;">
-                        <td><span style="font-family: 'PT Serif', serif;">The number of dead ends</span></td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of dead ends</span>
+                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                        </td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -333,7 +370,9 @@
                     </tr>
     
                     <tr id="start_endsRow" style="display: none;"  style="visibility: hidden;">
-                        <td><span style="font-family: 'PT Serif', serif;">The number of start ends</span></td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of start ends</span>
+                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                        </td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -341,16 +380,20 @@
                     </tr>
                 
                     <tr id="CoverageRow" style="display: none;"  style="visibility: hidden;">
-                        <td>Coverage</td>
+                        <td><span style="font-family: 'PT Serif', serif;"> Coverage</span>
+                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                        </td>
                         <td data-graph="digraph" style="display: none;"> 
-                            <button onclick="showcoverageGraph('digraph',`../../data/${flag}/digraph/coverage.txt`,'bp')">bp</button>
-                            <button onclick="showcoverageGraph('digraph',`../../data/${flag}/digraph/coverage.txt`,'Node')">Node</button>
-                            <button onclick="showcoverageGraph('digraph',`../../data/${flag}/digraph/coverage.txt`,'Edge')">Edge</button>
+                            <button onclick="showcoverageGraph('digraph','bp')">bp</button>
+                            <button onclick="showcoverageGraph('digraph','Node')">Node</button>
+                            <button onclick="showcoverageGraph('digraph','Edge')">Edge</button>
+                            
                         </td>
                         <td data-graph="bidirectedGraph" style="display: none;">
-                            <button onclick="showcoverageGraph('bidirectedGraph',`../../data/${flag}/bidirectedGraph/coverage.txt`,'bp')">bp</button>
-                            <button onclick="showcoverageGraph('bidirectedGraph',`../../data/${flag}/bidirectedGraph/coverage.txt`,'Node')">Node</button>
-                            <button onclick="showcoverageGraph('bidirectedGraph',`../../data/${flag}/bidirectedGraph/coverage.txt`,'Edge')">Edge</button>
+                            <button onclick="showcoverageGraph('bidirectedGraph','bp')">bp</button>
+                            <button onclick="showcoverageGraph('bidirectedGraph','Node')">Node</button>
+                            <button onclick="showcoverageGraph('bidirectedGraph','Edge')">Edge</button>
+                           
                         </td>
                         <td data-graph="biedgedGraph" style="display: none;">/</td>
                         <!-- <td data-graph="dibigraph">\</td> -->
@@ -358,7 +401,9 @@
                     
                     
                     <tr id="edgesRow" style="display: none;" style="visibility: hidden;">
-                        <td><span style="font-family: 'PT Serif', serif;">The number of edges</span></td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of edges</span>
+                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                        </td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -366,7 +411,9 @@
                     </tr>
                     
                     <tr id="loopsRow" style="display: none;" style="visibility: hidden;">
-                        <td><span style="font-family: 'PT Serif', serif;">The number of loops</span></td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of loops</span>
+                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                        </td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -374,7 +421,9 @@
                     </tr>
                 
                     <tr id="LoopLengthRow" style="display: none;" style="visibility: hidden;">
-                        <td><span style="font-family: 'PT Serif', serif;">Loop length</span></td>
+                        <td><span style="font-family: 'PT Serif', serif;">Loop length</span>
+                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                        </td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -382,7 +431,9 @@
                     </tr>
                     
                     <tr id="cyclesRow" style="display: none;" style="visibility: hidden;">
-                        <td><span style="font-family: 'PT Serif', serif;">The number of cycles</span></td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of cycles</span>
+                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                        </td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -390,7 +441,9 @@
                     </tr>
                     
                     <tr id="minimum_weight_cycle_without_loopRow" style="display: none;" style="visibility: hidden;">
-                    <td><span style="font-family: 'PT Serif', serif;">Minimum weight cycle</span></td>
+                    <td><span style="font-family: 'PT Serif', serif;">Minimum weight cycle</span>
+                        <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                    </td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -398,7 +451,9 @@
                     </tr>
                     
                     <tr id="CycleDistributionRow" style="display: none;" style="visibility: hidden;">
-                        <td><span style="font-family: 'PT Serif', serif;">Cycle distribution</span></td>
+                        <td><span style="font-family: 'PT Serif', serif;">Cycle distribution</span>
+                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                        </td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;">/</td>
                         <td data-graph="biedgedGraph" style="display: none;">/</td>
@@ -407,7 +462,9 @@
                 
                     
                     <tr id="cutsRow" style="display: none;" style="visibility: hidden;">
-                        <td><span style="font-family: 'PT Serif', serif;">The number of cuts</span></td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of cuts</span>
+                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                        </td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -415,7 +472,9 @@
                     </tr>
                     
                     <tr id="connected_componentsRow"  style="display: none;" style="visibility: hidden;">
-                        <td><span style="font-family: 'PT Serif', serif;">The number of connected components</span></td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of connected components</span>
+                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                        </td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -423,7 +482,9 @@
                     </tr >
                     
                     <tr id="weak_connected_componentsRow"  style="display: none;" style="visibility: hidden;">
-                        <td><span style="font-family: 'PT Serif', serif;">The number of weak connected components</span></td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of weak connected components</span>
+                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                        </td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -431,7 +492,9 @@
                     </tr >
                     
                     <tr id="strongly_connected_componentsRow"  style="display: none;" style="visibility: hidden;">
-                        <td><span style="font-family: 'PT Serif', serif;">The number of strongly connected components</span></td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of strongly connected components</span>
+                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                        </td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -439,7 +502,9 @@
                     </tr >
                     
                     <tr id="supperbubblesRow" style="display: none;" style="visibility: hidden;">
-                        <td><span style="font-family: 'PT Serif', serif;">The number of supperbubbles</span></td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of supperbubbles</span>
+                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                        </td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -447,7 +512,9 @@
                     </tr>
                     
                     <tr id="simple_bubblesRow" style="display: none;" style="visibility: hidden;">
-                        <td><span style="font-family: 'PT Serif', serif;">The number of simplebubbles</span></td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of simplebubbles</span>
+                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                        </td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -456,7 +523,9 @@
                     
                     
                     <tr id="NestedBubblesRow" style="display: none;" style="visibility: hidden;">
-                        <td><span style="font-family: 'PT Serif', serif;">Nested bubbles level</span></td>
+                        <td><span style="font-family: 'PT Serif', serif;">Nested bubbles level</span>
+                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                        </td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -464,7 +533,9 @@
                     </tr>
                     
                     <tr id="BubbleChainsRow" style="display: none;" style="visibility: hidden;">
-                        <td><span style="font-family: 'PT Serif', serif;">Bubble chains distribution</span></td>
+                        <td><span style="font-family: 'PT Serif', serif;">Bubble chains distribution</span>
+                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                        </td>
                         <td data-graph="digraph"  style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -473,7 +544,9 @@
                     
                     
                     <tr id="sequence_coverage_of_chainsRow" style="display: none;" style="visibility: hidden;">
-                        <td><span style="font-family: 'PT Serif', serif;">Sequence coverage of chains</span></td>
+                        <td><span style="font-family: 'PT Serif', serif;">Sequence coverage of chains</span>
+                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                        </td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -481,7 +554,9 @@
                     </tr>
                     
                     <tr id="node_coverage_of_chainsRow" style="display: none;" style="visibility: hidden;">
-                        <td><span style="font-family: 'PT Serif', serif;">Node coverage of chains</span></td>
+                        <td><span style="font-family: 'PT Serif', serif;">Node coverage of chains</span>
+                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                        </td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -489,7 +564,9 @@
                     </tr>
                     
                     <tr id="longest_chain_seq_wiseRow" style="display: none;" style="visibility: hidden;">
-                        <td><span style="font-family: 'PT Serif', serif;">Longest chain seq wise</span></td>
+                        <td><span style="font-family: 'PT Serif', serif;">Longest chain seq wise</span>
+                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                        </td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -497,7 +574,9 @@
                     </tr>
                     
                     <tr id="longest_chain_bubble_wiseRow" style="display: none;" style="visibility: hidden;">
-                    <td><span style="font-family: 'PT Serif', serif;">Longest chain bubble wise</span></td>
+                    <td><span style="font-family: 'PT Serif', serif;">Longest chain bubble wise</span>
+                        <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                    </td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -522,9 +601,22 @@
 
                 <input type="file" id="fileInput" accept=".gfa" name="file" required onchange="uploadFile()" style="display: none;">
                 <button class="custom-file-input" style="font-family: 'Ubuntu', sans-serif;" onclick="document.getElementById('fileInput').click()">
-                    Upload
+                    Upload GFA
                 </button>
+
+                <input type="file" id="zipFile" accept=".zip" required onchange="uploadZip()" style="display: none;">
+                <button class="custom-file-input" style="font-family: 'Ubuntu', sans-serif;" onclick="document.getElementById('zipFile').click()">
+                    Upload Zip
+                </button>
+
                 <div class="file-name" id="fileName"></div>
+                <div class="status" id="status"></div>
+            </div>
+            <div  onclick="downloadZip()">
+                <div class="content">
+                  <i class="bx bx-cloud-download"></i>
+                  <span class="button-text">Download Zip</span>
+                </div>
             </div>
             <div class="download-btn" onclick="downloadPage()">
                 <div class="content">
@@ -555,7 +647,8 @@
             </div>
     </div>
     
-    <!-- 错误提示弹框 -->
+
+    <!-- 错误提示弹框 
     <div id="errorModal" class="modal">
         <div class="modal-content">
         <span class="close-btn" onclick="closeModal('errorModal')">&times;</span>
@@ -565,7 +658,7 @@
         </div>
     </div>
     
-    <!-- 成功提示弹框 -->
+    正确提示弹框
     <div id="successModal" class="modal">
         <div class="modal-content">
         <span class="close-btn" onclick="closeModal('successModal')">&times;</span>
@@ -574,7 +667,7 @@
         <button class="retry-btn" onclick="closeModal('successModal')">OK</button>
         </div>
     </div>
-
+    -->
 </body>
 
 </html>

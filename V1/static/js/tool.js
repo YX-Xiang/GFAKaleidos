@@ -88,6 +88,54 @@ function uploadFile() {
 
 }
 
+function uploadZip() {
+    const fileInput = document.getElementById('zipFile');
+    const status = document.getElementById('status');
+    const file = fileInput.files[0];
+    if (!file) {
+        status.textContent = 'Please select a ZIP file.';
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    // Send file to the server
+    axios.post('/api/uploadZip', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data' // 设置请求头，表明是文件上传
+        }
+    })
+    .then(response => {
+        const data = response.data; // 获取响应数据
+        const fileName = data.fileName;
+        fileUploaded = true;
+        openTab(fileName);
+        // 检查服务器响应中的成功字段
+        if (data.success) {
+            status.textContent = 'Upload successful!';
+
+        } else {
+            status.textContent = `Error: ${data.message || 'Unknown error'}`;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        
+        // 处理错误
+        if (error.response) {
+            // 如果服务器返回了错误响应
+            status.textContent = `Upload failed: ${error.response.data.message || 'Unknown server error'}`;
+        } else if (error.request) {
+            // 如果请求没有收到响应
+            status.textContent = 'Upload failed. No response from server.';
+        } else {
+            // 其他错误
+            status.textContent = 'Upload failed. Please try again.';
+        }
+    });
+}
+
 // 上传样例文件
 function uploadExampleFile(filePath) {
     // 文件未上传时弹出提示
@@ -142,97 +190,38 @@ function downloadPage() {
             // 模拟进度条动画完成，开始下载
             startDownload();
         }, 1000); // 动画时长1秒
+        ShowAllCoverage();
     });
 
     // 启动页面下载
     function startDownload() {
-        // 获取页面内容
-        const pageContent = document.documentElement.outerHTML;
+        middleSection = document.getElementById('main-content');  // 获取中间部分的 DOM 元素
+        middleSection.style.overflowY="";
+        middleSection.style.overflowX="";  // 保存原始高度
+        ShowAllCoverage();
+        const { jsPDF } = window.jspdf;
 
-        // 定义外部CSS样式
-        const externalCSS = `
-            #graphTable th:nth-child(1),
-            #graphTable td:nth-child(1) {
-                background-color: #ffffff; /* 白色背景 */
-            }
+        const doc = new jsPDF({
+            unit: 'px',  // 使用像素单位
+            format: [2800, 5000]  // 使用适当的页面尺寸
+        });
 
-            #graphTable tr:nth-child(odd) td:nth-child(1) {
-                background-color: rgba(209, 208, 207, 0.3);
-            }
-
-            #graphTable thead th:nth-child(2) {
-                background-color: rgba(229, 19, 0, 0.2); /* 红色背景 */
-            }
-
-            #graphTable tr:nth-child(odd) td:nth-child(2) {
-                background-color: rgba(229, 19, 0, 0.3);
-            }
-
-            #graphTable tr:nth-child(even) td:nth-child(2) {
-                background-color: rgba(229, 19, 0, 0.2);
-            }
-
-            #graphTable th:nth-child(3),
-            #graphTable td:nth-child(3) {
-                background-color: rgba(240, 150, 9, 0.2); /* 橙色背景 */
-            }
-
-            #graphTable tr:nth-child(odd) td:nth-child(3) {
-                background-color: rgba(240, 150, 9, 0.3);
-            }
-
-            #graphTable tr:nth-child(even) td:nth-child(3) {
-                background-color: rgba(240, 150, 9, 0.2);
-            }
-
-            #graphTable th:nth-child(4),
-            #graphTable td:nth-child(4) {
-                background-color: rgba(27, 161, 226, 0.3); /* 蓝色背景 */
-            }
-
-            #graphTable tr:nth-child(odd) td:nth-child(4) {
-                background-color: rgba(27, 161, 226, 0.3);
-            }
-
-            #graphTable tr:nth-child(even) td:nth-child(4) {
-                background-color: rgba(27, 161, 226, 0.2);
-            }
-
-            #graphTable tr:nth-child(odd) #mergedCell {
-                background-color: rgba(249,217,234);
-            }
-
-            #graphTable tr:nth-child(even) #mergedCell {
-                background-color: #ffffff;
-            }
-
-            tr:hover {
-                background-color: #f3f2f2; /* 悬停背景色 */
-            }
-        `;
-
-        // 将 CSS 动态注入到页面中
-        const styleTag = document.createElement('style');
-        styleTag.type = 'text/css';
-        styleTag.innerHTML = externalCSS;
-        document.head.appendChild(styleTag);
-
-        // 创建 Blob 对象，包含页面内容
-        const blob = new Blob([document.documentElement.outerHTML], { type: 'text/html' });
-
-        // 创建下载链接并触发下载
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'downloaded_page.html';
-        link.click();
-
+        
+        doc.html(document.body, {
+            callback: function (doc) {
+                doc.save('webpage.pdf');
+                middleSection.style.overflowY="auto";  // 保存原始高度
+                middleSection.style.overflowX="auto"; 
+                NotShowAllCoverage();
+            },
+            autoPaging: true,
+        });
         // 下载完成后修改按钮状态
         setTimeout(() => {
             // 修改图标和按钮文字
             button.querySelector("i").classList.replace("bx-cloud-download", "bx-check-circle");
             button.querySelector("span").innerText = "Completed";
             button.classList.remove("active"); // 移除动画
-            
             // 恢复按钮状态为“Download”
             setTimeout(() => {
                 button.querySelector("i").classList.replace("bx-check-circle", "bx-cloud-download");
@@ -240,12 +229,64 @@ function downloadPage() {
             }, 2000); // 设置2秒延迟来恢复按钮文本和图标
         }, 1000); // 1秒后执行下载完成的操作
     }
+
+}
+function ShowAllCoverage(){
+    const tr = document.getElementById('CoverageRow');
+    var canvases = tr.querySelectorAll('canvas');
+    canvases.forEach(canvas=>{
+        canvas.style.display="";
+    })
+    
 }
 
+function NotShowAllCoverage(){
+    const tr = document.getElementById('CoverageRow');
+    var canvases = tr.querySelectorAll('canvas');
+    canvases.forEach(canvas=>{
+        canvas.style.display="none";
+    })
+}
 
+function downloadZip() {
+    // console.log(754934548);
+    if(flag.includes('+')){
+        return;
+    }
+    axios.get('/api/downloadZip', {
+        params: {
+            flag: flag  // 将文件路径作为查询参数传递
+        }
+    })
+    .then(function (response) {
+        console.log(`./${flag}.zip`);
+        window.location.href = `./${flag}.zip`;
+        console.log('命令执行输出:', response.data);
+        // deleteZip();
+    })
+    .catch(function (error) {
+        // 错误回调
+        console.error('命令执行失败:', error);
+    });
+}
 
+function deleteZip(){
+    axios.get('/api/deleteZip', {
+        params: {
+            flag: flag  // 将文件路径作为查询参数传递
+        }
+    })
+    .then(function (response) {
+        // console.log(`./${flag}.zip`);
+        console.log('命令执行输出:', response.data);
+        
+    })
+    .catch(function (error) {
+        // 错误回调
+        console.error('命令执行失败:', error);
+    });
+}
 
-  
 
 
 
@@ -514,8 +555,9 @@ function openTab(FileName) {
     init();
     var selDom = $("#menu-list a[FileName='" + FileName + "']"); // menu-list是标签栏
     if (selDom.length === 0) { // 如果标签页不存在，则创建新的标签
-        var iel = $("<i>", { // i是关闭的标签
-            "class": "menu-close"
+        var iel = $("<img>", { // i是关闭的标签
+            "src": "static/styles/closehover.png",
+            "style":"width: 15px; height: 15px; vertical-align: middle;margin-left: 5px;"  //标签页的叉
         }).bind("click", closemenu);
         $("<a>", { // a是标签页
             "html": FileName,
@@ -691,16 +733,20 @@ function toggleTableRow(checkbox) {
             } else if(rowId =='Coverage'){
                 const digraph = row.querySelector('[data-graph="digraph"]');
                 digraph.innerHTML = `
-                <button onclick="showcoverageGraph('digraph','../../data/${flag}/digraph/coverage.txt','bp')">bp</button>
-                <button onclick="showcoverageGraph('digraph','../../data/${flag}/digraph/coverage.txt','Node')">Node</button>
-                <button onclick="showcoverageGraph('digraph','../../data/${flag}/digraph/coverage.txt','Edge')">Edge</button>
+                <button onclick="showcoverageGraph('digraph','bp')">bp</button>
+                <button onclick="showcoverageGraph('digraph','Node')">Node</button>
+                <button onclick="showcoverageGraph('digraph','Edge')">Edge</button>
+               
             `;
                 const bidirectedGraph = row.querySelector('[data-graph="bidirectedGraph"]');
                 bidirectedGraph.innerHTML = `
-                <button onclick="showcoverageGraph('bidirectedGraph','../../data/${flag}/bidirectedGraph/coverage.txt','bp')">bp</button>
-                <button onclick="showcoverageGraph('bidirectedGraph','../../data/${flag}/bidirectedGraph/coverage.txt','Node')">Node</button>
-                <button onclick="showcoverageGraph('bidirectedGraph','../../data/${flag}/bidirectedGraph/coverage.txt','Edge')">Edge</button>
+                <button onclick="showcoverageGraph('bidirectedGraph','bp')">bp</button>
+                <button onclick="showcoverageGraph('bidirectedGraph','Node')">Node</button>
+                <button onclick="showcoverageGraph('bidirectedGraph','Edge')">Edge</button>
+                
             `;
+                GetAllCoverage();
+                
                 
                 return ;
             } else{
@@ -846,8 +892,16 @@ function CheckData(){
     for (const key in groupedData) {
         if (groupedData.hasOwnProperty(key)) { // 确保 key 是对象自身的属性
             groupedData[key].forEach(value => {
+                const img = document.createElement('img');
+                // 设置 img 的属性
+                img.src = 'static/styles/file.png'; // 图片的 URL
+                img.width = 16; // 设置图片的宽度
+                img.height = 16; // 设置图片的高度
+                img.style.verticalAlign = "middle";
                 const newtd = document.createElement('td');
-                newtd.textContent = value;
+                newtd.appendChild(img);
+                newtd.appendChild(document.createTextNode(value));
+                
                 if(key =='0'){
                     if(array[1]||array[2]||array[3])
                         newtd.setAttribute('colspan',(array[1]+array[2]+array[3])/array[0]);
@@ -988,23 +1042,112 @@ function CheckData(){
                                     } else if( item.id == 'CoverageRow'){
                                         const td = item.children[position+4];
                                         const button1 =document.createElement('button');
-                                        button1.textContent = 'bp';
-                                        button1.onclick = function(){
-                                            appendcoverageGraph(position+4,`../../data/${value}/digraph/coverage.txt`,'bp');
-                                        }
                                         const button2 =document.createElement('button');
-                                        button2.textContent = 'Node';
-                                        button2.onclick = function(){
-                                            appendcoverageGraph(position+4,`../../data/${value}/digraph/coverage.txt`,'Node');
-                                        }
                                         const button3=document.createElement('button');
+                                        button1.textContent = 'bp';
+                                        button2.textContent = 'Node';
                                         button3.textContent = 'Edge';
+                                        button1.onclick = function(){
+                                            appendcoverageGraph(position+4,'bp');
+                                        }
+                                        button2.onclick = function(){
+                                            appendcoverageGraph(position+4,'Node');
+                                        }
                                         button3.onclick = function(){
-                                            appendcoverageGraph(position+4,`../../data/${value}/digraph/coverage.txt`,'Edge')
+                                            appendcoverageGraph(position+4,'Edge')
                                         }
                                         td.appendChild(button1);
                                         td.appendChild(button2);
                                         td.appendChild(button3);
+                                        const coveragePath = `../../data/${value}/digraph/coverage.txt`;
+                                        const TypeList=['bp','Node','Edge'];
+                                        fetch(coveragePath)
+                                            .then(response => {
+                                                if (!response.ok) {
+                                                    throw new Error(`HTTP error! status: ${response.status}`);
+                                                }
+                                                return response.text();
+                                            })
+                                            .then(data => {
+                                                const div = document.createElement('div');
+                                                div.style.display="margin-top: 10px";
+                                                td.appendChild(div);
+                                                const bpdata =[];
+                                                const nodedata =[];
+                                                const edgedata =[];
+                                                const lines = data.split('\n');
+                                                lines.forEach(line => {
+                                                    if(line.includes('Count')){
+                                                        return;
+                                                    }
+                                                    let parts = line.trim().split(/\s+/); // 使用正则表达式来拆分每行的数字
+                                                    let Count= parseInt(parts[0], 10);
+                                                    let bp= parseInt(parts[1], 10);
+                                                    bp = Number(bp)
+                                                    bp = Math.log2(bp+1);
+                                                    let Node= parseInt(parts[2], 10);
+                                                    Node = Number(Node)
+                                                    Node = Math.log2(Node+1);
+                                                    let Edge= parseInt(parts[3], 10);
+                                                    Edge = Number(Edge)
+                                                    Edge = Math.log2(Edge+1);
+                                                    bpdata.push([Number(Count),Number(bp)]);
+                                                    nodedata.push([Number(Count),Number(Node)]);
+                                                    edgedata.push([Number(Count),Number(Edge)]);
+                                                });
+                                                let formattedData;
+                                                TypeList.forEach(type=>{
+                                                    if(type === 'bp'){
+                                                        formattedData = bpdata.map(item => ({ x: item[0], y: item[1] }));
+                                                    }
+                                                    else if(type === 'Node'){
+                                                        formattedData = nodedata.map(item => ({ x: item[0], y: item[1] }));
+                                                    }
+                                                    else if(type === 'Edge'){
+                                                        formattedData = edgedata.map(item => ({ x: item[0], y: item[1] }));
+                                                    }
+                                                    var canvas = document.createElement('canvas');
+                                                    canvas.id = 'coverageCanvas'+(position+4)+type;
+                                                    canvas.width = 200;  // Set the width of the canvas
+                                                    canvas.height = 150; // Set the height of the canvas
+                                                    div.appendChild(canvas);
+                                                    var ctx = document.getElementById('coverageCanvas'+(position+4)+type).getContext('2d');  
+                                                    var coverageCanvas = new Chart(ctx, {
+                                                        type: 'bar',
+                                                        data: {
+                                                            datasets: [{
+                                                                label:'',
+                                                                data: formattedData,
+                                                                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                                                borderColor: 'rgba(54, 162, 235, 1)',
+                                                                borderWidth: 1
+                                                            }]
+                                                        },
+                                                        options: {
+                                                            scales: {
+                                                                x: {
+                                                                    type:'linear',
+                                                                    position:'bottom',
+                                                                    ticks:{
+                                                                        maxRotation: 0, // 设置为 0 表示水平显示
+                                                                        minRotation: 0, // 防止旋转
+                                                                        stepSize: 2 // 每隔 2 个显示一个标签
+                                                                    }
+                                
+                                                                }
+                                                            },
+                                                            plugins: {
+                                                                legend: {
+                                                                    display: false  // 这会隐藏整个图例（包括任何标签）
+                                                                }
+                                                            },
+                                                            responsive: false,  // 防止图表响应容器尺寸变化
+                                
+                                                        }
+                                                    });
+                                                    canvas.style.display = "none";    
+                                                })
+                                            })
                                     }
                                      else {
                                         const realId = item.id.replace(/Row/g, '');
@@ -1074,26 +1217,115 @@ function CheckData(){
                                         appendBubbleChainsdata(position+4+array[1],`../../data/${value}/bidirectedGraph/bubbleChainLength.txt`);
                                     }
                                     else if(item.id == 'CoverageRow'){
-
                                         const td = item.children[position+4+array[1]];
                                         const button1 =document.createElement('button');
                                         button1.textContent = 'bp';
                                         button1.onclick = function(){
-                                            appendcoverageGraph(position+4+array[1],`../../data/${value}/bidirectedGraph/coverage.txt`,'bp');
+                                            appendcoverageGraph(position+4+array[1],'bp');
                                         }
                                         const button2 =document.createElement('button');
                                         button2.textContent = 'Node';
                                         button2.onclick = function(){
-                                            appendcoverageGraph(position+4+array[1],`../../data/${value}/bidirectedGraph/coverage.txt`,'Node');
+                                            appendcoverageGraph(position+4+array[1],'Node');
                                         }
                                         const button3=document.createElement('button');
                                         button3.textContent = 'Edge';
                                         button3.onclick = function(){
-                                            appendcoverageGraph(position+4+array[1],`../../data/${value}/bidirectedGraph/coverage.txt`,'Edge');
+                                            appendcoverageGraph(position+4+array[1],'Edge');
                                         }
                                         td.appendChild(button1);
                                         td.appendChild(button2);
                                         td.appendChild(button3);
+                                        const coveragePath = `../../data/${value}/bidirectedGraph/coverage.txt`
+                                        const TypeList=['bp','Node','Edge'];
+                                        fetch(coveragePath)
+                                            .then(response => {
+                                                if (!response.ok) {
+                                                    throw new Error(`HTTP error! status: ${response.status}`);
+                                                }
+                                                return response.text();
+                                            })
+                                            .then(data => {
+                                                const div = document.createElement('div');
+                                                div.style.display="margin-top: 10px";
+                                                td.appendChild(div);
+                                                const bpdata =[];
+                                                const nodedata =[];
+                                                const edgedata =[];
+                                                const lines = data.split('\n');
+                                                lines.forEach(line => {
+                                                    if(line.includes('Count')){
+                                                        return;
+                                                    }
+                                                    let parts = line.trim().split(/\s+/); // 使用正则表达式来拆分每行的数字
+                                                    let Count= parseInt(parts[0], 10);
+                                                    let bp= parseInt(parts[1], 10);
+                                                    bp = Number(bp)
+                                                    bp = Math.log2(bp+1);
+                                                    let Node= parseInt(parts[2], 10);
+                                                    Node = Number(Node)
+                                                    Node = Math.log2(Node+1);
+                                                    let Edge= parseInt(parts[3], 10);
+                                                    Edge = Number(Edge)
+                                                    Edge = Math.log2(Edge+1);
+                                                    bpdata.push([Number(Count),Number(bp)]);
+                                                    nodedata.push([Number(Count),Number(Node)]);
+                                                    edgedata.push([Number(Count),Number(Edge)]);
+                                                });
+                                                let formattedData;
+                                                TypeList.forEach(type=>{
+                                                    if(type === 'bp'){
+                                                        formattedData = bpdata.map(item => ({ x: item[0], y: item[1] }));
+                                                    }
+                                                    else if(type === 'Node'){
+                                                        formattedData = nodedata.map(item => ({ x: item[0], y: item[1] }));
+                                                    }
+                                                    else if(type === 'Edge'){
+                                                        formattedData = edgedata.map(item => ({ x: item[0], y: item[1] }));
+                                                    }
+                                                    var canvas = document.createElement('canvas');
+                                                    canvas.id = 'coverageCanvas'+(position+4+array[1])+type;
+                                                    canvas.width = 200;  // Set the width of the canvas
+                                                    canvas.height = 150; // Set the height of the canvas
+                                                    div.appendChild(canvas);
+                                                    var ctx = document.getElementById('coverageCanvas'+(position+4+array[1])+type).getContext('2d');  
+                                                    var coverageCanvas = new Chart(ctx, {
+                                                        type: 'bar',
+                                                        data: {
+                                                            datasets: [{
+                                                                label:'',
+                                                                data: formattedData,
+                                                                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                                                borderColor: 'rgba(54, 162, 235, 1)',
+                                                                borderWidth: 1
+                                                            }]
+                                                        },
+                                                        options: {
+                                                            scales: {
+                                                                x: {
+                                                                    type:'linear',
+                                                                    position:'bottom',
+                                                                    ticks:{
+                                                                        maxRotation: 0, // 设置为 0 表示水平显示
+                                                                        minRotation: 0, // 防止旋转
+                                                                        stepSize: 2 // 每隔 2 个显示一个标签
+                                                                    }
+                                
+                                                                }
+                                                            },
+                                                            plugins: {
+                                                                legend: {
+                                                                    display: false  // 这会隐藏整个图例（包括任何标签）
+                                                                }
+                                                            },
+                                                            responsive: false,  // 防止图表响应容器尺寸变化
+                                
+                                                        }
+                                                    });
+                                                    canvas.style.display = "none";    
+                                                })
+                                            })
+                                        
                                     }
                                     else{
                                         const realId = item.id.replace(/Row/g, '');
@@ -1408,36 +1640,35 @@ function loadloopdata(index,filepath){
             var ctx = document.getElementById(index +'loopCanvas').getContext('2d');  
             var loopCanvas = new Chart(ctx, {
                 type: 'bar',
-            data: {
-                datasets: [{
-                    label:'',
-                    data: formattedData,
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    x: {
-                        type:'linear',
-                        position:'bottom',
-                        ticks:{
-                            maxRotation: 0, // 设置为 0 表示水平显示
-                            minRotation: 0, // 防止旋转
-                            stepSize: 2 // 每隔 2 个显示一个标签
+                data: {
+                    datasets: [{
+                        label: '',
+                        data: formattedData,
+                        backgroundColor: 'rgba(54, 162, 235, 1)', // 不透明蓝色
+                        borderColor: 'rgba(54, 162, 235, 1)', // 同样设置为不透明蓝色
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            position: 'bottom',
+                            ticks: {
+                                maxRotation: 0, // 设置为 0 表示水平显示
+                                minRotation: 0, // 防止旋转
+                                stepSize: 2 // 每隔 2 个显示一个标签
+                            }
                         }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false  // 这会隐藏整个图例（包括任何标签）
-                    }
-                },
-                responsive: false,  // 防止图表响应容器尺寸变化
-
-            }
-        });
+                    },
+                    plugins: {
+                        legend: {
+                            display: false // 隐藏图例
+                        }
+                    },
+                    responsive: false // 防止图表响应容器尺寸变化
+                }
+            });
             return formattedData;
         })
         .catch(error => console.error(`Error loading data from ${filepath}:`, error));
@@ -1906,111 +2137,137 @@ function loopFunction(){
 // =======================================================
 //                    单GFA文件表格图像绘制
 // =======================================================
-function showcoverageGraph(graph,filepath,type){
-    // console.log(123456);
-    return fetch(filepath)
-    .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.text();
-        })
-        .then(data => {
+
+function GetAllCoverage(){
+    const CoveragePath=[`../../data/${flag}/digraph/coverage.txt`,`../../data/${flag}/bidirectedGraph/coverage.txt`];
+    const TypeList=['bp','Node','Edge'];
+    CoveragePath.forEach((path,index)=>{
+        fetch(path)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.text();
+            })
+            .then(data => {
+                const row = document.querySelector(`#CoverageRow`);
+                let td;
+                if (index === 0)
+                {
+                    td = row.querySelector('td:nth-child(2)');
+                }
+                else{
+                    td = row.querySelector('td:nth-child(3)');
+                }
+                // console.log(td);
+                const div = document.createElement('div');
+                div.style.display="margin-top: 10px";
+                div.style.flexDirection = 'column';
+                td.appendChild(div);
+                // console.log(div);
+                const bpdata =[];
+                const nodedata =[];
+                const edgedata =[];
+                const lines = data.split('\n');
+                lines.forEach(line => {
+                    //console.log(line);
+                    if(line.includes('Count')){
+                        return;
+                    }
+                    // console.log(line);
+                    let parts = line.trim().split(/\s+/); // 使用正则表达式来拆分每行的数字
+                    let Count= parseInt(parts[0], 10);
+                    let bp= parseInt(parts[1], 10);
+                    bp = Number(bp)
+                    bp = Math.log2(bp+1);
+                    let Node= parseInt(parts[2], 10);
+                    Node = Number(Node)
+                    Node = Math.log2(Node+1);
+                    let Edge= parseInt(parts[3], 10);
+                    Edge = Number(Edge)
+                    Edge = Math.log2(Edge+1);
+                    bpdata.push([Number(Count),Number(bp)]);
+                    nodedata.push([Number(Count),Number(Node)]);
+                    edgedata.push([Number(Count),Number(Edge)]);
+                });
+                let formattedData;
+                TypeList.forEach(type=>{
+                    if(type === 'bp'){
+                        formattedData = bpdata.map(item => ({ x: item[0], y: item[1] }));
+                    }
+                    else if(type === 'Node'){
+                        formattedData = nodedata.map(item => ({ x: item[0], y: item[1] }));
+                    }
+                    else if(type === 'Edge'){
+                        formattedData = edgedata.map(item => ({ x: item[0], y: item[1] }));
+                    }
+                    var canvas = document.createElement('canvas');
+                    canvas.id = 'coverageCanvas'+index+type;
+                    canvas.width = 200;  // Set the width of the canvas
+                    canvas.height = 150; // Set the height of the canvas
+                    div.appendChild(canvas);
+                    var ctx = document.getElementById('coverageCanvas'+index+type).getContext('2d');  
+                    var coverageCanvas = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            datasets: [{
+                                label:'',
+                                data: formattedData,
+                                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                x: {
+                                    type:'linear',
+                                    position:'bottom',
+                                    ticks:{
+                                        maxRotation: 0, // 设置为 0 表示水平显示
+                                        minRotation: 0, // 防止旋转
+                                        stepSize: 2 // 每隔 2 个显示一个标签
+                                    }
+
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    display: false  // 这会隐藏整个图例（包括任何标签）
+                                }
+                            },
+                            responsive: false,  // 防止图表响应容器尺寸变化
+
+                        }
+                    });
+                    canvas.style.display = "none";
+                })
+                
+            })
+    })
+}
+
+function showcoverageGraph(graph,type){
             const row = document.querySelector(`#CoverageRow`);
             let td;
+            let index;
             if (graph === 'digraph')
             {
                 td = row.querySelector('td:nth-child(2)');
+                index = 0;
             }
             else if(graph === 'bidirectedGraph'){
                 td = row.querySelector('td:nth-child(3)');
+                index = 1;
             }
-            var x =td.getElementsByTagName('canvas');
-            if (x.length)
-                {
-                    Array.from(x).forEach(function(canvas) {
-                    canvas.remove(); // 移除单个 canvas 元素
-                    });
+            var x =td.querySelectorAll('canvas');
+            x.forEach(y=>{
+                y.style.display = 'none';
+                if(y.id == 'coverageCanvas'+index+type){
+                    y.style.display = '';
+                    coverageflag = 1;
                 }
-            var canvas = document.createElement('canvas');
-            canvas.id = 'coverageCanvas'+graph;
-            canvas.width = 200;  // Set the width of the canvas
-            canvas.height = 150; // Set the height of the canvas
-            td.appendChild(canvas);
-
-            const bpdata =[];
-            const nodedata =[];
-            const edgedata =[];
-            const lines = data.split('\n');
-            lines.forEach(line => {
-                //console.log(line);
-                if(line.includes('Count')){
-                    return;
-                }
-                // console.log(line);
-                let parts = line.trim().split(/\s+/); // 使用正则表达式来拆分每行的数字
-                let Count= parseInt(parts[0], 10);
-                let bp= parseInt(parts[1], 10);
-                bp = Number(bp)
-                bp = Math.log2(bp+1);
-                let Node= parseInt(parts[2], 10);
-                Node = Number(Node)
-                Node = Math.log2(Node+1);
-                let Edge= parseInt(parts[3], 10);
-                Edge = Number(Edge)
-                Edge = Math.log2(Edge+1);
-                bpdata.push([Number(Count),Number(bp)]);
-                nodedata.push([Number(Count),Number(Node)]);
-                edgedata.push([Number(Count),Number(Edge)]);
-            });
-            let formattedData;
-            if(type === 'bp'){
-                formattedData = bpdata.map(item => ({ x: item[0], y: item[1] }));
-            }
-            else if(type === 'Node'){
-                formattedData = nodedata.map(item => ({ x: item[0], y: item[1] }));
-            }
-            else if(type === 'Edge'){
-                formattedData = edgedata.map(item => ({ x: item[0], y: item[1] }));
-            }
-            // console.log(formattedData);
-            var ctx = document.getElementById('coverageCanvas'+graph).getContext('2d');  
-            var coverageCanvas = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                datasets: [{
-                    label:'',
-                    data: formattedData,
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    x: {
-                        type:'linear',
-                        position:'bottom',
-                        ticks:{
-                            maxRotation: 0, // 设置为 0 表示水平显示
-                            minRotation: 0, // 防止旋转
-                            stepSize: 2 // 每隔 2 个显示一个标签
-                        }
-
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false  // 这会隐藏整个图例（包括任何标签）
-                    }
-                },
-                responsive: false,  // 防止图表响应容器尺寸变化
-
-            }
-        });
-            return formattedData;
-        })
-        .catch(error => console.error(`Error loading data from ${filepath}:`, error));
+            })
 }
 
 function loaddegree1GraphData(filePath) {
@@ -2028,6 +2285,7 @@ function loaddegree1GraphData(filePath) {
             canvas.id = 'firstdegreeCanvas';
             canvas.width = 200;  // Set the width of the canvas
             canvas.height = 150; // Set the height of the canvas
+            
             td.appendChild(canvas);
 
             const graphdata =[];
@@ -2054,58 +2312,67 @@ function loaddegree1GraphData(filePath) {
             }));
 
             var ctx = document.getElementById('firstdegreeCanvas').getContext('2d');
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
             var firstdegreeCanvas = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                datasets: [{
-                    label:'',
-                    data: formattedData,
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    x: {
-                        type:'linear',
-                        position:'bottom',
-                        ticks:{
-                            maxRotation: 0, // 设置为 0 表示水平显示
-                            minRotation: 0, // 防止旋转
-                            stepSize: 1 // 每隔 1 个显示一个标签
-                        },
-                        title: {
-                            display: true,
-                            text: 'Degree'
-                        },
-                    },
-                    y: {
-                        type: 'linear', // 使用线性刻度显示百分比
-                        min: 0,
-                        max: 1,
-                        title: {
-                            display: true,
-                            text: 'Proportion'
-                        }
-                    },
+                type: 'bar',
+                data: {
+                    datasets: [{
+                        label: '',
+                        data: formattedData,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
                 },
-                plugins: {
-                    legend: {
-                        display: false  // 这会隐藏整个图例（包括任何标签）
+                options: {
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            position: 'bottom',
+                            ticks: {
+                                maxRotation: 0,
+                                minRotation: 0,
+                                stepSize: 1
+                            },
+                            title: {
+                                display: true,
+                                text: 'Degree'
+                            },
+                        },
+                        y: {
+                            type: 'linear',
+                            min: 0,
+                            max: 1,
+                            title: {
+                                display: true,
+                                text: 'Proportion'
+                            }
+                        },
                     },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                const dataPoint = context.raw;
-                                return `Number: ${dataPoint.originalValue}`;
+                    // elements: {
+                    //     rectangle: {
+                    //         backgroundColor: 'white'  // 设置柱状图背景区域的颜色
+                    //     }
+                    // },
+                    plugins: {
+                        legend: {
+                            display: false // 隐藏图例
+                        },
+                        tooltip: {
+
+                            callbacks: {
+                                label: function(context) {
+                                    const dataPoint = context.raw;
+                                    return `Number: ${dataPoint.originalValue}`;
+                                }
                             }
                         }
-                    }
-                },
-                responsive: false  // 防止图表响应容器尺寸变化
-            }
-        });
+                    },
+                    responsive: false // 禁用响应式
+                }
+            });
+            
             return formattedData;
         })
         .catch(error => console.error(`Error loading data from ${filePath}:`, error));
@@ -2224,103 +2491,18 @@ function DegreeFunction(){
 // =======================================================
 //                    组合文件表格图像绘制
 // =======================================================
-function appendcoverageGraph(index,filepath,type){
-    // console.log(filepath);
-    return fetch(filepath)
-    .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.text();
-        })
-        .then(data => {
-            const row = document.querySelector(`#CoverageRow`);
-            // console.log(name);
-            const td = row.children[index];
-            // console.log(td);
-            var x =td.getElementsByTagName('canvas');
-            if (x.length)
-                {
-                    Array.from(x).forEach(function(canvas) {
-                    canvas.remove(); // 移除单个 canvas 元素
-                    });
-                }
-            var canvas = document.createElement('canvas');
-            canvas.id = index+'coverageCanvas';
-            canvas.width = 200;  // Set the width of the canvas
-            canvas.height = 150; // Set the height of the canvas
-            td.appendChild(canvas);
-            const bpdata =[];
-            const nodedata =[];
-            const edgedata =[];
-            const lines = data.split('\n');
-            lines.forEach(line => {
-                //console.log(line);
-                if(line.includes('Count')){
-                    return;
-                }
-                let parts = line.trim().split(/\s+/); // 使用正则表达式来拆分每行的数字
-                let Count= parseInt(parts[0], 10);
-                let bp= parseInt(parts[1], 10);
-                bp = Number(bp)
-                bp = Math.log2(bp+1);
-                let Node= parseInt(parts[2], 10);
-                Node = Number(Node)
-                Node = Math.log2(Node+1);
-                let Edge= parseInt(parts[3], 10);
-                Edge = Number(Edge)
-                Edge = Math.log2(Edge+1);
-                bpdata.push([Number(Count),Number(bp)]);
-                nodedata.push([Number(Count),Number(Node)]);
-                edgedata.push([Number(Count),Number(Edge)]);
-            });
-            let formattedData;
-            if(type === 'bp'){
-                formattedData = bpdata.map(item => ({ x: item[0], y: item[1] }));
-            }
-            else if(type === 'Node'){
-                formattedData = nodedata.map(item => ({ x: item[0], y: item[1] }));
-            }
-            else if(type === 'Edge'){
-                formattedData = edgedata.map(item => ({ x: item[0], y: item[1] }));
-            }
-            var ctx = document.getElementById(index+'coverageCanvas').getContext('2d');  
-            var coverageCanvas = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                datasets: [{
-                    label:'',
-                    data: formattedData,
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    x: {
-                        type:'linear',
-                        position:'bottom',
-                        ticks:{
-                            maxRotation: 0, // 设置为 0 表示水平显示
-                            minRotation: 0, // 防止旋转
-                            stepSize: 2 // 每隔 2 个显示一个标签
-                        }
 
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false  // 这会隐藏整个图例（包括任何标签）
-                    }
-                },
-                responsive: false,  // 防止图表响应容器尺寸变化
 
-            }
-        });
-            return formattedData;
-        })
-        .catch(error => console.error(`Error loading data from ${filepath}:`, error));
+function appendcoverageGraph(index,type){
+    const row = document.querySelector(`#CoverageRow`);
+    const td = row.children[index];
+    var canvases = td.querySelectorAll('canvas');
+    canvases.forEach(canvas=>{
+        canvas.style.display='none';
+        if(canvas.id == 'coverageCanvas' + index + type){
+            canvas.style.display = "";
+        }
+    })
 }
 
 function appenddegree(index, filePath1, filePath2) {

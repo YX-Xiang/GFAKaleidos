@@ -160,9 +160,9 @@ h1.logo a {
 	color: #444;
 	line-height: 2.25;
 	text-indent: -4999px;
-	background: url(../styles/header_293x80.png) no-repeat;
+	background: url(../styles/header_340x80.png) no-repeat;
 	margin: 40px 0 0 0;
-	width: 293px;
+	width: 340px;
 	height: 80px;
 }
 
@@ -229,30 +229,6 @@ header#top nav ul li a.nav-cta {
 }
 
 /*Banner*/
-
-#banner {
-	height: 840px;
-	background: #f1f6f4 url(../styles/header-image.jpg) no-repeat center;
-	position: relative;
-	padding: 1px 0 0 0;
-}
-
-#banner h2 {
-	margin: 220px auto 0;
-	padding: 0 5%;
-	opacity: 0.9;
-	color: #333;
-	font-size: 108px;
-	text-align: center;
-	text-transform: uppercase;
-	font-weight: 700;
-	letter-spacing: 0.03em;
-}
-
-#banner p.subtitle {
-	font-size: 20px;
-	margin: 10px 0 50px 0;
-}
 
 @media only screen and (max-width: 1024px) {
 	#banner h2 {
@@ -322,7 +298,7 @@ header#top nav ul li a.nav-cta {
 
 ul.services-list {
 	width: 90%;
-	margin: 100px auto 60px;
+	margin: 40px auto 40px;
 	display: flex; /* 使用 flex 布局 */
 	flex-wrap: wrap; /* 支持多行 */
 	justify-content: space-between;
@@ -334,11 +310,11 @@ ul.services-list li {
 	flex-direction: column; /* 让子元素从上到下排列 */
 	align-items: center;
 	justify-content: space-between; /* 确保内容顶部和底部对齐 */
-	height: 500px; /* 保持固定高度 */
-	width: 30.66%;
+	height: 520px; /* 保持固定高度 */
+	width: 23%;
 	background: #fff;
 	padding: 60px 20px; /* 增加水平内边距 */
-	margin: 0 2% 40px; /* 增加底部间距 */
+	margin: 0 1% 40px; /* 增加底部间距 */
 	box-sizing: border-box; /* 包括 padding 和 border */
 }
 
@@ -357,7 +333,7 @@ ul.services-list li .image-container {
 
 ul.services-list li .image-container img {
 	position: absolute;
-	top: 28px;
+	top: 10px;
 	left: 0px;
 }
 
