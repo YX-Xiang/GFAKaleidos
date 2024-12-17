@@ -445,23 +445,26 @@ input[type="file"] {
     height: 25px;
     margin-top: 20px;  /* 增加上间距 */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  /* 添加轻微阴影 */
+    position: relative; /* 用于定位进度文本 */
 }
 
 /* 进度条 */
 #progressBar {
     height: 100%;
-    background: linear-gradient(90deg, #4caf50, #8bc34a); /* 渐变进度条颜色 */
+    background: linear-gradient(90deg, #80d5d4, #4bb4b0); /* 渐变进度条颜色 */
     border-radius: 10px;
     transition: width 0.3s ease-in-out;  /* 平滑过渡效果 */
 }
 
 /* 进度文本 */
 #progressText {
-    text-align: center;
-    font-size: 16px;  /* 调整字体大小 */
-    margin-top: 5px;
-    color: #333;
+    position: absolute;
+    right: 10px; /* 将文字放在右侧 */
+    top: 50%;
+    transform: translateY(-50%); /* 垂直居中 */
+    font-size: 16px;
     font-weight: bold;  /* 加粗文本 */
+    color: #333;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);  /* 添加文本阴影 */
 }
 

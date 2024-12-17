@@ -34,6 +34,17 @@ function runcommand(filePath){
 // =======================================================
 //                        文件上传
 // =======================================================
+function updateProgressBar(progress) {
+    // 确保进度在0-100之间
+    progress = Math.max(0, Math.min(100, progress));
+    
+    // 更新进度条宽度
+    document.getElementById('progressBar').style.width = progress + '%';
+    
+    // 更新进度文本
+    document.getElementById('progressText').textContent = progress + '%';
+}
+
 function uploadFile() {
     const fileInput = document.getElementById('fileInput');
     const file = fileInput.files[0]; // 获取选中的文件
@@ -122,40 +133,53 @@ function uploadZip() {
     const formData = new FormData();
     formData.append('file', file);
 
-    // Send file to the server
-    axios.post('/api/uploadZip', formData, {
-        headers: {
-            'Content-Type': 'multipart/form-data' // 设置请求头，表明是文件上传
-        }
-    })
-    .then(response => {
-        const data = response.data; // 获取响应数据
-        const fileName = data.fileName;
-        fileUploaded = true;
-        openTab(fileName);
-        // 检查服务器响应中的成功字段
-        if (data.success) {
-            status.textContent = 'Upload successful!';
+    // 显示进度条区域
+    const uploadProgressArea = document.getElementById('uploadProgressArea');
+    uploadProgressArea.style.display = 'block'; // 显示进度条
 
-        } else {
-            status.textContent = `Error: ${data.message || 'Unknown error'}`;
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        
-        // 处理错误
-        if (error.response) {
-            // 如果服务器返回了错误响应
-            status.textContent = `Upload failed: ${error.response.data.message || 'Unknown server error'}`;
-        } else if (error.request) {
-            // 如果请求没有收到响应
-            status.textContent = 'Upload failed. No response from server.';
-        } else {
-            // 其他错误
-            status.textContent = 'Upload failed. Please try again.';
-        }
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    
+    // 创建新的 XMLHttpRequest (AJAX)
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", "/api/uploadZip"); // 设置请求的 URL
+
+    // 监听上传进度
+    xhr.upload.addEventListener("progress", ({ loaded, total }) => {
+        let fileLoaded = Math.floor((loaded / total) * 100);  // 获取上传进度百分比
+
+        // 更新进度条宽度
+        progressBar.style.width = fileLoaded + "%";
+        // 更新进度文本
+        progressText.textContent = fileLoaded + "%";
     });
+
+    // 上传请求成功的回调
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            const response = JSON.parse(xhr.responseText);
+            const fileName = response.data.fileName;
+            fileUploaded = true;
+            openTab(fileName);
+            
+            // 当上传完成时隐藏进度条并更新状态
+            uploadProgressArea.style.display = 'none';
+
+            // 显示上传成功消息
+            status.textContent = 'Upload successful!';
+        } else {
+            alert('Error: The file upload failed.');
+        }
+    };
+
+    // 错误回调
+    xhr.onerror = function () {
+        console.error('The file upload failed.');
+        alert('Error: The file upload failed.');
+    };
+
+    // 发送文件数据
+    xhr.send(formData);
 }
 
 // 上传样例文件
@@ -194,7 +218,6 @@ function uploadExampleFile(filePath) {
 // =======================================================
 //                        文件下载
 // =======================================================
-
 function downloadPage() {
     const button = document.querySelector(".download-btn");
     
