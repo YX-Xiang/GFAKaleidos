@@ -54,132 +54,96 @@ function uploadFile() {
         return;
     }
 
+    const fileExtension = file.name.split('.').pop().toLowerCase();
+    let uploadUrl, onSuccess, onFailure;
+
+    if (fileExtension === 'zip') {
+        uploadUrl = '/api/uploadZip';
+        onSuccess = (response) => {
+            const data = response.data; // 获取响应数据
+            const fileName = data.fileName;
+            fileUploaded = true;
+            openTab(fileName);
+        };
+        onFailure = (error) => {
+            console.error('Error:', error);
+            const status = document.getElementById('status');
+            // 处理错误
+            if (error.response) {
+                // 如果服务器返回了错误响应
+                status.textContent = `Upload failed: ${error.response.data.message || 'Unknown server error'}`;
+            } else if (error.request) {
+                // 如果请求没有收到响应
+                status.textContent = 'Upload failed. No response from server.';
+            } else {
+                // 其他错误
+                status.textContent = 'Upload failed. Please try again.';
+            }
+        };
+    } else if (fileExtension === 'gfa') {
+        uploadUrl = '/api/upload';
+        onSuccess = (response) => {
+            alert('The file upload was successful!');
+            const filePath = response.data.filePath;
+            fileUploaded = true;
+            runcommand(filePath);
+            const FileName = filePath.split('/').pop().split('.').slice(0, -1).join('.');
+            openTab(FileName);
+            flag = FileName;
+            addCheckbox(FileName);
+        };
+        onFailure = (error) => {
+            console.error('The file upload failed: ', error);
+            alert('Error: The file upload failed.');
+            const logoPlaceholder = document.getElementById('logo-placeholder');
+            logoPlaceholder.style.display = 'flex'; // 恢复占位元素显示
+        };
+    } else {
+        alert("Error: Unsupported file type!");
+        return;
+    }
+
     // 创建 FormData 对象并将文件添加进去
     const formData = new FormData();
     formData.append('file', file);
 
     // 更新文件名显示
     document.getElementById("fileName").textContent = file.name;
+    // 隐藏 Logo 并显示加载状态
+    const logoPlaceholder = document.getElementById('logo-placeholder');
+    logoPlaceholder.style.display = 'none';
 
     // 显示进度条区域
     const uploadProgressArea = document.getElementById('uploadProgressArea');
-    uploadProgressArea.style.display = 'block'; // 显示进度条
+    uploadProgressArea.style.display = 'block';
 
+    // 获取进度条和进度文本元素
     const progressBar = document.getElementById('progressBar');
     const progressText = document.getElementById('progressText');
 
-    // 创建新的 XMLHttpRequest (AJAX)
-    let xhr = new XMLHttpRequest();
-    xhr.open("POST", "/api/upload"); // 设置请求的 URL
+    axios.post(uploadUrl, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data' // 设置请求头，表明是文件上传
+        },
+        onUploadProgress: (progressEvent) => {
+            const fileLoaded = Math.floor((progressEvent.loaded / progressEvent.total) * 100); // 上传进度
 
-    // 监听上传进度
-    xhr.upload.addEventListener("progress", ({ loaded, total }) => {
-        let fileLoaded = Math.floor((loaded / total) * 100);  // 获取上传进度百分比
+            // 更新进度条宽度
+            progressBar.style.width = fileLoaded + "%";
+            progressText.textContent = fileLoaded + "%";
 
-        // 更新进度条宽度
-        progressBar.style.width = fileLoaded + "%";
-        // 更新进度文本
-        progressText.textContent = fileLoaded + "%";
+            // 当进度条达到 100% 时，隐藏进度条并执行后续操作
+            if (fileLoaded === 100) {
+                // 进度条完全加载后隐藏进度条和文本
+                uploadProgressArea.style.display = 'none';
 
-        // 当进度条达到100%，隐藏进度条并执行完成操作
-        if (fileLoaded === 100) {
-            // 进度条完全加载后隐藏进度条和文本
-            progressBarContainer.style.display = 'none';
-            progressBar.style.display = 'none';
-            progressText.style.display = 'none';
-
-            // 隐藏 Logo 并显示加载状态
-            const logoPlaceholder = document.getElementById('logo-placeholder');
-            logoPlaceholder.style.display = 'none';
+                // 隐藏 Logo 并显示加载状态
+                logoPlaceholder.style.display = 'none';
+            }
         }
-    });
-
-    // 上传请求成功的回调
-    xhr.onload = function () {
-        if (xhr.status === 200) {
-            const response = JSON.parse(xhr.responseText);
-            alert('The file upload was successful!');
-            const filePath = response.data.filePath;
-            fileUploaded = true;
-            runcommand(filePath);
-            const FileName = filePath.split('/')[1].split('.').slice(0, -1).join('.');
-            openTab(FileName);
-            flag = FileName;
-            addCheckbox(FileName);
-        } else {
-            alert('Error: The file upload failed.');
-        }
-    };
-
-    // 错误回调
-    xhr.onerror = function () {
-        console.error('The file upload failed.');
-        alert('Error: The file upload failed.');
-    };
-
-    // 发送文件数据
-    xhr.send(formData);
-}
-
-function uploadZip() {
-    const fileInput = document.getElementById('zipFile');
-    const status = document.getElementById('status');
-    const file = fileInput.files[0];
-    if (!file) {
-        status.textContent = 'Please select a ZIP file.';
-        return;
-    }
-
-    const formData = new FormData();
-    formData.append('file', file);
-
-    // 显示进度条区域
-    const uploadProgressArea = document.getElementById('uploadProgressArea');
-    uploadProgressArea.style.display = 'block'; // 显示进度条
-
-    const progressBar = document.getElementById('progressBar');
-    const progressText = document.getElementById('progressText');
-    
-    // 创建新的 XMLHttpRequest (AJAX)
-    let xhr = new XMLHttpRequest();
-    xhr.open("POST", "/api/uploadZip"); // 设置请求的 URL
-
-    // 监听上传进度
-    xhr.upload.addEventListener("progress", ({ loaded, total }) => {
-        let fileLoaded = Math.floor((loaded / total) * 100);  // 获取上传进度百分比
-
-        // 更新进度条宽度
-        progressBar.style.width = fileLoaded + "%";
-        // 更新进度文本
-        progressText.textContent = fileLoaded + "%";
-    });
-
-    // 上传请求成功的回调
-    xhr.onload = function () {
-        if (xhr.status === 200) {
-            const response = JSON.parse(xhr.responseText);
-            const fileName = response.data.fileName;
-            fileUploaded = true;
-            openTab(fileName);
-            
-            // 当上传完成时隐藏进度条并更新状态
-            uploadProgressArea.style.display = 'none';
-
-            // 显示上传成功消息
-            status.textContent = 'Upload successful!';
-        } else {
-            alert('Error: The file upload failed.');
-        }
-    };
-
-    // 错误回调
-    xhr.onerror = function () {
-        console.error('The file upload failed.');
-        alert('Error: The file upload failed.');
-    };
-
-    // 发送文件数据
-    xhr.send(formData);
+    })
+    .then(onSuccess)
+    .catch(onFailure);
 }
 
 // 上传样例文件
@@ -190,9 +154,9 @@ function uploadExampleFile(filePath) {
         return;
     }
     
-    var selDom = $("#menu-list a[FileName='" + filePath.split('/')[1].split('.')[0] + "']");//menu-list是标签栏
+    var selDom = $("#menu-list a[FileName='" + filePath.split('/').pop().split('.')[0] + "']");//menu-list是标签栏
 
-    // 隐藏 Logo 并显示加载状态（可选）
+    // 隐藏 Logo 并显示加载状态
     const logoPlaceholder = document.getElementById('logo-placeholder');
     logoPlaceholder.style.display = 'none';
 
@@ -200,7 +164,7 @@ function uploadExampleFile(filePath) {
         alert('The file upload was successful!');
         fileUploaded = true;
         runcommand(filePath);
-        const FileName = filePath.split('/')[1].split('.')[0];
+        const FileName = filePath.split('/').pop().split('.')[0];
         flag = FileName;
         openTab(FileName);
         addCheckbox(FileName);
@@ -219,85 +183,126 @@ function uploadExampleFile(filePath) {
 //                        文件下载
 // =======================================================
 function downloadPage() {
-    const button = document.querySelector(".download-btn");
-    
-    button.addEventListener("click", () => {
-        // 防止多次点击
-        if (button.classList.contains("active")) {
-            return;
-        }
+    const buttons = document.querySelectorAll(".download-btn");
+    const button = buttons[0];
 
-        // 激活动画
-        button.classList.add("active");
+    if (button) { // 确保按钮元素存在
+        button.addEventListener("click", () => {
+            // console.log("Button clicked"); // 检查按钮是否被点击
 
-        // 启动下载进度条动画，模拟下载过程
-        setTimeout(() => {
-            // 模拟进度条动画完成，开始下载
-            startDownload();
-        }, 1000); // 动画时长1秒
-        ShowAllCoverage();
-    });
+            // 防止多次点击
+            if (button.classList.contains("active")) {
+                // console.log("Button is already active"); // 检查是否已经激活
+                return;
+            }
+
+            // 激活动画
+            button.classList.add("active");
+
+            // 启动下载进度条动画，模拟下载过程
+            setTimeout(() => {
+                // console.log("Starting download"); // 检查是否进入下载流程
+                // 模拟进度条动画完成，开始下载
+                startDownload();
+            }, 1000); // 动画时长1秒
+            
+            if (typeof ShowAllCoverage === "function") {
+                ShowAllCoverage();
+            } else {
+                console.error("ShowAllCoverage function is not defined"); // 检查函数是否存在
+            }
+        });
+    } else {
+        console.error("Button element not found"); // 按钮元素未找到
+    }
 
     // 启动页面下载
     function startDownload() {
-        middleSection = document.getElementById('main-content');  // 获取中间部分的 DOM 元素
-        middleSection.style.overflowY="";
-        middleSection.style.overflowX="";  // 保存原始高度
-        ShowAllCoverage();
+        const middleSection = document.getElementById('main-content');  // 获取中间部分的 DOM 元素
+        // console.log("Middle section element: ", middleSection); // 输出中间部分元素，检查是否正确获取
+        middleSection.style.overflowY = "";
+        middleSection.style.overflowX = "";  // 保存原始高度
+        
+        if (typeof ShowAllCoverage === "function") {
+            ShowAllCoverage();
+        } else {
+            console.error("ShowAllCoverage function is not defined"); // 检查函数是否存在
+        }
+
         const { jsPDF } = window.jspdf;
+
+        if (!jsPDF) {
+            console.error("jsPDF is not loaded"); // 检查jsPDF是否加载
+            return;
+        }
 
         const doc = new jsPDF({
             unit: 'px',  // 使用像素单位
             format: [2800, 5000]  // 使用适当的页面尺寸
         });
 
-        
         doc.html(document.body, {
             callback: function (doc) {
+                // console.log("PDF generated"); // 检查PDF是否生成
                 doc.save('webpage.pdf');
-                middleSection.style.overflowY="auto";  // 保存原始高度
-                middleSection.style.overflowX="auto"; 
-                NotShowAllCoverage();
+                middleSection.style.overflowY = "auto";  // 恢复原始高度
+                middleSection.style.overflowX = "auto";
+                
+                if (typeof NotShowAllCoverage === "function") {
+                    NotShowAllCoverage();
+                } else {
+                    console.error("NotShowAllCoverage function is not defined"); // 检查函数是否存在
+                }
             },
             autoPaging: true,
         });
+
         // 下载完成后修改按钮状态
         setTimeout(() => {
             // 修改图标和按钮文字
             button.querySelector("i").classList.replace("bx-cloud-download", "bx-check-circle");
             button.querySelector("span").innerText = "Completed";
             button.classList.remove("active"); // 移除动画
+
             // 恢复按钮状态为“Download”
             setTimeout(() => {
                 button.querySelector("i").classList.replace("bx-check-circle", "bx-cloud-download");
                 button.querySelector("span").innerText = "Download";
             }, 2000); // 设置2秒延迟来恢复按钮文本和图标
-        }, 1000); // 1秒后执行下载完成的操作
+        }, 100); // 0.1秒后执行下载完成的操作
     }
-
-}
-function ShowAllCoverage(){
-    const tr = document.getElementById('CoverageRow');
-    var canvases = tr.querySelectorAll('canvas');
-    canvases.forEach(canvas=>{
-        canvas.style.display="";
-    })
-    
-}
-
-function NotShowAllCoverage(){
-    const tr = document.getElementById('CoverageRow');
-    var canvases = tr.querySelectorAll('canvas');
-    canvases.forEach(canvas=>{
-        canvas.style.display="none";
-    })
 }
 
 function downloadZip() {
-    // console.log(754934548);
-    if(flag.includes('+')){
+    const buttons = document.querySelectorAll(".download-btn");
+    const button = buttons[1];
+
+    // 防止多次点击
+    if (button.classList.contains("active")) {
         return;
     }
+
+    // 激活动画
+    button.classList.add("active");
+
+    // 启动下载进度条动画，模拟下载过程
+    setTimeout(() => {
+        // 模拟进度条动画完成，开始下载
+        startDownload();
+    }, 1000); // 动画时长1秒
+    ShowAllCoverage();
+}
+
+// 启动下载
+function startDownload() {
+    const buttons = document.querySelectorAll(".download-btn");
+    const button = buttons[1];
+    
+    // 发送请求并处理下载
+    if(flag.includes('+')) {
+        return;  // 防止不必要的重复请求
+    }
+
     axios.get('/api/downloadZip', {
         params: {
             flag: flag  // 将文件路径作为查询参数传递
@@ -305,13 +310,32 @@ function downloadZip() {
     })
     .then(function (response) {
         console.log(`./${flag}.zip`);
-        window.location.href = `./${flag}.zip`;
+        window.location.href = `./${flag}.zip`;  // 触发文件下载
         console.log('命令执行输出:', response.data);
-        // deleteZip();
+
+        // 模拟下载完成后的按钮状态修改
+        setTimeout(() => {
+            // 修改图标和按钮文字
+            button.querySelector("i").classList.replace("bx-cloud-download", "bx-check-circle");
+            button.querySelector("span").innerText = "Completed";
+            button.classList.remove("active"); // 移除动画
+
+            // 恢复按钮状态为“Download”
+            setTimeout(() => {
+                button.querySelector("i").classList.replace("bx-check-circle", "bx-cloud-download");
+                button.querySelector("span").innerText = "Download Zip";
+            }, 2000); // 设置2秒延迟来恢复按钮文本和图标
+        }, 100); // 0.1秒后执行下载完成的操作
     })
     .catch(function (error) {
         // 错误回调
         console.error('命令执行失败:', error);
+        // 错误时恢复按钮状态
+        setTimeout(() => {
+            button.querySelector("i").classList.replace("bx-cloud-download", "bx-error");
+            button.querySelector("span").innerText = "Failed";
+            button.classList.remove("active");
+        }, 1000);
     });
 }
 
@@ -672,7 +696,8 @@ function loadGFAData(filePath) {
     // console.log(filePath);
     return fetch(filePath)
     .then(response => {
-            if (!response.ok) {
+        // console.log(response);    
+        if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.text();
@@ -684,6 +709,7 @@ function loadGFAData(filePath) {
                     // console.log(line);
                     const cleanedLine = line.replace(/^#/, '').trim();
                     const [key, value] = cleanedLine.split(/\s+/).filter(Boolean);
+                    // console.log(cleanedLine);
                     if (key && value) {
                         GFAData[key] = value;
                     }

@@ -431,6 +431,28 @@ input[type="file"] {
     transform: scale(0.98); /* 按下按钮时缩小 */
 }
 
+.custom-file-input .content {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.custom-file-input .content i,
+.custom-file-input .content .button-text {
+    color: #000000;
+    font-size: 20px;
+    font-weight: bold;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+.custom-file-input .content .button-text {
+    font-size: 16px;
+    margin-left: 8px;
+    font-family: 'Ubuntu', sans-serif; /* 确保字体一致 */
+}
+
 .file-name {
     margin-top: 10px;
     font-size: 14px;
@@ -451,7 +473,7 @@ input[type="file"] {
 /* 进度条 */
 #progressBar {
     height: 100%;
-    background: linear-gradient(90deg, #80d5d4, #4bb4b0); /* 渐变进度条颜色 */
+    background: linear-gradient(90deg, #80d5d4, #2983bb); /* 渐变进度条颜色 */
     border-radius: 10px;
     transition: width 0.3s ease-in-out;  /* 平滑过渡效果 */
 }
@@ -551,7 +573,7 @@ input[type="file"] {
     box-shadow: 0 5px 10px rgba(0,0,0,0.2);
     cursor: pointer;
     transition: background-color 0.3s;
-    width: 200px; /* 固定按钮宽度 */
+    width: 190px; /* 固定按钮宽度 */
     height: 40px; /* 固定按钮高度 */
     margin-bottom: 10px; /* 增加按钮之间的间距 */
 }
@@ -565,32 +587,47 @@ input[type="file"] {
     transform: scale(0.98); /* 按下按钮时缩小 */
 }
 
+/* 父容器：使用 flex 布局来让按钮并排显示 */
+.button-container {
+    display: flex;             /* 使用 flex 布局 */
+    justify-content: center;   /* 居中对齐按钮 */
+    gap: 20px;                 /* 按钮之间的间距 */
+    margin: 20px 0;            /* 父容器的上下间距 */
+    position: fixed;           /* 固定定位 */
+    bottom: 5px;              /* 固定在页面底部 */
+}
+
+/* 按钮基础样式 */
 .download-btn {
-    position: absolute;
-    bottom: 20px; /* 距离底部 20px */
-    left: 50%;
-    transform: translateX(-50%);
     height: 40px;
     width: 160px;
     background: #80d5d4;
     border-radius: 5px;
     cursor: pointer;
-    box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
     transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     overflow: hidden;
+    display: flex;            /* 让按钮内部的内容（图标和文字）使用 flex 布局 */
+    align-items: center;      /* 垂直居中对齐 */
+    justify-content: center;  /* 水平居中对齐 */
+    position: relative;       /* 保证按钮内的动画能正确显示 */
     transform-origin: center; /* 确保从中心缩放 */
 }
 
+/* 按钮悬停时的效果 */
 .download-btn:hover {
     background-color: #93e2e1; /* 鼠标悬停时的背景色 */
-    transform: translateX(-50%) scale(1.05);
+    transform: scale(1.05);     /* 按钮放大效果 */
 }
 
-.download-btn.active{
-    height: 20px;
+/* 按钮的激活状态 */
+.download-btn.active {
+    height: 20px;              /* 激活时按钮高度变化 */
     width: 160px;
 }
-.download-btn::before{
+
+/* 背景动画效果 */
+.download-btn::before {
     content: "";
     position: absolute;
     top: 0;
@@ -601,15 +638,21 @@ input[type="file"] {
     border-radius: 55px;
     transition: all 6s ease-in-out;
 }
-.download-btn.active::before{
+
+/* 激活时背景动画 */
+.download-btn.active::before {
     animation: layer 6s ease-in-out forwards;
 }
+
+/* 背景动画的关键帧 */
 @keyframes layer {
-    100%{
+    100% {
         left: 0%;
     }
 }
-.download-btn .content{
+
+/* 按钮内部内容 */
+.download-btn .content {
     height: 100%;
     width: 100%;
     display: flex;
@@ -618,17 +661,22 @@ input[type="file"] {
     transition: all 0.2s ease;
     transition-delay: 0.2s;
 }
-.download-btn.active .content{
-    transform: translateY(60px);
+
+/* 激活时内容的动画 */
+.download-btn.active .content {
+    transform: translateY(60px); /* 内容下移 */
 }
+
+/* 按钮内部图标和文本样式 */
 .download-btn .content i,
 .download-btn .content .button-text {
     color: #000000;
     font-size: 20px;
     font-weight: bold;
-    font-family: 'Ubuntu', sans-serif; /* 添加字体 */
+    font-family: 'Ubuntu', sans-serif;
 }
 
+/* 按钮文本的样式 */
 .download-btn .content .button-text {
     font-size: 16px;
     margin-left: 8px;

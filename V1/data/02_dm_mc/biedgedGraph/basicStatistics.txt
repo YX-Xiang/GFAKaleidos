@@ -1,4 +1,0 @@
-#vertices		26346
-#edges			30945
-#loops			0
-#cuts			4276

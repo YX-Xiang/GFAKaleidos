@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap">
     <link rel='stylesheet' href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css'>
     <script src="static/js/tool.js" type="text/javascript"></script> 
-    <script src="static/js/jquery.min.js"></script>
+    <script src="static/js/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
      <!-- 引入 html2canvas 库 -->
@@ -240,37 +240,33 @@
                     </tr>
                     <tr id="file_sizeRow">
                         <td><span style="font-family: 'PT Serif', serif;">File size</span>
-                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
                         </td>
                         <td colspan="3" id="mergedCell" style="text-align: center;" style="display: none;" style="visibility: hidden;"></td>
                     </tr>
                     <tr id="segmentsRow">
                         <td><span style="font-family: 'PT Serif', serif;">The number of segments</span>
-                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
                         </td>
                         <td colspan="3" id="mergedCell" style="text-align: center;" style="display: none;" style="visibility: hidden;"></td>
                     </tr>
                     <tr id="linksRow">
                         <td><span style="font-family: 'PT Serif', serif;">The number of links</span>
-                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
                         </td>
                         <td colspan="3" id="mergedCell" style="text-align: center;" style="display: none;" style="visibility: hidden;"></td>
                     </tr>
                     <tr id="pathsRow">
                         <td><span style="font-family: 'PT Serif', serif;">The number of paths</span>
-                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
                         </td>
                         <td colspan="3" id="mergedCell" style="text-align: center;" style="display: none;" style="visibility: hidden;"></td>
                     </tr>
                     <tr id="single_direction_segmentRow">
                         <td><span style="font-family: 'PT Serif', serif;">The number of single direction segment</span>
-                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                            <img  id="FileSize" src="static/styles/detail.png"   title="This means that segment A only exists as A- or A+."  style="width: 14px; height: 14px;">
                         </td>
                         <td colspan="3" id="mergedCell" style="text-align: center;" style="display: none;" style="visibility: hidden;"></td>
                     </tr>
                     <tr id="bidirectional_direction_segmentRow">
                         <td><span style="font-family: 'PT Serif', serif;">The number of bidirectional direction segment</span>
-                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                            <img  id="FileSize" src="static/styles/detail.png"   title="This means that segment A exists as A- and A+."  style="width: 14px; height: 14px;">
                         </td>
                         <td colspan="3" id="mergedCell" style="text-align: center;" style="display: none;" style="visibility: hidden;"></td>
                     </tr>
@@ -298,9 +294,7 @@
 
                 <tbody>
                     <tr id="verticesRow" style="display: none;" style="visibility: hidden;">
-                        <td><span style="font-family: 'PT Serif', serif;">The number of vertices</span>
-                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
-                        </td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of vertices</span></td>
                         <td data-graph="digraph"  style="display: none;"></td>
                         <td data-graph="bidirectedGraph"  style="display: none;"></td>
                         <td data-graph="biedgedGraph"  style="display: none;"></td>
@@ -308,7 +302,7 @@
                     </tr>
                     <tr id="total_lengthRow" style="display: none;" style="visibility: hidden;">
                         <td><span style="font-family: 'PT Serif', serif;">Total length</span>
-                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                            <img  id="FileSize" src="static/styles/detail.png"   title="The total length of bases in segments."  style="width: 14px; height: 14px;">
                         </td>
                         <td data-graph="digraph"  style="display: none;"></td>
                         <td data-graph="bidirectedGraph"  style="display: none;"></td>
@@ -318,7 +312,7 @@
                     
                     <tr id="N50Row" style="display: none;" style="visibility: hidden;">
                         <td><span style="font-family: 'PT Serif', serif;">N50</span>
-                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                            <img  id="FileSize" src="static/styles/detail.png"   title="A statistical measure used to assess the quality of a genome assembly, representing the length of the shortest contig or scaffold such that half of the total assembled genome is contained in contigs of that length or longer."  style="width: 14px; height: 14px;">
                         </td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
@@ -328,7 +322,7 @@
                     
                     <tr id="L50Row"  style="display: none;" style="visibility: hidden;">
                         <td><span style="font-family: 'PT Serif', serif;">L50</span>
-                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                            <img  id="FileSize" src="static/styles/detail.png"   title="The number of contigs or scaffolds whose cumulative length equals or exceeds half of the total genome length."  style="width: 14px; height: 14px;">
                         </td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
@@ -338,7 +332,7 @@
                     
                     <tr id="U50Row" style="display: none;" style="visibility: hidden;">
                         <td><span style="font-family: 'PT Serif', serif;">U50</span>
-                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                            <img  id="FileSize" src="static/styles/detail.png"   title="It represents the length of the shortest contig or scaffold such that 50% of the total unique genome sequence is contained in contigs or scaffolds of that length or longer."  style="width: 14px; height: 14px;">
                         </td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
@@ -347,21 +341,15 @@
                     </tr>
                     
                     <tr id="DegreeDistributionRow" style="display: none;" style="visibility: hidden;">
-                        <td><span style="font-family: 'PT Serif', serif;">Degree distribution</span>
-                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
-                        </td>
+                        <td><span style="font-family: 'PT Serif', serif;">Degree distribution</span></td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
-                        <!-- <td data-graph="dibigraph">
-                            <button onclick="showdegree('web/data/dibigraph/degree.txt','segment')">segment</button>
-                            <button onclick="showdegree('web/data/dibigraph/degree.txt','link')">link</button>
-                        </td> -->
                     </tr>
                     
                     <tr id="dead_endsRow" style="display: none;"  style="visibility: hidden;">
                         <td><span style="font-family: 'PT Serif', serif;">The number of dead ends</span>
-                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                            <img  id="FileSize" src="static/styles/detail.png"   title="The number of vertices with an out-degree of 0."  style="width: 14px; height: 14px;">
                         </td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
@@ -371,7 +359,7 @@
     
                     <tr id="start_endsRow" style="display: none;"  style="visibility: hidden;">
                         <td><span style="font-family: 'PT Serif', serif;">The number of start ends</span>
-                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                            <img  id="FileSize" src="static/styles/detail.png"   title="The number of vertices with an in-degree of 0."  style="width: 14px; height: 14px;">
                         </td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
@@ -381,7 +369,7 @@
                 
                     <tr id="CoverageRow" style="display: none;"  style="visibility: hidden;">
                         <td><span style="font-family: 'PT Serif', serif;"> Coverage</span>
-                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                            <img  id="FileSize" src="static/styles/detail.png"   title="Count how many haplotypes each segment is included in."  style="width: 14px; height: 14px;">
                         </td>
                         <td data-graph="digraph" style="display: none;"> 
                             <button onclick="showcoverageGraph('digraph','bp')">bp</button>
@@ -401,9 +389,7 @@
                     
                     
                     <tr id="edgesRow" style="display: none;" style="visibility: hidden;">
-                        <td><span style="font-family: 'PT Serif', serif;">The number of edges</span>
-                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
-                        </td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of edges</span></td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -411,9 +397,7 @@
                     </tr>
                     
                     <tr id="loopsRow" style="display: none;" style="visibility: hidden;">
-                        <td><span style="font-family: 'PT Serif', serif;">The number of loops</span>
-                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
-                        </td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of loops</span></td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -422,7 +406,7 @@
                 
                     <tr id="LoopLengthRow" style="display: none;" style="visibility: hidden;">
                         <td><span style="font-family: 'PT Serif', serif;">Loop length</span>
-                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                            <img  id="FileSize" src="static/styles/detail.png"   title="The distribution of loop lengths."  style="width: 14px; height: 14px;">
                         </td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
@@ -431,9 +415,7 @@
                     </tr>
                     
                     <tr id="cyclesRow" style="display: none;" style="visibility: hidden;">
-                        <td><span style="font-family: 'PT Serif', serif;">The number of cycles</span>
-                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
-                        </td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of cycles</span></td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -441,9 +423,7 @@
                     </tr>
                     
                     <tr id="minimum_weight_cycle_without_loopRow" style="display: none;" style="visibility: hidden;">
-                    <td><span style="font-family: 'PT Serif', serif;">Minimum weight cycle</span>
-                        <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
-                    </td>
+                    <td><span style="font-family: 'PT Serif', serif;">Minimum weight cycle</span></td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -452,7 +432,7 @@
                     
                     <tr id="CycleDistributionRow" style="display: none;" style="visibility: hidden;">
                         <td><span style="font-family: 'PT Serif', serif;">Cycle distribution</span>
-                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                            <img  id="FileSize" src="static/styles/detail.png"   title="The distribution of cycle lengths."  style="width: 14px; height: 14px;">
                         </td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;">/</td>
@@ -595,38 +575,38 @@
         <div class="fixed-content">
             <div class="upload-container">
                 <div class="example-buttons">
-                    <button class="example-button" style="font-family: 'Ubuntu', sans-serif; font-size: 13pt;" onclick="uploadExampleFile('uploads/01_dm_pggb.gfa')">Example 1</button>
-                    <button class="example-button" style="font-family: 'Ubuntu', sans-serif; font-size: 13pt;" onclick="uploadExampleFile('uploads/02_dm_mc.gfa')">Example 2</button>
+                    <button class="example-button" style="font-family: 'Ubuntu', sans-serif; font-size: 13pt;" onclick="uploadExampleFile('../example/01_dm_pggb.gfa')">Example 1</button>
+                    <button class="example-button" style="font-family: 'Ubuntu', sans-serif; font-size: 13pt;" onclick="uploadExampleFile('../example/02_dm_mc.gfa')">Example 2</button>
                 </div>
 
-                <input type="file" id="fileInput" accept=".gfa" name="file" required onchange="uploadFile()" style="display: none;">
-                <button class="custom-file-input" style="font-family: 'Ubuntu', sans-serif;" onclick="document.getElementById('fileInput').click()">
-                    Upload GFA
-                </button>
-
-                <input type="file" id="zipFile" accept=".zip" required onchange="uploadZip()" style="display: none;">
-                <button class="custom-file-input" style="font-family: 'Ubuntu', sans-serif;" onclick="document.getElementById('zipFile').click()">
-                    Upload Zip
+                <input type="file" id="fileInput" accept=".gfa,.zip" name="file" required onchange="uploadFile()" style="display: none;">
+                <button class="custom-file-input" onclick="document.getElementById('fileInput').click()">
+                    <div class="content">
+                        <i class="bx bx-cloud-upload"></i>
+                        <span class="button-text">Upload GFA/ZIP</span>
+                    </div>
                 </button>
 
                 <div id="uploadProgressArea" style="display: none;">
                     <div id="progressBarContainer" style="width: 100%; background: #e0e0e0; border-radius: 10px; height: 25px; position: relative;">
-                        <div id="progressBar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #80d5d4, #4bb4b0); border-radius: 10px;"></div>
+                        <div id="progressBar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #80d5d4, #2983bb); border-radius: 10px;"></div>
                         <p id="progressText" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 16px; font-weight: bold; color: #333; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); margin: 0;">0%</p>
                     </div>
-                </div>                
+                </div>
                 <div class="file-name" id="fileName"></div>
             </div>
-            <div  onclick="downloadZip()">
-                <div class="content">
-                  <i class="bx bx-cloud-download"></i>
-                  <span class="button-text">Download Zip</span>
+            <div class="button-container">
+                <div class="download-btn" onclick="downloadPage()">
+                    <div class="content">
+                        <i class="bx bx-cloud-download"></i>
+                        <span class="button-text">Download PDF</span>
+                    </div>
                 </div>
-            </div>
-            <div class="download-btn" onclick="downloadPage()">
-                <div class="content">
-                  <i class="bx bx-cloud-download"></i>
-                  <span class="button-text">Download</span>
+                <div class="download-btn" onclick="downloadZip()">
+                    <div class="content">
+                        <i class="bx bx-cloud-download"></i>
+                        <span class="button-text">Download Zip</span>
+                    </div>
                 </div>
             </div>
             <div id="status"></div>
