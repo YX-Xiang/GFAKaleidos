@@ -82,7 +82,13 @@ app.get('/api/downloadZip', (req, res) => {
     archive.directory(folderPath, false);
     archive.finalize();
 
-    
+    fs.unlink(zipFilePath, (err) => {
+        if (err) {
+            console.error('删除压缩文件出错:', err);
+        } else {
+            console.log('压缩文件已删除');
+        }
+    });
 });
 
 app.get('/api/deleteZip', (req, res) => {

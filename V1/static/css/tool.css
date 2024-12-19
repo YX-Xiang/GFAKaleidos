@@ -587,6 +587,13 @@ input[type="file"] {
     transform: scale(0.98); /* 按下按钮时缩小 */
 }
 
+.transparent-background {
+    color: rgb(0, 0, 0); 
+    padding: 10px; /* 增加一些内边距，让文本更清晰 */
+    border-radius: 10px; /* 可选：为背景加圆角效果 */
+    font-size: 11px; /* 设置字体大小 */
+}
+
 /* 父容器：使用 flex 布局来让按钮并排显示 */
 .button-container {
     display: flex;             /* 使用 flex 布局 */
@@ -872,7 +879,7 @@ input[type="file"] {
 #custom-table td:nth-child(1) {
     background-color: #ffffff; /* 白色背景 */
     color: #000;
-    font-size: 12px; /* 只改当前表格的字体大小 */
+    font-size: 8px; /* 只改当前表格的字体大小 */
     font-family: 'Noto Sans', sans-serif;  /* 设置字体 */
     font-style: italic;  /* 设置字体倾斜 */
 }

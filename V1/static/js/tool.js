@@ -30,7 +30,6 @@ function runcommand(filePath){
 }
 
 
-
 // =======================================================
 //                        文件上传
 // =======================================================
@@ -186,34 +185,25 @@ function downloadPage() {
     const buttons = document.querySelectorAll(".download-btn");
     const button = buttons[0];
 
-    if (button) { // 确保按钮元素存在
-        button.addEventListener("click", () => {
-            // console.log("Button clicked"); // 检查按钮是否被点击
+    if (button.classList.contains("active")) {
+        // console.log("Button is already active"); // 检查是否已经激活
+        return;
+    }
 
-            // 防止多次点击
-            if (button.classList.contains("active")) {
-                // console.log("Button is already active"); // 检查是否已经激活
-                return;
-            }
+    // 激活动画
+    button.classList.add("active");
 
-            // 激活动画
-            button.classList.add("active");
-
-            // 启动下载进度条动画，模拟下载过程
-            setTimeout(() => {
-                // console.log("Starting download"); // 检查是否进入下载流程
-                // 模拟进度条动画完成，开始下载
-                startDownload();
-            }, 1000); // 动画时长1秒
-            
-            if (typeof ShowAllCoverage === "function") {
-                ShowAllCoverage();
-            } else {
-                console.error("ShowAllCoverage function is not defined"); // 检查函数是否存在
-            }
-        });
+    // 启动下载进度条动画，模拟下载过程
+    setTimeout(() => {
+        // console.log("Starting download"); // 检查是否进入下载流程
+        // 模拟进度条动画完成，开始下载
+        startDownload();
+    }, 1000); // 动画时长1秒
+    
+    if (typeof ShowAllCoverage === "function") {
+        ShowAllCoverage();
     } else {
-        console.error("Button element not found"); // 按钮元素未找到
+        console.error("ShowAllCoverage function is not defined"); // 检查函数是否存在
     }
 
     // 启动页面下载
@@ -255,6 +245,9 @@ function downloadPage() {
                 }
             },
             autoPaging: true,
+            html2canvas: {
+                backgroundColor: '#ffffff',
+            },
         });
 
         // 下载完成后修改按钮状态
@@ -267,7 +260,7 @@ function downloadPage() {
             // 恢复按钮状态为“Download”
             setTimeout(() => {
                 button.querySelector("i").classList.replace("bx-check-circle", "bx-cloud-download");
-                button.querySelector("span").innerText = "Download";
+                button.querySelector("span").innerText = "Download PDF";
             }, 2000); // 设置2秒延迟来恢复按钮文本和图标
         }, 100); // 0.1秒后执行下载完成的操作
     }
@@ -320,10 +313,13 @@ function startDownload() {
             button.querySelector("span").innerText = "Completed";
             button.classList.remove("active"); // 移除动画
 
+            // 调用删除函数
+            deleteZip();
+
             // 恢复按钮状态为“Download”
             setTimeout(() => {
                 button.querySelector("i").classList.replace("bx-check-circle", "bx-cloud-download");
-                button.querySelector("span").innerText = "Download Zip";
+                button.querySelector("span").innerText = "Download ZIP";
             }, 2000); // 设置2秒延迟来恢复按钮文本和图标
         }, 100); // 0.1秒后执行下载完成的操作
     })
@@ -797,10 +793,28 @@ function toggleTableRow(checkbox) {
                 loopFunction();
             } else if(rowId =='CycleDistribution'){
                 cycleFunction();
+                const tds = row.querySelectorAll('td');
+                tds.forEach((td, index) => {
+                    if (index > 1) { 
+                        td.textContent = '/';
+                    }
+                });
             } else if(rowId == 'NestedBubbles'){
                 NestedBubblesFunction();
+                const tds = row.querySelectorAll('td');
+                tds.forEach((td, index) => {
+                    if (index == 1 || index == 3) { 
+                        td.textContent = '/';
+                    }
+                });
             } else if(rowId =='BubbleChains'){
                 BubbleChainsFunction();
+                const tds = row.querySelectorAll('td');
+                tds.forEach((td, index) => {
+                    if (index == 1 || index == 3) { 
+                        td.textContent = '/';
+                    }
+                });
             } else if(rowId =='Coverage'){
                 const digraph = row.querySelector('[data-graph="digraph"]');
                 digraph.innerHTML = `
@@ -1203,13 +1217,39 @@ function CheckData(){
                                                                         maxRotation: 0, // 设置为 0 表示水平显示
                                                                         minRotation: 0, // 防止旋转
                                                                         stepSize: 2 // 每隔 2 个显示一个标签
+                                                                    },
+                                                                    y: {
+                                                                        type: 'linear', // 修改为线性坐标系
+                                                                        position: 'left',
+                                                                        ticks: {
+                                                                            callback: function (value) {
+                                                                                if (Number.isInteger(value)) {
+                                                                                    return value;  // 只显示整数刻度
+                                                                                }
+                                                                                return null;  // 隐藏非整数刻度
+                                                                            }
+                                                                        },
+                                                                        title: { display: true, text: 'Number (Log)' } // 修改标题文本
                                                                     }
-                                
                                                                 }
                                                             },
                                                             plugins: {
                                                                 legend: {
                                                                     display: false  // 这会隐藏整个图例（包括任何标签）
+                                                                },
+                                                                tooltip: {
+                                                                    callbacks: {
+                                                                        label: function (context) {
+                                                                            var label = context.dataset.label || '';
+                                                                            if (label) {
+                                                                                label += ': ';
+                                                                            }
+                                                                            if (context.parsed.y !== null) {
+                                                                                label += context.raw.originalY;  // 显示原始值
+                                                                            }
+                                                                            return `Number: ${label}`;  // 使用反引号构建字符串
+                                                                        }
+                                                                    }
                                                                 }
                                                             },
                                                             responsive: false,  // 防止图表响应容器尺寸变化
@@ -1279,7 +1319,7 @@ function CheckData(){
                                         appendLoop(position+4+array[1],`../../data/${value}/bidirectedGraph/loop.txt`);
                                     }
                                     else if(item.id == 'CycleDistributionRow'){
-                                        appendcycle(position+4+array[1],`../../data/${value}/bidirectedGraph/cycle.txt`);
+                                        item.children[position+4+array[1]].textContent =  '/';
                                     }
                                     else if(item.id == 'NestedBubblesRow'){
                                         appendNestedBubblesdata(position+4+array[1],`../../data/${value}/bidirectedGraph/nestedBubblesLevel.txt`);
@@ -1364,7 +1404,7 @@ function CheckData(){
                                                         type: 'bar',
                                                         data: {
                                                             datasets: [{
-                                                                label:'',
+                                                                label: '',
                                                                 data: formattedData,
                                                                 backgroundColor: 'rgba(54, 162, 235, 0.2)',
                                                                 borderColor: 'rgba(54, 162, 235, 1)',
@@ -1374,23 +1414,48 @@ function CheckData(){
                                                         options: {
                                                             scales: {
                                                                 x: {
-                                                                    type:'linear',
-                                                                    position:'bottom',
-                                                                    ticks:{
+                                                                    type: 'linear',
+                                                                    position: 'bottom',
+                                                                    ticks: {
                                                                         maxRotation: 0, // 设置为 0 表示水平显示
                                                                         minRotation: 0, // 防止旋转
                                                                         stepSize: 2 // 每隔 2 个显示一个标签
                                                                     }
-                                
+                                                                },
+                                                                y: {
+                                                                    type: 'linear', // 修改为线性坐标系
+                                                                    position: 'left',
+                                                                    ticks: {
+                                                                        callback: function (value) {
+                                                                            if (Number.isInteger(value)) {
+                                                                                return value;  // 只显示整数刻度
+                                                                            }
+                                                                            return null;  // 隐藏非整数刻度
+                                                                        }
+                                                                    },
+                                                                    title: { display: true, text: 'Number (Log)' } // 修改标题文本
                                                                 }
                                                             },
                                                             plugins: {
                                                                 legend: {
                                                                     display: false  // 这会隐藏整个图例（包括任何标签）
+                                                                },
+                                                                tooltip: {
+                                                                    callbacks: {
+                                                                        label: function (context) {
+                                                                            var label = context.dataset.label || '';
+                                                                            if (label) {
+                                                                                label += ': ';
+                                                                            }
+                                                                            if (context.parsed.y !== null) {
+                                                                                label += context.raw.originalY;  // 显示原始值
+                                                                            }
+                                                                            return `Number: ${label}`;  // 使用反引号构建字符串
+                                                                        }
+                                                                    }
                                                                 }
                                                             },
                                                             responsive: false,  // 防止图表响应容器尺寸变化
-                                
                                                         }
                                                     });
                                                     canvas.style.display = "none";    
@@ -1458,13 +1523,10 @@ function CheckData(){
                                 else if(item.id == 'LoopLengthRow'){
                                     appendLoop(position+4+array[1]+array[2],`../../data/${value}/biedgedGraph/loop.txt`);
                                 }
-                                else if(item.id == 'CycleDistributionRow'){
-                                    appendcycle(position+4+array[1]+array[2],`../../data/${value}/biedgedGraph/cycle.txt`);
-                                }
                                 else if ( item.id == 'CoverageRow') {
                                     item.children[position+4+array[1]+array[2]].textContent =  '/';
                                 }
-                                else if(item.id == 'NestedBubblesRow' || item.id == 'BubbleChainsRow'){
+                                else if(item.id == 'NestedBubblesRow' || item.id == 'BubbleChainsRow'|| item.id == 'CycleDistributionRow'){
                                     item.children[position+4+array[1]+array[2]].textContent =  '/';
                                 }
                                 else{
@@ -1604,119 +1666,56 @@ function getChartOptions() {
     };
 }
 
-function appendLoop(index,filepath){
+function appendLoop(index, filepath) {
     return fetch(filepath)
-    .then(response => {
+        .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.text();
         })
         .then(data => {
+            if (!data || data.trim() === "") {
+                // 如果文件为空，在表格中显示 "不存在"
+                const row = document.querySelector(`#LoopLengthRow`);
+                const td = row.children[index];
+                td.textContent = "Non-existent";
+                return;
+            }
+
             const row = document.querySelector(`#LoopLengthRow`);
             const td = row.children[index];
             var canvas = document.createElement('canvas');
-            canvas.id = index+'loopCanvas';
+            canvas.id = index + 'loopCanvas';
             canvas.width = 200;  // Set the width of the canvas
             canvas.height = 150; // Set the height of the canvas
             td.appendChild(canvas);
-            const graphdata =[];
+
+            const graphdata = [];
             const lines = data.split('\n');
             lines.forEach(line => {
-                //console.log(line);
                 const cleanedLine = line.replace(/^#/, '').trim();
                 let [value1, value2] = cleanedLine.split(/\s+/).filter(Boolean);
                 value1 = Number(value1);
-                value2 = Number(value2)
-                value2 = Math.log2(value2+1);
+                value2 = Number(value2);
                 if (value1 && value2) {
-                    graphdata.push([Number(value1),Number(value2)]);
+                    graphdata.push({ x: value1, y: Math.log2(value2 + 1), originalY: value2 });
                 }
             });
-            //console.log(graphdata);
-            const formattedData = graphdata.map(item => ({ x: item[0], y: item[1] }));
-            //console.log(formattedData);
-            var ctx = document.getElementById(index+'loopCanvas').getContext('2d');  
-            var loopCanvas = new Chart(ctx, {
-                type: 'bar',
-            data: {
-                datasets: [{
-                    label:'',
-                    data: formattedData,
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    x: {
-                        type:'linear',
-                        position:'bottom',
-                        ticks:{
-                            maxRotation: 0, // 设置为 0 表示水平显示
-                            minRotation: 0, // 防止旋转
-                            stepSize: 2 // 每隔 2 个显示一个标签
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false  // 这会隐藏整个图例（包括任何标签）
-                    }
-                },
-                responsive: false,  // 防止图表响应容器尺寸变化
 
-            }
-        });
-        
-            return formattedData;
-        })
-        .catch(error => console.error(`Error loading data from ${filepath}:`, error));
-}
+            const formattedData = graphdata.map(item => ({ x: item.x, y: item.y, originalY: item.originalY }));
+            const xMax = Math.max(...formattedData.map(item => item.x));
+            const stepSize = Math.ceil(xMax / 10);
 
-function loadloopdata(index,filepath){
-    return fetch(filepath)
-    .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.text();
-        })
-        .then(data => {
-            const row = document.querySelector(`#LoopLengthRow`);
-            index = Number(index) + 1;
-            let td = row.querySelector(`td:nth-child(${index})`);
-            var canvas = document.createElement('canvas');
-            canvas.id = index +'loopCanvas';
-            canvas.width = 200;  // Set the width of the canvas
-            canvas.height = 150; // Set the height of the canvas
-            td.appendChild(canvas);
-            const graphdata =[];
-            const lines = data.split('\n');
-            lines.forEach(line => {
-                //console.log(line);
-                const cleanedLine = line.replace(/^#/, '').trim();
-                let [value1, value2] = cleanedLine.split(/\s+/).filter(Boolean);
-                value1 = Number(value1);
-                value2 = Number(value2)
-                value2 = Math.log2(value2+1);
-                if (value1 && value2) {
-                    graphdata.push([Number(value1),Number(value2)]);
-                }
-            });
-            //console.log(graphdata);
-            const formattedData = graphdata.map(item => ({ x: item[0], y: item[1] }));
-            //console.log(formattedData);
-            var ctx = document.getElementById(index +'loopCanvas').getContext('2d');  
+            var ctx = document.getElementById(index + 'loopCanvas').getContext('2d');
             var loopCanvas = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     datasets: [{
                         label: '',
                         data: formattedData,
-                        backgroundColor: 'rgba(54, 162, 235, 1)', // 不透明蓝色
-                        borderColor: 'rgba(54, 162, 235, 1)', // 同样设置为不透明蓝色
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
                         borderWidth: 1
                     }]
                 },
@@ -1728,453 +1727,843 @@ function loadloopdata(index,filepath){
                             ticks: {
                                 maxRotation: 0, // 设置为 0 表示水平显示
                                 minRotation: 0, // 防止旋转
-                                stepSize: 2 // 每隔 2 个显示一个标签
-                            }
+                                stepSize: stepSize,
+                                callback: function (value) {
+                                    if (Number.isInteger(value)) {
+                                        return value;  // 只显示整数刻度
+                                    }
+                                    return null;  // 隐藏非整数刻度
+                                },
+                            },
+                            title: { display: true, text: 'Loop Length' }
+                        },
+                        y: {
+                            type: 'linear',
+                            position: 'left',
+                            ticks: {
+                                callback: function (value) {
+                                    if (Number.isInteger(value)) {
+                                        return value;  // 只显示整数刻度
+                                    }
+                                    return null;  // 隐藏非整数刻度
+                                }
+                            },
+                            title: { display: true, text: 'Number (Log)' }
                         }
                     },
                     plugins: {
                         legend: {
-                            display: false // 隐藏图例
+                            display: false  // 这会隐藏整个图例（包括任何标签）
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    var label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.raw.originalY;  // 显示原始值
+                                    }
+                                    return `Number: ${label}`;
+                                }
+                            }
                         }
                     },
-                    responsive: false // 防止图表响应容器尺寸变化
+                    responsive: false,  // 防止图表响应容器尺寸变化
                 }
             });
+
             return formattedData;
         })
         .catch(error => console.error(`Error loading data from ${filepath}:`, error));
 }
 
-function appendcycle(index,filepath){
+function loadloopdata(index, filepath) {
     return fetch(filepath)
-    .then(response => {
+        .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.text();
         })
         .then(data => {
-            // console.log(data);
+            if (!data || data.trim() === "") {
+                // 如果文件为空，在表格中显示 "不存在"
+                const row = document.querySelector(`#LoopLengthRow`);
+                const td = row.children[index];
+                td.textContent = "Non-existent";
+                return;
+            }
+
+            const row = document.querySelector(`#LoopLengthRow`);
+            index = Number(index) + 1;
+            let td = row.querySelector(`td:nth-child(${index})`);
+            var canvas = document.createElement('canvas');
+            canvas.id = index + 'loopCanvas';
+            canvas.width = 200;  // Set the width of the canvas
+            canvas.height = 150; // Set the height of the canvas
+            td.appendChild(canvas);
+
+            const graphdata = [];
+            const lines = data.split('\n');
+            lines.forEach(line => {
+                const cleanedLine = line.replace(/^#/, '').trim();
+                let [value1, value2] = cleanedLine.split(/\s+/).filter(Boolean);
+                value1 = Number(value1);
+                value2 = Number(value2);
+                if (value1 && value2) {
+                    graphdata.push({ x: value1, y: Math.log2(value2 + 1), originalY: value2 });
+                }
+            });
+
+            const formattedData = graphdata.map(item => ({ x: item.x, y: item.y, originalY: item.originalY }));
+            const xMax = Math.max(...formattedData.map(item => item.x));
+            const stepSize = Math.ceil(xMax / 10);
+
+            var ctx = document.getElementById(index + 'loopCanvas').getContext('2d');
+            var loopCanvas = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    datasets: [{
+                        label: '',
+                        data: formattedData,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            position: 'bottom',
+                            ticks: {
+                                maxRotation: 0, // 设置为 0 表示水平显示
+                                minRotation: 0, // 防止旋转
+                                stepSize: stepSize,
+                                callback: function (value) {
+                                    if (Number.isInteger(value)) {
+                                        return value;  // 只显示整数刻度
+                                    }
+                                    return null;  // 隐藏非整数刻度
+                                },
+                            },
+                            title: { display: true, text: 'Loop Length' }
+                        },
+                        y: {
+                            type: 'linear',
+                            position: 'left',
+                            ticks: {
+                                callback: function (value) {
+                                    if (Number.isInteger(value)) {
+                                        return value;  // 只显示整数刻度
+                                    }
+                                    return null;  // 隐藏非整数刻度
+                                }
+                            },
+                            title: { display: true, text: 'Number (Log)' }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false  // 这会隐藏整个图例（包括任何标签）
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    var label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.raw.originalY;  // 显示原始值
+                                    }
+                                    return `Number: ${label}`;
+                                }
+                            }
+                        }
+                    },
+                    responsive: false,  // 防止图表响应容器尺寸变化
+                }
+            });
+
+            return formattedData;
+        })
+        .catch(error => console.error(`Error loading data from ${filepath}:`, error));
+}
+
+function appendcycle(index, filepath) {
+    return fetch(filepath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.text();
+        })
+        .then(data => {
+            if (!data || data.trim() === "") {
+                // 如果文件为空，在表格中显示 "不存在"
+                const row = document.querySelector(`#CycleDistributionRow`);
+                const td = row.children[index];
+                td.textContent = "Non-existent";
+                return;
+            }
+
             const row = document.querySelector(`#CycleDistributionRow`);
             const td = row.children[index];
             var canvas = document.createElement('canvas');
-            canvas.id = index+'cycleCanvas';
+            canvas.id = index + 'cycleCanvas';
             canvas.width = 200;  // Set the width of the canvas
             canvas.height = 150; // Set the height of the canvas
             td.appendChild(canvas);
-            const graphdata =[];
+
+            const graphdata = [];
             const lines = data.split('\n');
             lines.forEach(line => {
-                //console.log(line);
                 const cleanedLine = line.replace(/^#/, '').trim();
                 let [value1, value2] = cleanedLine.split(/\s+/).filter(Boolean);
                 value1 = Number(value1);
-                value2 = Number(value2)
-                value2 = Math.log2(value2+1);
+                value2 = Number(value2);
                 if (value1 && value2) {
-                    graphdata.push([Number(value1),Number(value2)]);
+                    graphdata.push({ x: value1, y: Math.log2(value2 + 1), originalY: value2 });
                 }
             });
-            //console.log(graphdata);
-            const formattedData = graphdata.map(item => ({ x: item[0], y: item[1] }));
-            //console.log(formattedData);
-            var ctx = document.getElementById(index+'cycleCanvas').getContext('2d');  
+
+            const formattedData = graphdata.map(item => ({ x: item.x, y: item.y, originalY: item.originalY }));
+            const xMax = Math.max(...formattedData.map(item => item.x));
+            const stepSize = Math.ceil(xMax / 10);
+
+            var ctx = document.getElementById(index + 'cycleCanvas').getContext('2d');
             var cycleCanvas = new Chart(ctx, {
                 type: 'bar',
-            data: {
-                datasets: [{
-                    label:'',
-                    data: formattedData,
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    x: {
-                        type:'linear',
-                        position:'bottom',
-                        ticks:{
-                            maxRotation: 0, // 设置为 0 表示水平显示
-                            minRotation: 0, // 防止旋转
-                            stepSize: 2 // 每隔 2 个显示一个标签
+                data: {
+                    datasets: [{
+                        label: '',
+                        data: formattedData,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            position: 'bottom',
+                            ticks: {
+                                maxRotation: 0, // 设置为 0 表示水平显示
+                                minRotation: 0, // 防止旋转
+                                stepSize: stepSize,
+                                callback: function (value) {
+                                    if (Number.isInteger(value)) {
+                                        return value;  // 只显示整数刻度
+                                    }
+                                    return null;  // 隐藏非整数刻度
+                                },
+                            },
+                            title: { display: true, text: 'Cycle Length' }
+                        },
+                        y: {
+                            type: 'linear',
+                            position: 'left',
+                            ticks: {
+                                callback: function (value) {
+                                    if (Number.isInteger(value)) {
+                                        return value;  // 只显示整数刻度
+                                    }
+                                    return null;  // 隐藏非整数刻度
+                                }
+                            },
+                            title: { display: true, text: 'Number (Log)' }
                         }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false  // 这会隐藏整个图例（包括任何标签）
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    var label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.raw.originalY;  // 显示原始值
+                                    }
+                                    return `Number: ${label}`;
+                                }
+                            }
+                        }
+                    },
+                    responsive: false,  // 防止图表响应容器尺寸变化
+                }
+            });
 
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false  // 这会隐藏整个图例（包括任何标签）
-                    }
-                },
-                responsive: false,  // 防止图表响应容器尺寸变化
-
-            }
-        });
-            
             return formattedData;
         })
         .catch(error => console.error(`Error loading data from ${filepath}:`, error));
 }
 
-function loadcycledata(index,filepath){
+function loadcycledata(index, filepath) {
     return fetch(filepath)
-    .then(response => {
+        .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.text();
         })
         .then(data => {
-            // console.log(data);
+            if (!data || data.trim() === "") {
+                // 如果文件为空，在表格中显示 "不存在"
+                const row = document.querySelector(`#CycleDistributionRow`);
+                const td = row.children[index];
+                td.textContent = "Non-existent";
+                return;
+            }
+
             const row = document.querySelector(`#CycleDistributionRow`);
             index = Number(index) + 1;
             let td = row.querySelector(`td:nth-child(${index})`);
             var canvas = document.createElement('canvas');
-            canvas.id = index +'cycleCanvas';
+            canvas.id = index + 'cycleCanvas';
             canvas.width = 200;  // Set the width of the canvas
             canvas.height = 150; // Set the height of the canvas
             td.appendChild(canvas);
-            const graphdata =[];
+
+            const graphdata = [];
             const lines = data.split('\n');
             lines.forEach(line => {
-                //console.log(line);
                 const cleanedLine = line.replace(/^#/, '').trim();
                 let [value1, value2] = cleanedLine.split(/\s+/).filter(Boolean);
                 value1 = Number(value1);
-                value2 = Number(value2)
-                value2 = Math.log2(value2+1);
+                value2 = Number(value2);
                 if (value1 && value2) {
-                    graphdata.push([Number(value1),Number(value2)]);
+                    graphdata.push({ x: value1, y: Math.log2(value2 + 1), originalY: value2 });
                 }
             });
-            //console.log(graphdata);
-            const formattedData = graphdata.map(item => ({ x: item[0], y: item[1] }));
-            //console.log(formattedData);
-            var ctx = document.getElementById(index +'cycleCanvas').getContext('2d');  
+
+            const formattedData = graphdata.map(item => ({ x: item.x, y: item.y, originalY: item.originalY }));
+            const xMax = Math.max(...formattedData.map(item => item.x));
+            const stepSize = Math.ceil(xMax / 10);
+
+            var ctx = document.getElementById(index + 'cycleCanvas').getContext('2d');
             var cycleCanvas = new Chart(ctx, {
                 type: 'bar',
-            data: {
-                datasets: [{
-                    label:'',
-                    data: formattedData,
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    x: {
-                        type:'linear',
-                        position:'bottom',
-                        ticks:{
-                            maxRotation: 0, // 设置为 0 表示水平显示
-                            minRotation: 0, // 防止旋转
-                            stepSize: 2 // 每隔 2 个显示一个标签
+                data: {
+                    datasets: [{
+                        label: '',
+                        data: formattedData,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            position: 'bottom',
+                            ticks: {
+                                maxRotation: 0, // 设置为 0 表示水平显示
+                                minRotation: 0, // 防止旋转
+                                stepSize: stepSize,
+                                callback: function (value) {
+                                    if (Number.isInteger(value)) {
+                                        return value;  // 只显示整数刻度
+                                    }
+                                    return null;  // 隐藏非整数刻度
+                                },
+                            },
+                            title: { display: true, text: 'Cycle Length' }
+                        },
+                        y: {
+                            type: 'linear',
+                            position: 'left',
+                            ticks: {
+                                callback: function (value) {
+                                    if (Number.isInteger(value)) {
+                                        return value;  // 只显示整数刻度
+                                    }
+                                    return null;  // 隐藏非整数刻度
+                                }
+                            },
+                            title: { display: true, text: 'Number (Log)' }
                         }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false  // 这会隐藏整个图例（包括任何标签）
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    var label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.raw.originalY;  // 显示原始值
+                                    }
+                                    return `Number: ${label}`;
+                                }
+                            }
+                        }
+                    },
+                    responsive: false,  // 防止图表响应容器尺寸变化
+                }
+            });
 
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false  // 这会隐藏整个图例（包括任何标签）
-                    }
-                },
-                responsive: false,  // 防止图表响应容器尺寸变化
-
-            }
-        });
             return formattedData;
         })
         .catch(error => console.error(`Error loading data from ${filepath}:`, error));
 }
 
-function appendBubbleChainsdata(index,filepath){
+function appendBubbleChainsdata(index, filepath) {
     return fetch(filepath)
-    .then(response => {
+        .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.text();
         })
         .then(data => {
+            if (!data || data.trim() === "") {
+                // 如果文件为空，在表格中显示 "不存在"
+                const row = document.querySelector(`#BubbleChainsRow`);
+                const td = row.children[index];
+                td.textContent = "Non-existent";
+                return;
+            }
+
             const row = document.querySelector(`#BubbleChainsRow`);
             const td = row.children[index];
             var canvas = document.createElement('canvas');
-            canvas.id =index+'BubbleChainsCanvas';
+            canvas.id = index + 'BubbleChainsCanvas';
             canvas.width = 200;  // Set the width of the canvas
             canvas.height = 150; // Set the height of the canvas
             td.appendChild(canvas);
-            const graphdata =[];
+
+            const graphdata = [];
             const lines = data.split('\n');
             lines.forEach(line => {
-                //console.log(line);
                 const cleanedLine = line.replace(/^#/, '').trim();
                 let [value1, value2] = cleanedLine.split(/\s+/).filter(Boolean);
                 value1 = Number(value1);
-                value2 = Number(value2)
-                value2 = Math.log2(value2+1);
+                value2 = Number(value2);
                 if (value1 && value2) {
-                    graphdata.push([Number(value1),Number(value2)]);
+                    graphdata.push({ label: value1.toString(), value: value2 });
                 }
             });
-            //console.log(graphdata);
-            const formattedData = graphdata.map(item => ({ x: item[0], y: item[1] }));
-            //console.log(formattedData);
-            var ctx = document.getElementById(index+'BubbleChainsCanvas').getContext('2d');  
-            var BubbleChainsCanvas = new Chart(ctx, {
-                type: 'bar',
-            data: {
-                datasets: [{
-                    label:'',
-                    data: formattedData,
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    x: {
-                        type:'linear',
-                        position:'bottom',
-                        ticks:{
-                            maxRotation: 0, // 设置为 0 表示水平显示
-                            minRotation: 0, // 防止旋转
-                            autoSkip: true
-                        }
 
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false  // 这会隐藏整个图例（包括任何标签）
-                    }
-                },
-                responsive: false,  // 防止图表响应容器尺寸变化
+            // 按标签（label）从小到大排序数据
+            graphdata.sort((a, b) => a.label - b.label);
 
+            const labels = graphdata.map(item => item.label);
+            const values = graphdata.map(item => item.value);
+
+            // 生成颜色函数
+            function getRandomColor() {
+                const letters = '0123456789ABCDEF';
+                let color = '#';
+                for (let i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
             }
-        });
-            
-            return formattedData;
+
+            // 生成颜色数组
+            const backgroundColors = values.map(() => getRandomColor());
+            const borderColors = backgroundColors.map(color => color.replace('0.2', '1'));
+
+            var ctx = document.getElementById(index + 'BubbleChainsCanvas').getContext('2d');
+            var BubbleChainsCanvas = new Chart(ctx, {
+                type: 'doughnut', // 更改图表类型为环形图
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '',
+                        data: values,
+                        backgroundColor: backgroundColors,
+                        borderColor: borderColors,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            display: false,  // 显示图例
+                            labels: {
+                                generateLabels: function(chart) {
+                                    const data = chart.data;
+                                    // 按标签（label）从小到大排序图例
+                                    return data.labels.map((label, i) => {
+                                        const dataset = data.datasets[0];
+                                        return {
+                                            text: `${label}: ${dataset.data[i]}`,
+                                            fillStyle: dataset.backgroundColor[i],
+                                            strokeStyle: dataset.borderColor[i],
+                                            lineWidth: dataset.borderWidth,
+                                            hidden: false,
+                                            index: i
+                                        };
+                                    }).sort((a, b) => a.text.split(': ')[0] - b.text.split(': ')[0]); // 按标签排序图例
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const dataPoint = context.raw;
+                                    return `Number: ${dataPoint}`;
+                                }
+                            }
+                        }
+                    },
+                    responsive: false,  // 防止图表响应容器尺寸变化
+                }
+            });
+
+            return values;
         })
         .catch(error => console.error(`Error loading data from ${filepath}:`, error));
 }
 
-function loadBubbleChainsdata(index,filepath){
+function loadBubbleChainsdata(index, filepath) {
     return fetch(filepath)
-    .then(response => {
+        .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.text();
         })
         .then(data => {
+            if (!data || data.trim() === "") {
+                // 如果文件为空，在表格中显示 "不存在"
+                const row = document.querySelector(`#BubbleChainsRow`);
+                const td = row.children[index];
+                td.textContent = "Non-existent";
+                return;
+            }
+
             const row = document.querySelector(`#BubbleChainsRow`);
             index = Number(index) + 1;
             let td = row.querySelector(`td:nth-child(${index})`);
             var canvas = document.createElement('canvas');
-            canvas.id = index +'BubbleChainsCanvas';
+            canvas.id = index + 'BubbleChainsCanvas';
             canvas.width = 200;  // Set the width of the canvas
             canvas.height = 150; // Set the height of the canvas
             td.appendChild(canvas);
-            const graphdata =[];
+
+            const graphdata = [];
             const lines = data.split('\n');
             lines.forEach(line => {
-                //console.log(line);
                 const cleanedLine = line.replace(/^#/, '').trim();
                 let [value1, value2] = cleanedLine.split(/\s+/).filter(Boolean);
                 value1 = Number(value1);
-                value2 = Number(value2)
-                value2 = Math.log2(value2+1);
+                value2 = Number(value2);
                 if (value1 && value2) {
-                    graphdata.push([Number(value1),Number(value2)]);
+                    graphdata.push({ label: value1.toString(), value: value2 });
                 }
             });
-            //console.log(graphdata);
-            const formattedData = graphdata.map(item => ({ x: item[0], y: item[1] }));
-            //console.log(formattedData);
-            var ctx = document.getElementById(index +'BubbleChainsCanvas').getContext('2d');  
-            var BubbleChainsCanvas = new Chart(ctx, {
-                type: 'bar',
-            data: {
-                datasets: [{
-                    label:'',
-                    data: formattedData,
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    x: {
-                        type:'linear',
-                        position:'bottom',
-                        ticks:{
-                            maxRotation: 0, // 设置为 0 表示水平显示
-                            minRotation: 0, // 防止旋转
-                            autoSkip: true
-                        }
 
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false  // 这会隐藏整个图例（包括任何标签）
-                    }
-                },
-                responsive: false,  // 防止图表响应容器尺寸变化
+            // 按数值从小到大排序数据
+            graphdata.sort((a, b) => a.label - b.label);
 
+            const labels = graphdata.map(item => item.label);
+            const values = graphdata.map(item => item.value);
+
+            // 生成颜色函数
+            function getRandomColor() {
+                const letters = '0123456789ABCDEF';
+                let color = '#';
+                for (let i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
             }
-        });
-            return formattedData;
+
+            // 生成颜色数组
+            const backgroundColors = values.map(() => getRandomColor());
+            const borderColors = backgroundColors.map(color => color.replace('0.2', '1'));
+
+            var ctx = document.getElementById(index + 'BubbleChainsCanvas').getContext('2d');
+            var BubbleChainsCanvas = new Chart(ctx, {
+                type: 'doughnut', // 更改图表类型为环形图
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '',
+                        data: values,
+                        backgroundColor: backgroundColors,
+                        borderColor: borderColors,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            display: false,  // 显示图例
+                            labels: {
+                                generateLabels: function(chart) {
+                                    const data = chart.data;
+                                    return data.labels.map((label, i) => {
+                                        const dataset = data.datasets[0];
+                                        return {
+                                            text: `${label}`,
+                                            fillStyle: dataset.backgroundColor[i],
+                                            strokeStyle: dataset.borderColor[i],
+                                            lineWidth: dataset.borderWidth,
+                                            hidden: false,
+                                            index: i
+                                        };
+                                    }).sort((a, b) => a.text.split(': ')[1] - b.text.split(': ')[1]); // 按数值排序图例
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const dataPoint = context.raw;
+                                    return `Number: ${dataPoint}`;
+                                }
+                            }
+                        }
+                    },
+                    responsive: false,  // 防止图表响应容器尺寸变化
+                }
+            });
+
+            return values;
         })
         .catch(error => console.error(`Error loading data from ${filepath}:`, error));
 }
 
-function appendNestedBubblesdata(index,filepath){
+function appendNestedBubblesdata(index, filepath) {
     return fetch(filepath)
-    .then(response => {
+        .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.text();
         })
         .then(data => {
+            if (!data || data.trim() === "") {
+                // 如果文件为空，在表格中显示 "不存在"
+                const row = document.querySelector(`#NestedBubblesRow`);
+                const td = row.children[index];
+                td.textContent = "Non-existent";
+                return;
+            }
+
             const row = document.querySelector(`#NestedBubblesRow`);
             const td = row.children[index];
             var canvas = document.createElement('canvas');
-            canvas.id = index+'NestedCanvas';
+            canvas.id = index + 'NestedCanvas';
             canvas.width = 200;  // Set the width of the canvas
             canvas.height = 150; // Set the height of the canvas
+            // canvas.style.backgroundColor = 'rgb(255, 255, 255)';
             td.appendChild(canvas);
-            const graphdata =[];
+
+            const graphdata = [];
             const lines = data.split('\n');
             lines.forEach(line => {
-                //console.log(line);
                 const cleanedLine = line.replace(/^#/, '').trim();
                 let [value1, value2] = cleanedLine.split(/\s+/).filter(Boolean);
                 value1 = Number(value1);
-                value2 = Number(value2)
-                value2 = Math.log2(value2+1);
+                value2 = Number(value2);
                 if (value1 && value2) {
-                    graphdata.push([Number(value1),Number(value2)]);
+                    graphdata.push({ x: value1, y: Math.log2(value2 + 1), originalY: value2 });
                 }
             });
-            //console.log(graphdata);
-            const formattedData = graphdata.map(item => ({ x: item[0], y: item[1] }));
-            //console.log(formattedData);
-            var ctx = document.getElementById(index+'NestedCanvas').getContext('2d');  
+
+            const formattedData = graphdata.map(item => ({ x: item.x, y: item.y, originalY: item.originalY }));
+            const xMax = Math.max(...formattedData.map(item => item.x));
+            const stepSize = Math.ceil(xMax / 10);
+
+            var ctx = document.getElementById(index + 'NestedCanvas').getContext('2d');
             var NestedCanvas = new Chart(ctx, {
                 type: 'bar',
-            data: {
-                datasets: [{
-                    label:'',
-                    data: formattedData,
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    x: {
-                        type:'linear',
-                        position:'bottom',
-                        ticks:{
-                            maxRotation: 0, // 设置为 0 表示水平显示
-                            minRotation: 0, // 防止旋转
-                            stepSize: 2 // 每隔 2 个显示一个标签
+                data: {
+                    datasets: [{
+                        label: '',
+                        data: formattedData,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            position: 'bottom',
+                            ticks: {
+                                maxRotation: 0, // 设置为 0 表示水平显示
+                                minRotation: 0, // 防止旋转
+                                stepSize: stepSize,
+                                callback: function (value) {
+                                    if (Number.isInteger(value)) {
+                                        return value;  // 只显示整数刻度
+                                    }
+                                    return null;  // 隐藏非整数刻度
+                                },
+                            },
+                            title: { display: true, text: 'Bubble Nesting Depth' }
+                        },
+                        y: {
+                            type: 'logarithmic',
+                            position: 'left',
+                            ticks: {
+                                callback: function (value) {
+                                    if (Number.isInteger(value)) {
+                                        return value;  // 只显示整数刻度
+                                    }
+                                    return null;  // 隐藏非整数刻度
+                                }
+                            },
+                            title: { display: true, text: 'Number (Log)' }
                         }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false  // 这会隐藏整个图例（包括任何标签）
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    var label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.raw.originalY;  // 显示原始值
+                                    }
+                                    return `Number: ${label}`;
+                                }
+                            }
+                        }
+                    },
+                    responsive: false,  // 防止图表响应容器尺寸变化
+                }
+            });
 
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false  // 这会隐藏整个图例（包括任何标签）
-                    }
-                },
-                responsive: false,  // 防止图表响应容器尺寸变化
-
-            }
-        });
-            
             return formattedData;
         })
         .catch(error => console.error(`Error loading data from ${filepath}:`, error));
 }
 
-
-function loadNestedBubblesdata(index,filepath){
+function loadNestedBubblesdata(index, filepath) {
     return fetch(filepath)
-    .then(response => {
+        .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.text();
         })
         .then(data => {
+            if (!data || data.trim() === "") {
+                // 如果文件为空，在表格中显示 "不存在"
+                const row = document.querySelector(`#NestedBubblesRow`);
+                const td = row.children[index];
+                td.textContent = "Non-existent";
+                return;
+            }
+
             const row = document.querySelector(`#NestedBubblesRow`);
             index = Number(index) + 1;
             let td = row.querySelector(`td:nth-child(${index})`);
             var canvas = document.createElement('canvas');
-            canvas.id = index +'NestedCanvas';
+            canvas.id = index + 'NestedCanvas';
             canvas.width = 200;  // Set the width of the canvas
             canvas.height = 150; // Set the height of the canvas
+            // canvas.style.backgroundColor = 'rgb(255, 255, 255)';
             td.appendChild(canvas);
-            const graphdata =[];
+
+            const graphdata = [];
             const lines = data.split('\n');
             lines.forEach(line => {
-                //console.log(line);
                 const cleanedLine = line.replace(/^#/, '').trim();
                 let [value1, value2] = cleanedLine.split(/\s+/).filter(Boolean);
                 value1 = Number(value1);
-                value2 = Number(value2)
-                value2 = Math.log2(value2+1);
+                value2 = Number(value2);
                 if (value1 && value2) {
-                    graphdata.push([Number(value1),Number(value2)]);
+                    graphdata.push({ x: value1, y: Math.log2(value2 + 1), originalY: value2 });
                 }
             });
-            //console.log(graphdata);
-            const formattedData = graphdata.map(item => ({ x: item[0], y: item[1] }));
-            //console.log(formattedData);
-            var ctx = document.getElementById(index +'NestedCanvas').getContext('2d');  
+
+            const formattedData = graphdata.map(item => ({ x: item.x, y: item.y, originalY: item.originalY }));
+            const xMax = Math.max(...formattedData.map(item => item.x));
+            const stepSize = Math.ceil(xMax / 10);
+
+            var ctx = document.getElementById(index + 'NestedCanvas').getContext('2d');
             var NestedCanvas = new Chart(ctx, {
                 type: 'bar',
-            data: {
-                datasets: [{
-                    label:'',
-                    data: formattedData,
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    x: {
-                        type:'linear',
-                        position:'bottom',
-                        ticks:{
-                            maxRotation: 0, // 设置为 0 表示水平显示
-                            minRotation: 0, // 防止旋转
-                            stepSize: 2 // 每隔 2 个显示一个标签
+                data: {
+                    datasets: [{
+                        label: '',
+                        data: formattedData,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            position: 'bottom',
+                            ticks: {
+                                maxRotation: 0, // 设置为 0 表示水平显示
+                                minRotation: 0, // 防止旋转
+                                stepSize: stepSize,
+                                callback: function (value) {
+                                    if (Number.isInteger(value)) {
+                                        return value;  // 只显示整数刻度
+                                    }
+                                    return null;  // 隐藏非整数刻度
+                                },
+                            },
+                            title: { display: true, text: 'Bubble Nesting Depth' }
+                        },
+                        y: {
+                            type: 'logarithmic',
+                            position: 'left',
+                            ticks: {
+                                callback: function (value) {
+                                    if (Number.isInteger(value)) {
+                                        return value;  // 只显示整数刻度
+                                    }
+                                    return null;  // 隐藏非整数刻度
+                                }
+                            },
+                            title: { display: true, text: 'Number (Log)' }
                         }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false  // 这会隐藏整个图例（包括任何标签）
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    var label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.raw.originalY;  // 显示原始值
+                                    }
+                                    return `Number: ${label}`;
+                                }
+                            }
+                        }
+                    },
+                    responsive: false,  // 防止图表响应容器尺寸变化
+                }
+            });
 
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false  // 这会隐藏整个图例（包括任何标签）
-                    }
-                },
-                responsive: false,  // 防止图表响应容器尺寸变化
-
-            }
-        });
             return formattedData;
         })
         .catch(error => console.error(`Error loading data from ${filepath}:`, error));
@@ -2209,10 +2598,11 @@ function loopFunction(){
 //                    单GFA文件表格图像绘制
 // =======================================================
 
-function GetAllCoverage(){
-    const CoveragePath=[`../../data/${flag}/digraph/coverage.txt`,`../../data/${flag}/bidirectedGraph/coverage.txt`];
-    const TypeList=['bp','Node','Edge'];
-    CoveragePath.forEach((path,index)=>{
+function GetAllCoverage() {
+    const CoveragePath = [`../../data/${flag}/digraph/coverage.txt`, `../../data/${flag}/bidirectedGraph/coverage.txt`];
+    const TypeList = ['bp', 'Node', 'Edge'];
+
+    CoveragePath.forEach((path, index) => {
         fetch(path)
             .then(response => {
                 if (!response.ok) {
@@ -2221,68 +2611,61 @@ function GetAllCoverage(){
                 return response.text();
             })
             .then(data => {
+                if (!data || data.trim() === "") {
+                    // 如果文件为空，在表格中显示 "不存在"
+                    const row = document.querySelector(`#CoverageRow`);
+                    let td = (index === 0) ? row.querySelector('td:nth-child(2)') : row.querySelector('td:nth-child(3)');
+                    td.textContent = "Non-existent";
+                    return;
+                }
+
                 const row = document.querySelector(`#CoverageRow`);
-                let td;
-                if (index === 0)
-                {
-                    td = row.querySelector('td:nth-child(2)');
-                }
-                else{
-                    td = row.querySelector('td:nth-child(3)');
-                }
-                // console.log(td);
+                let td = (index === 0) ? row.querySelector('td:nth-child(2)') : row.querySelector('td:nth-child(3)');
                 const div = document.createElement('div');
-                div.style.display="margin-top: 10px";
+                div.style.display = "margin-top: 10px";
                 div.style.flexDirection = 'column';
                 td.appendChild(div);
-                // console.log(div);
-                const bpdata =[];
-                const nodedata =[];
-                const edgedata =[];
+
+                const bpdata = [];
+                const nodedata = [];
+                const edgedata = [];
                 const lines = data.split('\n');
                 lines.forEach(line => {
-                    //console.log(line);
-                    if(line.includes('Count')){
+                    if (line.includes('Count')) {
                         return;
                     }
-                    // console.log(line);
                     let parts = line.trim().split(/\s+/); // 使用正则表达式来拆分每行的数字
-                    let Count= parseInt(parts[0], 10);
-                    let bp= parseInt(parts[1], 10);
-                    bp = Number(bp)
-                    bp = Math.log2(bp+1);
-                    let Node= parseInt(parts[2], 10);
-                    Node = Number(Node)
-                    Node = Math.log2(Node+1);
-                    let Edge= parseInt(parts[3], 10);
-                    Edge = Number(Edge)
-                    Edge = Math.log2(Edge+1);
-                    bpdata.push([Number(Count),Number(bp)]);
-                    nodedata.push([Number(Count),Number(Node)]);
-                    edgedata.push([Number(Count),Number(Edge)]);
+                    let Count = parseInt(parts[0], 10);
+                    let bp = Math.log2(Number(parts[1]) + 1);
+                    let Node = Math.log2(Number(parts[2]) + 1);
+                    let Edge = Math.log2(Number(parts[3]) + 1);
+                    bpdata.push({ x: Count, y: bp, originalY: Number(parts[1]) });
+                    nodedata.push({ x: Count, y: Node, originalY: Number(parts[2]) });
+                    edgedata.push({ x: Count, y: Edge, originalY: Number(parts[3]) });
                 });
-                let formattedData;
-                TypeList.forEach(type=>{
-                    if(type === 'bp'){
-                        formattedData = bpdata.map(item => ({ x: item[0], y: item[1] }));
+
+                TypeList.forEach(type => {
+                    let formattedData;
+                    if (type === 'bp') {
+                        formattedData = bpdata;
+                    } else if (type === 'Node') {
+                        formattedData = nodedata;
+                    } else if (type === 'Edge') {
+                        formattedData = edgedata;
                     }
-                    else if(type === 'Node'){
-                        formattedData = nodedata.map(item => ({ x: item[0], y: item[1] }));
-                    }
-                    else if(type === 'Edge'){
-                        formattedData = edgedata.map(item => ({ x: item[0], y: item[1] }));
-                    }
+
                     var canvas = document.createElement('canvas');
-                    canvas.id = 'coverageCanvas'+index+type;
+                    canvas.id = 'coverageCanvas' + index + type;
                     canvas.width = 200;  // Set the width of the canvas
                     canvas.height = 150; // Set the height of the canvas
                     div.appendChild(canvas);
-                    var ctx = document.getElementById('coverageCanvas'+index+type).getContext('2d');  
+
+                    var ctx = document.getElementById('coverageCanvas' + index + type).getContext('2d');
                     var coverageCanvas = new Chart(ctx, {
                         type: 'bar',
                         data: {
                             datasets: [{
-                                label:'',
+                                label: '',
                                 data: formattedData,
                                 backgroundColor: 'rgba(54, 162, 235, 0.2)',
                                 borderColor: 'rgba(54, 162, 235, 1)',
@@ -2292,30 +2675,56 @@ function GetAllCoverage(){
                         options: {
                             scales: {
                                 x: {
-                                    type:'linear',
-                                    position:'bottom',
-                                    ticks:{
+                                    type: 'linear',
+                                    position: 'bottom',
+                                    ticks: {
                                         maxRotation: 0, // 设置为 0 表示水平显示
                                         minRotation: 0, // 防止旋转
                                         stepSize: 2 // 每隔 2 个显示一个标签
                                     }
-
+                                },
+                                y: {
+                                    type: 'linear', // 修改为线性坐标系
+                                    position: 'left',
+                                    ticks: {
+                                        callback: function (value) {
+                                            if (Number.isInteger(value)) {
+                                                return value;  // 只显示整数刻度
+                                            }
+                                            return null;  // 隐藏非整数刻度
+                                        }
+                                    },
+                                    title: { display: true, text: 'Number (Log)' } // 修改标题文本
                                 }
                             },
                             plugins: {
                                 legend: {
                                     display: false  // 这会隐藏整个图例（包括任何标签）
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function (context) {
+                                            var label = context.dataset.label || '';
+                                            if (label) {
+                                                label += ': ';
+                                            }
+                                            if (context.parsed.y !== null) {
+                                                label += context.raw.originalY;  // 显示原始值
+                                            }
+                                            return `Number: ${label}`;  // 使用反引号构建字符串
+                                        }
+                                    }
                                 }
                             },
                             responsive: false,  // 防止图表响应容器尺寸变化
-
                         }
                     });
+
                     canvas.style.display = "none";
-                })
-                
+                });
             })
-    })
+            .catch(error => console.error(`Error loading data from ${path}:`, error));
+    });
 }
 
 function showcoverageGraph(graph,type){

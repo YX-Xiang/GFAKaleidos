@@ -435,15 +435,15 @@
                             <img  id="FileSize" src="static/styles/detail.png"   title="The distribution of cycle lengths."  style="width: 14px; height: 14px;">
                         </td>
                         <td data-graph="digraph" style="display: none;"></td>
-                        <td data-graph="bidirectedGraph" style="display: none;">/</td>
-                        <td data-graph="biedgedGraph" style="display: none;">/</td>
+                        <td data-graph="bidirectedGraph">/</td>
+                        <td data-graph="biedgedGraph">/</td>
                         <!-- <td data-graph="dibigraph"></td> -->
                     </tr>
                 
                     
                     <tr id="cutsRow" style="display: none;" style="visibility: hidden;">
                         <td><span style="font-family: 'PT Serif', serif;">The number of cuts</span>
-                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                            <img  id="FileSize" src="static/styles/detail.png"   title="The number of cut vertices in the bidirected graph or bridges in the biedged graph."  style="width: 14px; height: 14px;">
                         </td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
@@ -452,9 +452,7 @@
                     </tr>
                     
                     <tr id="connected_componentsRow"  style="display: none;" style="visibility: hidden;">
-                        <td><span style="font-family: 'PT Serif', serif;">The number of connected components</span>
-                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
-                        </td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of connected components</span></td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -462,9 +460,7 @@
                     </tr >
                     
                     <tr id="weak_connected_componentsRow"  style="display: none;" style="visibility: hidden;">
-                        <td><span style="font-family: 'PT Serif', serif;">The number of weak connected components</span>
-                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
-                        </td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of weak connected components</span></td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -472,9 +468,7 @@
                     </tr >
                     
                     <tr id="strongly_connected_componentsRow"  style="display: none;" style="visibility: hidden;">
-                        <td><span style="font-family: 'PT Serif', serif;">The number of strongly connected components</span>
-                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
-                        </td>
+                        <td><span style="font-family: 'PT Serif', serif;">The number of strongly connected components</span></td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
                         <td data-graph="biedgedGraph" style="display: none;"></td>
@@ -483,7 +477,7 @@
                     
                     <tr id="supperbubblesRow" style="display: none;" style="visibility: hidden;">
                         <td><span style="font-family: 'PT Serif', serif;">The number of supperbubbles</span>
-                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                            <img  id="FileSize" src="static/styles/detail.png"   title="A subgraph between a source node \(s\) and a sink node \(t\) is defined as a superbubble (Onodera et al., 2013) if and only if this subgraph is directed, acyclic and the set of nodes reachable from the source \(s\) is the same set of nodes from where \(t\) can be reached. Moreover, no other node in the superbubble should satisfy these conditions with either \(s\) or \(t\)."  style="width: 14px; height: 14px;">
                         </td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
@@ -493,7 +487,7 @@
                     
                     <tr id="simple_bubblesRow" style="display: none;" style="visibility: hidden;">
                         <td><span style="font-family: 'PT Serif', serif;">The number of simplebubbles</span>
-                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                            <img  id="FileSize" src="static/styles/detail.png"   title="A special case of a superbubble, with only two disjoint paths between the source and the sink nodes."  style="width: 14px; height: 14px;">
                         </td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
@@ -504,21 +498,21 @@
                     
                     <tr id="NestedBubblesRow" style="display: none;" style="visibility: hidden;">
                         <td><span style="font-family: 'PT Serif', serif;">Nested bubbles level</span>
-                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                            <img  id="FileSize" src="static/styles/detail.png"   title="The distribution of bubble nesting depths."  style="width: 14px; height: 14px;">
                         </td>
-                        <td data-graph="digraph" style="display: none;"></td>
+                        <td data-graph="digraph">/</td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
-                        <td data-graph="biedgedGraph" style="display: none;"></td>
+                        <td data-graph="biedgedGraph">/</td>
                         <!-- <td data-graph="dibigraph"></td> -->
                     </tr>
                     
                     <tr id="BubbleChainsRow" style="display: none;" style="visibility: hidden;">
                         <td><span style="font-family: 'PT Serif', serif;">Bubble chains distribution</span>
-                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                            <img  id="FileSize" src="static/styles/detail.png"   title="A linear sequence of simple bubbles is called a bubble chain."  style="width: 14px; height: 14px;">
                         </td>
-                        <td data-graph="digraph"  style="display: none;"></td>
+                        <td data-graph="digraph">/</td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
-                        <td data-graph="biedgedGraph" style="display: none;"></td>
+                        <td data-graph="biedgedGraph">/</td>
                         <!-- <td data-graph="dibigraph"></td> -->
                     </tr>
                     
@@ -545,7 +539,7 @@
                     
                     <tr id="longest_chain_seq_wiseRow" style="display: none;" style="visibility: hidden;">
                         <td><span style="font-family: 'PT Serif', serif;">Longest chain seq wise</span>
-                            <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                            <img  id="FileSize" src="static/styles/detail.png"   title="The number of bases in the longest chain."  style="width: 14px; height: 14px;">
                         </td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
@@ -555,7 +549,7 @@
                     
                     <tr id="longest_chain_bubble_wiseRow" style="display: none;" style="visibility: hidden;">
                     <td><span style="font-family: 'PT Serif', serif;">Longest chain bubble wise</span>
-                        <img  id="FileSize" src="static/styles/detail.png"   title="File size"  style="width: 14px; height: 14px;">
+                        <img  id="FileSize" src="static/styles/detail.png"   title="The number of bubbles in the longest chain."  style="width: 14px; height: 14px;">
                     </td>
                         <td data-graph="digraph" style="display: none;"></td>
                         <td data-graph="bidirectedGraph" style="display: none;"></td>
@@ -587,6 +581,12 @@
                     </div>
                 </button>
 
+                <p class="transparent-background">
+                    For larger GFA files, 
+                    it is recommended to <a href="https://github.com/YX-Xiang/GFAKaleidos" target="_blank">deploy the code offline</a>, 
+                    compress the result into a ZIP file, and then upload it here.
+                </p>                
+
                 <div id="uploadProgressArea" style="display: none;">
                     <div id="progressBarContainer" style="width: 100%; background: #e0e0e0; border-radius: 10px; height: 25px; position: relative;">
                         <div id="progressBar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #80d5d4, #2983bb); border-radius: 10px;"></div>
@@ -605,7 +605,7 @@
                 <div class="download-btn" onclick="downloadZip()">
                     <div class="content">
                         <i class="bx bx-cloud-download"></i>
-                        <span class="button-text">Download Zip</span>
+                        <span class="button-text">Download ZIP</span>
                     </div>
                 </div>
             </div>

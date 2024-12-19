@@ -115,7 +115,7 @@ void Cycle::work(std::vector <DiGraph>& subgraphList, std::unordered_map <long l
 	}
 
     if (minCycleLen == 0x7FFFFFFFFFFFFFFF) {
-        minCycleLen = -1;
+        minCycleLen = 0;
     }
 
     for (auto item: loopLen) {
