@@ -13,6 +13,7 @@ body, html {
     height: 100vh;
 }
 
+
 /* =======================================================
                      左侧固定内容区域 
 ======================================================= */
@@ -147,13 +148,36 @@ body, html {
 }
 
 /* 设置按钮在小屏幕下的自适应布局 */
-@media (max-width: 768px) {
-    .select-all-btn {
-        width: 100%; /* 在小屏幕下占满一行 */
-        padding: 12px 0;
+@media (max-width: 1200px) {
+    .sidebar {
+        width: 25%;
+    }
+    .fixed-content {
+        width: 25%;
     }
 }
 
+@media (max-width: 992px) {
+    .sidebar {
+        width: 28%;
+    }
+    .fixed-content {
+        width: 28%;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+    .sidebar, .fixed-content {
+        width: 100%;
+        height: auto;
+    }
+    .main-content {
+        height: auto;
+    }
+}
 
 
 
@@ -607,7 +631,6 @@ input[type="file"] {
 /* 按钮基础样式 */
 .download-btn {
     height: 40px;
-    width: 160px;
     background: #80d5d4;
     border-radius: 5px;
     cursor: pointer;
@@ -619,6 +642,7 @@ input[type="file"] {
     justify-content: center;  /* 水平居中对齐 */
     position: relative;       /* 保证按钮内的动画能正确显示 */
     transform-origin: center; /* 确保从中心缩放 */
+    padding: 0px 5px;
 }
 
 /* 按钮悬停时的效果 */
