@@ -653,75 +653,75 @@ text-align: center;
 /* ----------------------help page-------------- */
 
 .help {
-width: 80%;
-margin: auto;
-text-align: center;
+	width: 80%;
+	margin: auto;
+	text-align: center;
 }
 .help h1 {
-text-transform: capitalize;
-font-weight: 300;
-font-size: 50px;
-line-height: 1.5; /* Adjust line spacing as needed */
+	text-transform: capitalize;
+	font-weight: 300;
+	font-size: 50px;
+	line-height: 1.5; /* Adjust line spacing as needed */
 }
 
 .help h3 {
-text-transform: capitalize;
-font-weight: 400;
-font-size: 20px;
-line-height: 1.5; /* Adjust line spacing as needed */
+	text-transform: capitalize;
+	font-weight: 400;
+	font-size: 20px;
+	line-height: 1.5; /* Adjust line spacing as needed */
 }
 .help p {
-margin-top: 2%;
-font-weight: 400;
-font-size: 16px;
-font-family: "Lato", sans-serif; /* Use 'Megrim' font, and fallback to a sans-serif font */
+	margin-top: 2%;
+	font-weight: 400;
+	font-size: 16px;
+	font-family: "Lato", sans-serif; /* Use 'Megrim' font, and fallback to a sans-serif font */
 }
 
 .help h2 {
-text-transform: capitalize;
-font-weight: 400;
-font-size: 25px;
-line-height: 2; /* Adjust line spacing as needed */
+	text-transform: capitalize;
+	font-weight: 400;
+	font-size: 25px;
+	line-height: 2; /* Adjust line spacing as needed */
 }
 
 .grid-container {
-display: grid;
-align-items: center;
-grid-template-columns: repeat(2, 1fr); /* Three equal-width columns */
-grid-gap: 10px; /* Gap between grid items */
+	display: grid;
+	align-items: center;
+	grid-template-columns: repeat(2, 1fr); /* Three equal-width columns */
+	grid-gap: 5px; /* Gap between grid items */
 }
 
 .grid-item {
-padding: 20px;
-text-align: center;
-font-weight: 400;
-font-size: 20px
+	padding: 10px;
+	text-align: center;
+	font-weight: 400;
+	font-size: 20px
 }
 
 .table-contents-element-list {
-list-style: none;
-padding: 0;
+	list-style: none;
+	padding: 0;
 }
 
 .table-contents-element {
-margin-bottom: 10px;
-text-align: left; /* Align text to the left */
+	margin-bottom: 10px;
+	text-align: left; /* Align text to the left */
 }
 
 .table-contents-element a {
-text-decoration: none;
-color: #586a74;
-transition: color 0.3s;
-line-height: 1.5; /* Adjust line spacing as needed */
+	text-decoration: none;
+	color: #586a74;
+	transition: color 0.3s;
+	line-height: 1.2; /* Adjust line spacing as needed */
 }
 .table-contents-element a:hover {
-color: #00a5c9;
+	color: #00a5c9;
 }
 
 .help table {
-border-collapse: collapse;
-width: 100%;
-border: 1px solid #ccc;
+	border-collapse: collapse;
+	width: 100%;
+	border: 1px solid #ccc;
 }
 
 /* Style the table header (th) */

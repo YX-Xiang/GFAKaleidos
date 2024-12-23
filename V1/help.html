@@ -42,7 +42,7 @@
                     <li class="table-contents-element"><a href="#required1">[Required] - GFA files</a></li>
                     <li class="table-contents-element"><a href="#results">Explore the results</a></li>
                     <li class="table-contents-element"><a href="#stranalysis">Structural analysis</a></li>
-                    <li class="table-contents-element"><a href="#stranalysisresults">Compare Multiple GFA Files</a></li>
+                    <li class="table-contents-element"><a href="#stranalysisresults">Compute Multiple GFA Files</a></li>
                     <li class="table-contents-element"><a href="#implementation">WORKFLOW & IMPLEMENTATION</a></li>
                 </ul>
             </div>
@@ -115,62 +115,71 @@
                 <p>GFA Kaleidos helps identify structural variations in the pangenome by analyzing the graph topology. 
                     The specific topological structures and their corresponding physical meanings are as follows:</p>
 
-                    <div class="grid-container">
-                        <div class="grid-item">
-                            <ul class = "document-section-list" >
-                                <li class = "document-section-element" >  <p> <b style="color: #00839F;">Degree Distribution:</b> High-degree vertices are often mutation hotspots. </p>
-                                </li>
-                                <li class = "document-section-element"> <p><b style="color: #00839F;">Strongly Connected Components: </b> Regions of high complexity within the graph. </p>
-                                </li>
-                                <li class = "document-section-element"><p><b style="color: #00839F;">Cycle Distribution:</b> Cycles represent tandem repeats but also increase the graph’s path complexity.</p>
-                                </li>       
-                                <li class = "document-section-element">
-                                    <p><b style="color: #00839F;">Nested Bubbles: </b> Genomic variation creates nested bubble structures, which help organize graph elements spatially.</p>
-                                </li>
-                            </ul> 
-                        </div>
-                        <div class="grid-item">
-                            <img src="static/styles/bubble.png" width="800" height="300">         
-                        </div>
-                    </div>  
+                <div class="grid-container">
+                    <div class="grid-item">
+                        <ul class = "document-section-list" >
+                            <li class = "document-section-element" >  <p> <b style="color: #00839F;">Degree Distribution:</b> High-degree vertices are often mutation hotspots. </p>
+                            </li>
+                            <li class = "document-section-element"> <p><b style="color: #00839F;">Strongly Connected Components: </b> Regions of high complexity within the graph. </p>
+                            </li>
+                            <li class = "document-section-element"><p><b style="color: #00839F;">Cycle Distribution:</b> Cycles represent tandem repeats but also increase the graph’s path complexity.</p>
+                            </li>       
+                            <li class = "document-section-element">
+                                <p><b style="color: #00839F;">Nested Bubbles: </b> Genomic variation creates nested bubble structures, which help organize graph elements spatially.</p>
+                            </li>
+                        </ul> 
+                    </div>
+                    <div class="grid-item">
+                        <img src="static/styles/bubble.png" width="800" height="300">         
+                    </div>
+                </div>  
             </section>
 
             <section id="stranalysisresults" class="documentation-section">
-                <h2>Compare Multiple GFA Files</h2>
+                <h2>Compute Multiple GFA Files</h2>
                 <p></p>
-                    <div>
-                        <div>
-                            <ul class = "document-section-list" >
-                                <li class = "document-section-element" >  <p> <b style="color: #00839F;">Upload and Display:</b> You can upload multiple GFA files to the platform. Each file will open in its dedicated tab within the web interface, enabling easy navigation and comparison of graph models.</p></li>
-                                <!-- <img src="static/styles/Multiple file upload.png" style="width: 50%"> -->
+                <div class="grid-container">
+                    <div class="grid-item">
+                        <img src="static/styles/function.png" width="250">         
+                    </div>
+                    <div class="grid-item">
+                        <ul class = "document-section-list" >
+                            <li class = "document-section-element" >  <p> <b style="color: #00839F;">Example:</b> 
+                                The top right corner of the tool interface provides two examples, which are GFA files constructed from 10 haplotypes of Drosophila chromosome 4 assembled by pggb and minigraph, respectively.</p></li>
+                            
+                            <li class = "document-section-element" >  <p> <b style="color: #00839F;">Upload and Display:</b> You can upload multiple GFA files to the platform. Each file will open in its dedicated tab within the web interface, enabling easy navigation and comparison of graph models.</p></li>
+                            <!-- <img src="static/styles/Multiple file upload.png" style="width: 50%"> -->
 
-                                <li class = "document-section-element"> <p><b style="color: #00839F;">Combine and Visualize:</b> Users can select multiple GFA files and their associated graph models to combine and visualize on a single page. This feature allows for side-by-side comparisons and better contextual analysis of structural variations.</p>
-                                    
-                                <ul class = "document-section-list">
-                                    <li class = "document-section-element">
-                                        Graph models include digraph, bidirected graph and biedged graph. You can choose to display one or more models simultaneously, depending on your analysis needs.
-                                    </li>
-                                </ul>
-                                  
-                                <li class = "document-section-element"> <p><b style="color: #00839F;">Interactive Features:</b> Each graph visualization is fully interactive, allowing users to zoom, pan, and explore the connections and structural variations within the graph. Hovering over nodes or edges displays additional details such as sequence lengths and adjacency relationships.</p></li>
+                            <li class = "document-section-element"> <p><b style="color: #00839F;">Combine and Visualize:</b> Users can select multiple GFA files and their associated graph models to combine and visualize on a single page. This feature allows for side-by-side comparisons and better contextual analysis of structural variations.</p>
                                 
-                                <li class="document-section-element">
-                                    <p><b style="color: #00839F;">Download Options:</b> After comparing and analyzing the files, you can download:
-                                        <ul class="document-section-list">
-                                            <li class="document-section-element">A summary table of the combined analysis in PDF HTML or ZIP format.</li>
-                                        </ul>
-                                    </p>
+                            <ul class = "document-section-list">
+                                <li class = "document-section-element">
+                                    Graph models include digraph, bidirected graph and biedged graph. You can choose to display one or more models simultaneously, depending on your analysis needs.
                                 </li>
                             </ul>
-                        </div>
-                    </div>  
+                                
+                            <li class = "document-section-element"> <p><b style="color: #00839F;">Interactive Features:</b> Each graph visualization is fully interactive, allowing users to zoom, pan, and explore the connections and structural variations within the graph. Hovering over nodes or edges displays additional details such as sequence lengths and adjacency relationships.</p></li>
+                            
+                            <li class="document-section-element">
+                                <p><b style="color: #00839F;">Download Options:</b> After comparing and analyzing the files, you can download:
+                                    <ul class="document-section-list">
+                                        <li class="document-section-element">A summary table of the combined analysis in PDF HTML or ZIP format.</li>
+                                    </ul>
+                                </p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>  
             </section>
 
             <section id="implementation" class="documentation-section">
                 <h2>WORKFLOW & IMPLEMENTATION</h2>
 
                 <div class="grid-item">
-                    <p>Here is a workflow scheme for GFA Kaleidos. As explained in other sections, the <span style="color:grey; font-weight: bold;">input/methods</span> of the analysis are shown in <span style="color:grey; font-weight: bold;">grey</span>, while the <span style="color:orange; font-weight: bold;">optional inputs</span> are highlighted in <span style="color:orange; font-weight: bold;">orange</span>. The outputs are presented in <span style="color:lightskyblue; font-weight: bold;">light blue</span>.</p>
+                    <p>Here is a workflow scheme for GFA Kaleidos. The <span style="color:grey; font-weight: bold;">input/output</span> of the analysis are shown in <span style="color:grey; font-weight: bold;">grey</span>.</p>
+                    <div class="grid-item">
+                        <img src="static/styles/GFA Kaleidos.png" width="700">
+                    </div>
                     <ul class = "document-section-list">
                         <li class = "document-section-element" ><p> <b>Input:</b> GFA Kaleidos integrates pangenome graphs in GFA format.</p>
                         </li>
@@ -185,10 +194,6 @@
                         </p></li>
                     </ul>
                 </div>
-
-                <!-- <div class="grid-item">
-                    <img src="static/styles/workflow.png" width="700" height="300">
-                </div> -->
 
                 <!-- <h2>Browser compatibility</h2>
                 <div class="grid-container">
