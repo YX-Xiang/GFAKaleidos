@@ -31,6 +31,6 @@ zip ZIP_NAME.zip OUTPUT_PATH
 4. ```ZIP_NAME```: The file path for the compressed output result in .zip format (optional). If further interaction with the website is required, this parameter must be specified.
 
 ## Online Interaction (option)
-Upload ZIP_NAME.zip to <a href='https://github.com/YX-Xiang/GFAKaleidos'>web server</a>, which offers a user-friendly interface with clear guidance. Visual outputs can be exported to HTML or PDF formats, facilitating sharing and dissemination.
+Upload ZIP_NAME.zip to <a href='https://combiopt.nankai.edu.cn/gfakaleidos'>web server</a>, which offers a user-friendly interface with clear guidance. Visual outputs can be exported to HTML or PDF formats, facilitating sharing and dissemination.
 
 ![Web server](./GFAKaleidos.png)
