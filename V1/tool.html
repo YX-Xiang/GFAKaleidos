@@ -15,13 +15,15 @@
     <link rel='stylesheet' href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css'>
     <script src="static/js/tool.js" type="text/javascript"></script> 
     <script src="static/js/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="static/js/axios.min.js"></script>
+    
+    <script src="static/js/chart.js"></script>
      <!-- 引入 html2canvas 库 -->
      <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
      <!-- 引入 jsPDF 库 -->
      <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/jszip@3.7.1/dist/jszip.min.js"></script>
     <style id="dynamic-styles">
         
     </style>
@@ -30,9 +32,9 @@
 <body>
     <div class="container">
         <!-- 侧边栏 -->
-        <div class="sidebar">
+        <div class="sidebar" id="sidebar">
             <h2>
-                <img src="static/styles/icon_56x57.png" alt="Home" class="menu-logo" title="Click to return to Home" onclick="location.href='home.html';">
+                <img src="static/styles/icon_56x57.png" alt="Home" class="menu-logo" title="Click to return to Home" onclick="location.href='gfakaleidos.html';">
                 MENU
             </h2>  
             
@@ -238,40 +240,45 @@
                     <tr id = "GFANameRow" style="display:none; font-family: 'Noto Sans', sans-serif; font-style: italic; font-size: 14px;" >
                         <td></td>
                     </tr>
-                    <tr id="file_sizeRow">
-                        <td><span style="font-family: 'PT Serif', serif;">File size</span>
+                    <tr id="file_sizeRow" style="display:none;">
+                        <td >
+                            <span style="font-family: 'PT Serif', serif;">File size</span>
                         </td>
                         <td colspan="3" id="mergedCell" style="text-align: center;" style="display: none;" style="visibility: hidden;"></td>
                     </tr>
-                    <tr id="segmentsRow">
-                        <td><span style="font-family: 'PT Serif', serif;">The number of segments</span>
+                    <tr id="segmentsRow" style="display:none;">
+                        <td>
+                            <span style="font-family: 'PT Serif', serif;">The number of segments</span>
                         </td>
                         <td colspan="3" id="mergedCell" style="text-align: center;" style="display: none;" style="visibility: hidden;"></td>
                     </tr>
-                    <tr id="linksRow">
-                        <td><span style="font-family: 'PT Serif', serif;">The number of links</span>
+                    <tr id="linksRow" style="display:none;">
+                        <td>
+                            <span style="font-family: 'PT Serif', serif;">The number of links</span>
                         </td>
                         <td colspan="3" id="mergedCell" style="text-align: center;" style="display: none;" style="visibility: hidden;"></td>
                     </tr>
-                    <tr id="pathsRow">
-                        <td><span style="font-family: 'PT Serif', serif;">The number of paths</span>
+                    <tr id="pathsRow" style="display:none;">
+                        <td>
+                            <span style="font-family: 'PT Serif', serif;">The number of paths</span>
                         </td>
                         <td colspan="3" id="mergedCell" style="text-align: center;" style="display: none;" style="visibility: hidden;"></td>
                     </tr>
-                    <tr id="single_direction_segmentRow">
-                        <td><span style="font-family: 'PT Serif', serif;">The number of single direction segment</span>
+                    <tr id="single_direction_segmentRow" style="display:none;">
+                        <td>
+                            <span style="font-family: 'PT Serif', serif;">The number of single direction segment</span>
                             <img  id="FileSize" src="static/styles/detail.png"   title="This means that segment A only exists as A- or A+."  style="width: 14px; height: 14px;">
                         </td>
                         <td colspan="3" id="mergedCell" style="text-align: center;" style="display: none;" style="visibility: hidden;"></td>
                     </tr>
-                    <tr id="bidirectional_direction_segmentRow">
+                    <tr id="bidirectional_direction_segmentRow" style="display:none;">
                         <td><span style="font-family: 'PT Serif', serif;">The number of bidirectional direction segment</span>
                             <img  id="FileSize" src="static/styles/detail.png"   title="This means that segment A exists as A- and A+."  style="width: 14px; height: 14px;">
                         </td>
                         <td colspan="3" id="mergedCell" style="text-align: center;" style="display: none;" style="visibility: hidden;"></td>
                     </tr>
 
-                    <tr id = "headRow" style="display:table-row;">
+                    <tr id = "headRow" style="display:table-row;" >
                         <th  style="display:table-cell;"></th>
                         <th style="display:table-cell;">
                             <img src="static/styles/dig.png" alt="Logo" style="width:16px; height:16px; vertical-align:middle; margin-right:5px;">
@@ -568,25 +575,21 @@
         <!-- 右侧固定内容区域 -->
         <div class="fixed-content">
             <div class="upload-container">
+                
                 <div class="example-buttons">
                     <button class="example-button" style="font-family: 'Ubuntu', sans-serif; font-size: 11pt;" onclick="uploadExampleFile('../example/01_dm_pggb.gfa')">Example 1</button>
                     <button class="example-button" style="font-family: 'Ubuntu', sans-serif; font-size: 11pt;" onclick="uploadExampleFile('../example/02_dm_mc.gfa')">Example 2</button>
                 </div>
 
-                <input type="file" id="fileInput" accept=".gfa,.zip" name="file" required onchange="uploadFile()" style="display: none;">
+                <hr style="border: 1px solid #ccc; margin: 40px 0;"> <!-- 添加了一个分割线 -->
+
+                <input type="file" id="fileInput" accept=".gfa," name="file" required onchange="uploadGFAFile()" style="display: none;">
                 <button class="custom-file-input" onclick="document.getElementById('fileInput').click()">
                     <div class="content">
-                        <i class="bx bx-cloud-upload"></i>
-                        <span class="button-text">Upload GFA/ZIP</span>
+                        <img src="static/styles/icon_upload.png" alt="Download Icon" class="icon-image">
+                        <span class="button-text">Upload GFA</span>
                     </div>
-                </button>
-
-                <p class="transparent-background">
-                    For larger GFA files, 
-                    it is recommended to <a href="https://github.com/YX-Xiang/GFAKaleidos" target="_blank">deploy the code offline</a>, 
-                    compress the result into a ZIP file, and then upload it here.
-                </p>                
-
+                </button> 
                 <div id="uploadProgressArea" style="display: none;">
                     <div id="progressBarContainer" style="width: 100%; background: #e0e0e0; border-radius: 10px; height: 25px; position: relative;">
                         <div id="progressBar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #80d5d4, #2983bb); border-radius: 10px;"></div>
@@ -594,22 +597,54 @@
                     </div>
                 </div>
                 <div class="file-name" id="fileName"></div>
+                
+
+                <p class="transparent-background">
+                    Don't want to wait for the upload of a large GFA file?
+                <!-- </p>
+                <p  class="transparent-background"> -->
+                    Run an 
+                    <button onclick="window.open('https://github.com/YX-Xiang/GFAKaleidos', '_blank');">offline version</button> 
+                    locally to obtain the outputs and  
+                    <input type="file" id="fileInput2" accept=".zip," name="file" required onchange="uploadZIPFile()" style="display: none;">
+                    <button onclick="document.getElementById('fileInput2').click()">upload the zip file</button>.
+                </p>
             </div>
+
+            <hr style="border: 1px solid #ccc; margin: 40px 0;"> <!-- 添加了一个分割线 -->
+
             <div class="button-container">
                 <div class="download-btn" onclick="downloadPage()">
                     <div class="content">
-                        <i class="bx bx-cloud-download"></i>
-                        <span class="button-text">Download PDF</span>
+                        <div class="icon-text">
+                            <img src="static/styles/icon_download.png" alt="Download Icon" class="icon-image">
+                            <span class="button-text">PDF</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="download-btn" onclick="downloadhtml()">
+                    <div class="content">
+                        <div class="icon-text">
+                            <img src="static/styles/icon_download.png" alt="Download Icon" class="icon-image">
+                            <span class="button-text">HTML</span>
+                        </div>
                     </div>
                 </div>
                 <div class="download-btn" onclick="downloadZip()">
                     <div class="content">
-                        <i class="bx bx-cloud-download"></i>
-                        <span class="button-text">Download ZIP</span>
+                        <div class="icon-text">
+                            <img src="static/styles/icon_download.png" alt="Download Icon" class="icon-image">
+                            <span class="button-text">ZIP</span>
+                        </div>
                     </div>
                 </div>
             </div>
             <div id="status"></div>
+                <div class="compare-buttons">
+                    <button class="compare-button" style="font-family: 'Ubuntu', sans-serif;" onclick="CheckData()">
+                        Multi-GFA Compare
+                    </button>
+                </div>            
                 <table id ="custom-table">
                     <thead>
                         <tr>
@@ -620,15 +655,8 @@
                             <th>Biedged<br>Graph</th>
                         </tr>
                     </thead>
-                    <tbody id="checkbox-container">
-                        
-                    </tbody>
+                    <tbody id="checkbox-container"></tbody>
                 </table>
-                <div class="example-button2s">
-                    <button class="example-button2" style="font-family: 'Ubuntu', sans-serif;" onclick="CheckData()">
-                        Multi-GFA Compare
-                    </button>
-                </div>
             </div>
     </div>
     

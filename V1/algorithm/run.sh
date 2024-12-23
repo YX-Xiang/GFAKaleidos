@@ -11,4 +11,4 @@ make  -C ./algorithm -j >> build.log 2>&1
 # make -C ./algorithm clean
 # make -C ./algorithm -j
 
-./algorithm/gfaKaleidos.exe ${INPUT_GFA} -o ${OUTPUT_PATH} -t 16
+./algorithm/gfaKaleidos.exe ${INPUT_GFA} -o ${OUTPUT_PATH} -t 6

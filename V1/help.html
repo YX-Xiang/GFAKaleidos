@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GFA Kaleidos</title>
 
-    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="https://code.jquery.com/jquery-latest.min.js"></script>
 	<script type="text/javascript" src="static/js/featherlight.min.js"></script>
     <script type="text/javascript" src="static/js/footer.js"></script>
 
@@ -23,10 +23,10 @@
 			<h1 class="logo"><a href="/">GFA Kaleidos</a></h1>
 			<nav>
 				<ul id="navigation">
-					<li><a href="/home">Home</a></li>
+					<li><a href="/gfakaleidos">Home</a></li>
 					<li><a href="/help">Wiki</a></li>
 					<li><a href="/about">About</a></li>
-					<!-- <li><a class="nav-cta" href="/tool">Try Now</a></li> -->
+					<li><a href="/tool">Run</a></li>
 				</ul>
 			</nav>
 		</div>
@@ -58,7 +58,7 @@
                 </p>
             </section>
 
-            <section id="quickstart" class="documentation-section">
+            <!-- <section id="quickstart" class="documentation-section">
                 <h2>QUICK START</h2>
                 <p>Running GFA Kaleidos is straightforward. Read these pictures for a quick start!</p>
                 <div class="video-container">
@@ -66,7 +66,7 @@
                     <img src="static/styles/project-2.jpg" width="700" height="460">
                 </div>
                 <p></p>
-            </section>
+            </section> -->
 
             <section id="required1" class="documentation-section">
                 <div class="grid-container">
@@ -142,7 +142,7 @@
                         <div>
                             <ul class = "document-section-list" >
                                 <li class = "document-section-element" >  <p> <b style="color: #00839F;">Upload and Display:</b> You can upload multiple GFA files to the platform. Each file will open in its dedicated tab within the web interface, enabling easy navigation and comparison of graph models.</p></li>
-                                <img src="static/styles/Multiple file upload.png" style="width: 50%">
+                                <!-- <img src="static/styles/Multiple file upload.png" style="width: 50%"> -->
 
                                 <li class = "document-section-element"> <p><b style="color: #00839F;">Combine and Visualize:</b> Users can select multiple GFA files and their associated graph models to combine and visualize on a single page. This feature allows for side-by-side comparisons and better contextual analysis of structural variations.</p>
                                     
@@ -157,8 +157,7 @@
                                 <li class="document-section-element">
                                     <p><b style="color: #00839F;">Download Options:</b> After comparing and analyzing the files, you can download:
                                         <ul class="document-section-list">
-                                            <li class="document-section-element">A summary table of the combined analysis in PDF format.</li>
-                                            <li class="document-section-element">All graph visualizations as high-resolution images or JSON files for further processing.</li>
+                                            <li class="document-section-element">A summary table of the combined analysis in PDF HTML or ZIP format.</li>
                                         </ul>
                                     </p>
                                 </li>
@@ -187,21 +186,23 @@
                     </ul>
                 </div>
 
-                <div class="grid-item">
+                <!-- <div class="grid-item">
                     <img src="static/styles/workflow.png" width="700" height="300">
-                </div>
+                </div> -->
 
-                <h2>Browser compatibility</h2>
+                <!-- <h2>Browser compatibility</h2>
                 <div class="grid-container">
                     <div class="grid-item">
                         <table id="browserTable">
-                            <!-- The CSV data will be loaded here -->
+                            
                         </table>
                     </div>
-                </div>
+                </div> -->
 
             </section>
-
+        </main>
+    </section>
+    
     <footer>
 		<div class="wrapper">
 			<a class="logo" href="#">Chase</a>
@@ -229,7 +230,10 @@
     function loadCSVToTable() {
         const table = document.getElementById('csvTable');
 
-        const csvbrowser = [["OS", "Chrome", "Edge", "Firefox", "Safari"], ["Linux", "Not tested", "Not tested", "Not tested", "Not tested"], ["MacOS", "Not tested", "Not tested", "Not tested", "Not tested"], ["Windows", "Not tested", "OK", "Not tested", "Not tested"], []];
+        const csvbrowser = [["OS", "Chrome", "Edge", "Firefox", "Safari"], 
+        ["Linux", "OK", "Not tested", "Not tested", "Not tested"], 
+        ["MacOS", "Not tested", "Not tested", "Not tested", "OK"], 
+        ["Windows", "OK", "OK", "OK", "-"], []];
         const tablebrowser = document.getElementById('browserTable');
 
         for (let i = 0; i < csvbrowser.length; i++) {

@@ -10,7 +10,13 @@ const AdmZip = require('adm-zip');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, '/home/yxxiang/uploads/'); // 文件保存的目录
+        const userIp = req.body.userIp;
+        const uploadPath = path.join('/home/yxxiang/uploads/', userIp.toString());
+        
+        // 确保目标文件夹存在
+        fs.mkdirSync(uploadPath, { recursive: true }); // 创建文件夹，若已存在不会报错
+        
+        cb(null, uploadPath); // 使用动态路径
     },
     filename: function (req, file, cb) {
         // 使用上传文件的原始文件名来保存文件
@@ -109,9 +115,10 @@ app.get('/api/deleteZip', (req, res) => {
 });
 
 app.post('/api/upload', upload.single('file'), (req, res) => {
-    console.log('123456');
+    // console.log('123456');
     if (req.file) {
-        const filePath = `/home/yxxiang/uploads/${req.file.filename}`;
+        const userIp = req.body.userIp;
+        const filePath = `/home/yxxiang/uploads/${userIp}/${req.file.filename}`;
       res.send({ message: '文件上传成功', filePath: filePath });
     } else {
       res.status(400).send('文件上传失败');

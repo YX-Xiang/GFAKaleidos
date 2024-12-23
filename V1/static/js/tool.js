@@ -11,24 +11,45 @@ let GFAData={};
 
 let fileMap = {};
 
-function runcommand(filePath){
-    axios.get('/api/gfaKaleidos', {
-    params: {
-        uploadPath: filePath  // 将文件路径作为查询参数传递
-    }
-})
-.then(function (response) {
-    // 成功回调
-    const FileName = filePath.split('/')[1].split('.')[0];
-    console.log('命令执行输出:', response.data);
-})
-.catch(function (error) {
-    // 错误回调
-    const FileName = filePath.split('/')[1].split('.')[0];
-    console.error('命令执行失败:', error);
-});
+let ip;
+
+function runcommand(filePath) {
+    return new Promise((resolve, reject) => {
+        axios.get('/api/gfaKaleidos', {
+            params: {
+                uploadPath: filePath  // 将文件路径作为查询参数传递
+            }
+        })
+        .then(function (response) {
+            // 成功回调
+            // const FileName = filePath.split('/')[1].split('.')[0];
+            console.log('命令执行输出:', response.data);
+            resolve();  // Resolve the promise when the command succeeds
+        })
+        .catch(function (error) {
+            // 错误回调
+            // const FileName = filePath.split('/')[1].split('.')[0];
+            console.error('命令执行失败:', error);
+            reject(error);  // Reject the promise when the command fails
+        });
+    });
 }
 
+// =======================================================
+//                       获取ip
+// =======================================================
+
+function getIp(){
+    fetch('ip.php')
+                .then(response => response.json())  // 解析 JSON 响应
+                .then(data => {
+                    // 在控制台输出访问者的 IP 地址和访问次数
+                    ip = data.ip;
+                    console.log(ip);
+                })
+                .catch(error => console.error('Error:', error));
+}
+window.onload = getIp();
 
 // =======================================================
 //                        文件上传
@@ -44,8 +65,117 @@ function updateProgressBar(progress) {
     document.getElementById('progressText').textContent = progress + '%';
 }
 
-function uploadFile() {
+function uploadGFAFile() {
+    console.log('Upload initiated');
+
     const fileInput = document.getElementById('fileInput');
+    const file = fileInput.files[0];
+
+    if (!file) {
+        alert("Error: Please select a valid file!");
+        return;
+    }
+
+    const uploadUrl = '/api/upload';
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('userIp', ip);
+
+    const uploadProgressArea = document.getElementById('uploadProgressArea');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const logoPlaceholder = document.getElementById('logo-placeholder');
+
+    uploadProgressArea.style.display = 'block';
+    logoPlaceholder.style.display = 'none';
+
+    // 显示加载覆盖层函数
+    const displayLoadingOverlay = () => {
+        const loadingOverlay = document.createElement('div');
+        loadingOverlay.id = 'loading-overlay';
+        loadingOverlay.style.position = 'fixed';
+        loadingOverlay.style.top = '0';
+        loadingOverlay.style.left = '0';
+        loadingOverlay.style.width = '100%';
+        loadingOverlay.style.height = '100%';
+        loadingOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+        loadingOverlay.style.display = 'flex';
+        loadingOverlay.style.alignItems = 'center';
+        loadingOverlay.style.justifyContent = 'center';
+        loadingOverlay.style.zIndex = '9999';
+
+        const loadingText = document.createElement('div');
+        loadingText.style.color = 'white';
+        loadingText.style.fontSize = '24px';
+        loadingText.innerText = 'Processing... Please wait...';
+
+        loadingOverlay.appendChild(loadingText);
+        document.body.appendChild(loadingOverlay);
+        return loadingOverlay;
+    };
+
+    // 移除加载覆盖层函数
+    const removeLoadingOverlay = (overlay) => {
+        if (overlay && overlay.parentNode) {
+            overlay.parentNode.removeChild(overlay);
+        }
+    };
+
+    axios.post(uploadUrl, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        },
+        onUploadProgress: (progressEvent) => {
+            const fileLoaded = Math.floor((progressEvent.loaded / progressEvent.total) * 100);
+            // 最大显示 99%
+            const displayProgress = fileLoaded >= 100 ? 99 : fileLoaded;
+            progressBar.style.width = displayProgress + "%";
+            progressText.textContent = displayProgress + "%";
+        }
+    })
+    .then((response) => {
+        // 手动将进度条更新为 100%
+        progressBar.style.width = "100%";
+        progressText.textContent = "100%";
+
+        // 提示上传完成
+        alert('Successfully uploaded!'); 
+        uploadProgressArea.style.display = 'none';
+
+        // 显示加载覆盖层
+        const loadingOverlay = displayLoadingOverlay();
+        
+        const filePath = response.data.filePath;
+        const FileName = filePath.split('/').pop().split('.').slice(0, -1).join('.');
+        fileUploaded = true;
+        flag = FileName;
+
+        // 后台任务
+        runcommand(filePath)
+            .then(() => {
+                openTab(FileName);
+                addCheckbox(FileName);
+                setTimeout(() => {
+                    removeLoadingOverlay(loadingOverlay);
+                    selectAllCheckboxes();
+                }, 3000);
+            })
+            .catch((error) => {
+                console.error('Error running command:', error);
+                removeLoadingOverlay(loadingOverlay); // 即使出错也移除覆盖层
+                alert('Error during processing. Please try again.');
+            });
+    })
+    .catch((error) => {
+        console.error('Upload error:', error);
+        alert('Error: Upload failed.');
+        logoPlaceholder.style.display = 'flex';
+    });
+}
+
+function uploadZIPFile() {
+    const fileInput = document.getElementById('fileInput2');
     const file = fileInput.files[0]; // 获取选中的文件
 
     if (!file) {
@@ -56,51 +186,29 @@ function uploadFile() {
     const fileExtension = file.name.split('.').pop().toLowerCase();
     let uploadUrl, onSuccess, onFailure;
 
-    if (fileExtension === 'zip') {
-        uploadUrl = '/api/uploadZip';
-        onSuccess = (response) => {
-            const data = response.data; // 获取响应数据
-            const fileName = data.fileName;
-            fileUploaded = true;
-            openTab(fileName);
-        };
-        onFailure = (error) => {
-            console.error('Error:', error);
-            const status = document.getElementById('status');
-            // 处理错误
-            if (error.response) {
-                // 如果服务器返回了错误响应
-                status.textContent = `Upload failed: ${error.response.data.message || 'Unknown server error'}`;
-            } else if (error.request) {
-                // 如果请求没有收到响应
-                status.textContent = 'Upload failed. No response from server.';
-            } else {
-                // 其他错误
-                status.textContent = 'Upload failed. Please try again.';
-            }
-        };
-    } else if (fileExtension === 'gfa') {
-        uploadUrl = '/api/upload';
-        onSuccess = (response) => {
-            alert('The file upload was successful!');
-            const filePath = response.data.filePath;
-            fileUploaded = true;
-            runcommand(filePath);
-            const FileName = filePath.split('/').pop().split('.').slice(0, -1).join('.');
-            openTab(FileName);
-            flag = FileName;
-            addCheckbox(FileName);
-        };
-        onFailure = (error) => {
-            console.error('The file upload failed: ', error);
-            alert('Error: The file upload failed.');
-            const logoPlaceholder = document.getElementById('logo-placeholder');
-            logoPlaceholder.style.display = 'flex'; // 恢复占位元素显示
-        };
-    } else {
-        alert("Error: Unsupported file type!");
-        return;
-    }
+    uploadUrl = '/api/uploadZip';
+    onSuccess = (response) => {
+        const data = response.data; // 获取响应数据
+        const fileName = data.fileName;
+        fileUploaded = true;
+        openTab(fileName);
+        addCheckbox(fileName);
+    };
+    onFailure = (error) => {
+        console.error('Error:', error);
+        const status = document.getElementById('status');
+        // 处理错误
+        if (error.response) {
+            // 如果服务器返回了错误响应
+            status.textContent = `Upload failed: ${error.response.data.message || 'Unknown server error'}`;
+        } else if (error.request) {
+            // 如果请求没有收到响应
+            status.textContent = 'Upload failed. No response from server.';
+        } else {
+            // 其他错误
+            status.textContent = 'Upload failed. Please try again.';
+        }
+    };
 
     // 创建 FormData 对象并将文件添加进去
     const formData = new FormData();
@@ -112,38 +220,24 @@ function uploadFile() {
     const logoPlaceholder = document.getElementById('logo-placeholder');
     logoPlaceholder.style.display = 'none';
 
-    // 显示进度条区域
+    // 取消显示进度条区域
     const uploadProgressArea = document.getElementById('uploadProgressArea');
-    uploadProgressArea.style.display = 'block';
+    uploadProgressArea.style.display = 'none';  // 隐藏进度条区域
 
-    // 获取进度条和进度文本元素
-    const progressBar = document.getElementById('progressBar');
-    const progressText = document.getElementById('progressText');
+    // 不再使用进度条和进度文本元素
+    // const progressBar = document.getElementById('progressBar');
+    // const progressText = document.getElementById('progressText');
 
     axios.post(uploadUrl, formData, {
         headers: {
             'Content-Type': 'multipart/form-data' // 设置请求头，表明是文件上传
         },
-        onUploadProgress: (progressEvent) => {
-            const fileLoaded = Math.floor((progressEvent.loaded / progressEvent.total) * 100); // 上传进度
-
-            // 更新进度条宽度
-            progressBar.style.width = fileLoaded + "%";
-            progressText.textContent = fileLoaded + "%";
-
-            // 当进度条达到 100% 时，隐藏进度条并执行后续操作
-            if (fileLoaded === 100) {
-                // 进度条完全加载后隐藏进度条和文本
-                uploadProgressArea.style.display = 'none';
-
-                // 隐藏 Logo 并显示加载状态
-                logoPlaceholder.style.display = 'none';
-            }
-        }
+        // 移除 onUploadProgress 事件处理
     })
     .then(onSuccess)
     .catch(onFailure);
 }
+
 
 // 上传样例文件
 function uploadExampleFile(filePath) {
@@ -159,10 +253,45 @@ function uploadExampleFile(filePath) {
     const logoPlaceholder = document.getElementById('logo-placeholder');
     logoPlaceholder.style.display = 'none';
 
+    // 创建一个加载框
+    const loadingOverlay = document.createElement('div');
+    loadingOverlay.id = 'loading-overlay';
+    loadingOverlay.style.position = 'fixed';
+    loadingOverlay.style.top = '0';
+    loadingOverlay.style.left = '0';
+    loadingOverlay.style.width = '100%';
+    loadingOverlay.style.height = '100%';
+    loadingOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+    loadingOverlay.style.display = 'flex';
+    loadingOverlay.style.alignItems = 'center';
+    loadingOverlay.style.justifyContent = 'center';
+    loadingOverlay.style.zIndex = '9999';
+
+    const loadingText = document.createElement('div');
+    loadingText.style.color = 'white';
+    loadingText.style.fontSize = '24px';
+    loadingText.innerText = 'Loading... Please wait...';
+
+    loadingOverlay.appendChild(loadingText);
+    document.body.appendChild(loadingOverlay);
+
     if (selDom.length === 0) { // 如果标签页不存在，则创建新的标签
-        alert('The file upload was successful!');
+        alert('Successfully uploaded!');
         fileUploaded = true;
-        runcommand(filePath);
+
+        // 执行异步命令并在命令完成后关闭加载框
+        runcommand(filePath).then(() => {
+            // 在命令执行完后移除加载框
+            document.body.removeChild(loadingOverlay);
+            setTimeout(() => {
+                selectAllCheckboxes();
+            }, 1000);
+        }).catch((error) => {
+            // 如果命令失败，显示错误并关闭加载框
+            console.error('Error running command:', error);
+            document.body.removeChild(loadingOverlay);
+        });
+
         const FileName = filePath.split('/').pop().split('.')[0];
         flag = FileName;
         openTab(FileName);
@@ -181,6 +310,26 @@ function uploadExampleFile(filePath) {
 // =======================================================
 //                        文件下载
 // =======================================================
+
+
+function ShowAllCoverage(){
+    const tr = document.getElementById('CoverageRow');
+    var canvases = tr.querySelectorAll('canvas');
+    canvases.forEach(canvas=>{
+        canvas.style.display="";
+    })
+    
+}
+
+function NotShowAllCoverage(){
+    const tr = document.getElementById('CoverageRow');
+    var canvases = tr.querySelectorAll('canvas');
+    canvases.forEach(canvas=>{
+        canvas.style.display="none";
+    })
+}
+
+// 下载pdf
 function downloadPage() {
     const buttons = document.querySelectorAll(".download-btn");
     const button = buttons[0];
@@ -253,22 +402,625 @@ function downloadPage() {
         // 下载完成后修改按钮状态
         setTimeout(() => {
             // 修改图标和按钮文字
-            button.querySelector("i").classList.replace("bx-cloud-download", "bx-check-circle");
-            button.querySelector("span").innerText = "Completed";
+            button.querySelector(".icon-image").src = "static/styles/icon-arrival.png";
+            const buttonText = button.querySelector("span");
+            if (buttonText) {
+                buttonText.innerText = "Completed"; // 修改文字内容
+                buttonText.style.fontSize = "12px";  // 修改字体大小
+            }
             button.classList.remove("active"); // 移除动画
 
             // 恢复按钮状态为“Download”
             setTimeout(() => {
-                button.querySelector("i").classList.replace("bx-check-circle", "bx-cloud-download");
-                button.querySelector("span").innerText = "Download PDF";
-            }, 2000); // 设置2秒延迟来恢复按钮文本和图标
-        }, 100); // 0.1秒后执行下载完成的操作
+                button.querySelector(".icon-image").src = "static/styles/icon_download.png";
+                button.querySelector("span").innerText = "PDF";
+                button.querySelector("span").style.fontSize = "16px";
+            }, 3000); // 设置5秒延迟来恢复按钮文本和图标
+        }, 10); // 0.001秒后执行下载完成的操作
     }
+}
+
+// 下载html
+function downloadhtml(){
+    const buttons = document.querySelectorAll(".download-btn");
+    const button = buttons[1];
+
+    if (button.classList.contains("active")) {
+        // console.log("Button is already active"); // 检查是否已经激活
+        return;
+    }
+
+    // 激活动画
+    button.classList.add("active");
+    
+    const zip = new JSZip();
+    var content = document.getElementById('graphTable').outerHTML;
+    var sidebar = document.getElementById('sidebar').outerHTML;
+    let Data ={
+        digraph:{
+            DegreeDistribution:[],
+            Coverage:[],
+            LoopLength:[],
+            CycleDistribution:[]
+        },
+        bidirectedGraph:{
+            DegreeDistribution:[],
+            Coverage:[],
+            LoopLength:[],
+            NestedBubbles:[],
+            BubbleChains:[]
+        },
+        biedgedGraph:{
+            DegreeDistribution:[],
+            LoopLength:[]
+        }
+    };
+    const allPath = {
+                        digraph:{
+                            DegreeDistribution:[`../../data/${flag}/digraph/inDegree.txt`,`../../data/${flag}/digraph/outDegree.txt`],
+                            LoopLength:[`../../data/${flag}/digraph/loop.txt`],
+                            CycleDistribution:[`../../data/${flag}/digraph/cycle.txt`]
+                        },
+                        bidirectedGraph:{
+                            DegreeDistribution:[`../../data/${flag}/bidirectedGraph/degree.txt`],
+                            LoopLength:[`../../data/${flag}/bidirectedGraph/loop.txt`],
+                            NestedBubbles:[`../../data/${flag}/bidirectedGraph/nestedBubblesLevel.txt`],
+                            BubbleChains:[`../../data/${flag}/bidirectedGraph/bubbleChainLength.txt`]
+                        },
+                        biedgedGraph:{
+                            DegreeDistribution:[`../../data/${flag}/biedgedGraph/degree.txt`],
+                            LoopLength:[`../../data/${flag}/biedgedGraph/loop.txt`]
+                        }
+                    };
+                    const CoveragePath=[`../../data/${flag}/digraph/coverage.txt`,`../../data/${flag}/bidirectedGraph/coverage.txt`];
+                    CoveragePath.forEach((path,index)=>{
+                        fetch(path)
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error(`HTTP error! status: ${response.status}`);
+                                }
+                                return response.text();
+                            })
+                            .then(data => {
+                                const bpdata =[];
+                                const nodedata =[];
+                                const edgedata =[];
+                                const lines = data.split('\n');
+                                lines.forEach(line => {
+                                    if(line.includes('Count')){
+                                        return;
+                                    }
+                                    let parts = line.trim().split(/\s+/); // 使用正则表达式来拆分每行的数字
+                                    let Count= parseInt(parts[0], 10);
+                                    let bp= parseInt(parts[1], 10);
+                                    bp = Number(bp)
+                                    bp = Math.log2(bp+1);
+                                    let Node= parseInt(parts[2], 10);
+                                    Node = Number(Node)
+                                    Node = Math.log2(Node+1);
+                                    let Edge= parseInt(parts[3], 10);
+                                    Edge = Number(Edge)
+                                    Edge = Math.log2(Edge+1);
+                                    bpdata.push([Number(Count),Number(bp)]);
+                                    nodedata.push([Number(Count),Number(Node)]);
+                                    edgedata.push([Number(Count),Number(Edge)]);
+                                });
+                                    let bpformattedData = bpdata.map(item => ({ x: item[0], y: item[1] }));
+                                    let nodeformattedData = nodedata.map(item => ({ x: item[0], y: item[1] }));
+                                    let edgeformattedData = edgedata.map(item => ({ x: item[0], y: item[1] }));
+                                    if(index ==0){
+                                        Data['digraph']['Coverage'].push(bpformattedData);
+                                        Data['digraph']['Coverage'].push(nodeformattedData);
+                                        Data['digraph']['Coverage'].push(edgeformattedData);
+                                    }
+                                    else{
+                                        Data['bidirectedGraph']['Coverage'].push(bpformattedData);
+                                        Data['bidirectedGraph']['Coverage'].push(nodeformattedData);
+                                        Data['bidirectedGraph']['Coverage'].push(edgeformattedData);
+                                    }
+                            })
+                        }) 
+    Object.entries(allPath).forEach(([type, attributes]) => {
+        Object.entries(attributes).forEach(([attribute, paths]) => {
+            if (paths.length > 1) {
+                // 如果有多个路径
+                Promise.all(paths.map(path => fetch(path).then(res => res.text())))  // 如果返回的是文本数据，可以使用 .text()
+                    .then(data => {
+                        const graphData1 = parseData(data[0]);
+                        const graphData2 = parseData(data[1]);
+                        Data[type][attribute].push(graphData1);
+                        Data[type][attribute].push(graphData2);
+                    })
+                    .catch(error => console.error('Error fetching multiple paths:', error));
+            } else {
+                // 如果只有一个路径
+                fetch(paths[0])  // 只传递单一路径
+                    .then(res => res.text())  // 如果返回的是文本数据，可以使用 .text()
+                    .then(data => {
+                        const graphData = parseData(data);
+                        Data[type][attribute].push(graphData);
+                    })
+                    .catch(error => console.error('Error fetching single path:', error));
+            }
+        });
+    });
+
+    // 获取页面的 CSS 样式
+    var styles = '';
+    var styleLinks = document.querySelectorAll('link[rel="stylesheet"]');
+    var linkCount = styleLinks.length;
+    var fetchedStyles = 0;
+
+    // 加载所有外部样式表
+    styleLinks.forEach(function(link) {
+        var href = link.href;
+        if (href) {
+            // 对每个外部 CSS 文件执行 fetch 请求
+            fetch(href)
+                .then(response => response.text())
+                .then(cssText => {
+                    styles += `<style>${cssText}</style>`;
+                    fetchedStyles++;
+
+                    // 如果所有样式表都加载完成，执行下载
+                    if (fetchedStyles === linkCount) {
+                        downloadHTML();
+                    }
+                })
+                .catch(error => console.error('加载 CSS 时发生错误:', error));
+        }
+    });
+
+    // 启动下载进度条动画，模拟下载过程
+    setTimeout(() => {
+        // console.log("Starting download"); // 检查是否进入下载流程
+        // 模拟进度条动画完成，开始下载
+        downloadHTML();
+    }, 1000); // 动画时长1秒
+    
+    function downloadHTML() {
+        var dataString = JSON.stringify(Data);
+        // 拼接完整的 HTML 文件内容
+        var htmlContent = `<!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>下载的网页部分</title>
+                ${styles}
+            </head>
+            <body>
+            <div class="container">
+                ${sidebar}
+                <div class="main-content" id="main-content" style="overflow-y:auto;overflow-x: auto;">
+                ${content}
+                <div>
+            </div>
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"><\/script>
+            <script>
+            Data=${dataString};
+            console.log(Data);
+            function toggleTableRow(checkbox) {
+            
+                const rowId = checkbox.id;
+                const row = document.getElementById(\`\${rowId}Row\`);
+                
+                if (checkbox.checked) {
+                    // 填充每个图类型对应的表格单元格
+                    row.style.display = '';
+                    if(rowId == 'DegreeDistribution'){
+
+                        draw(rowId);
+                    } else if(rowId =='LoopLength'){
+                        draw(rowId);
+                    } else if(rowId =='CycleDistribution'){
+                        draw(rowId);
+                    } else if(rowId == 'NestedBubbles'){
+                        draw(rowId);
+                    } else if(rowId =='BubbleChains'){
+                        draw(rowId);
+                    } else if(rowId =='Coverage'){
+                        return;
+                    }
+                }
+                else {
+                    row.style.display = 'none';
+                }
+            }
+            function toggleMenu(menuId, iconId) {
+                var menu = document.getElementById(menuId);
+                const icon = document.getElementById(iconId);
+
+                if (menu.style.display === 'none' || menu.style.display === '') {
+                    menu.style.display = "block";
+                    icon.src = "static/styles/reduce.png"; // 更改为展开图标
+                    icon.title = "Click to expand"; // 更新图标标题
+                } else {
+                    menu.style.display = "none";
+                    icon.src = "static/styles/add.png"; // 更改为收起图标
+                    icon.title = "Click to collapse"; // 更新图标标题
+                }
+            }
+            function selectAllCheckboxes() {
+                // 检查是否已上传文件
+                
+                const allMenus = document.querySelectorAll('ul[id^="menu"]');  // 获取所有菜单（每个菜单的ID以 "menu" 开头）
+                
+                let f=0;
+                allMenus.forEach(function(menu) {
+                    const subCheckboxes = menu.querySelectorAll('input[type="checkbox"]');  // 获取该菜单下所有子复选框
+                    
+                    subCheckboxes.forEach(function(subCheckbox) {
+                        if (subCheckbox.checked == false) {
+                            f=1;
+                        }
+                    });
+                });
+                
+                if(f){
+                    allMenus.forEach(function(menu) {
+                        const subCheckboxes = menu.querySelectorAll('input[type="checkbox"]');  // 获取该菜单下所有子复选框
+                        
+                        subCheckboxes.forEach(function(subCheckbox) {
+                            if (subCheckbox.checked == false) {
+                                subCheckbox.checked = true; // 选中子复选框
+                                toggleTableRow(subCheckbox); // 调用toggleTableRow处理每个复选框的变化
+                            }
+                        });
+                    });
+                
+                    const checkboxes = document.querySelectorAll('.Check');
+                
+                    checkboxes.forEach(function(checkbox) {
+                        if (checkbox.checked == false) {
+                            checkbox.checked = true;  // 设置复选框为选中
+                        }
+                    });
+                }
+                else{
+                    allMenus.forEach(function(menu) {
+                        const subCheckboxes = menu.querySelectorAll('input[type="checkbox"]');  // 获取该菜单下所有子复选框
+                        
+                        subCheckboxes.forEach(function(subCheckbox) {
+                            // if (subCheckbox.checked == false) {
+                                subCheckbox.checked = false; // 选中子复选框
+                                toggleTableRow(subCheckbox); // 调用toggleTableRow处理每个复选框的变化
+                            // }
+                        });
+                    });
+                
+                    const checkboxes = document.querySelectorAll('.Check');
+                
+                    checkboxes.forEach(function(checkbox) {
+                        // if (checkbox.checked == false) {
+                            checkbox.checked = false;  // 设置复选框为选中
+                        // }
+                    });
+                }
+            }
+            // 单个图类型复选框全选
+            function toggleMenuCheckbox(menuId, checkbox) {
+                // 文件未上传时，停止执行后续操作
+               
+                const menuItems = document.querySelectorAll(\`#\${menuId} input[type="checkbox"]\`);
+
+                menuItems.forEach(function(item) {
+                    if (checkbox.checked == true) {
+                        if (item.checked == false) {
+                            item.checked = true;
+                            toggleTableRow(item); // 调用 toggleTableRow 函数处理每个复选框的变化
+                        }
+                    } else {
+                        if (item.checked == true) {
+                            item.checked = false;
+                            toggleTableRow(item);
+                        }
+                    }
+                });
+            }    
+
+            function showcoverageGraph(graph,type){
+                const row = document.querySelector(\`#CoverageRow\`);
+                let td;
+                let index ;
+                if (graph === 'digraph')
+                {
+                    td = row.querySelector('td:nth-child(2)');
+                }
+                else if(graph === 'bidirectedGraph'){
+                    td = row.querySelector('td:nth-child(3)');
+                }
+                const canvases = td.querySelectorAll('canvas');
+                canvases.forEach(function(canvas) {
+                    canvas.remove();  // 删除该 <canvas> 元素
+                });
+                var canvas = document.createElement('canvas');
+                canvas.id = graph +type;
+                canvas.width = 200;  // Set the width of the canvas
+                canvas.height = 150; // Set the height of the canvas
+                td.appendChild(canvas);
+                var ctx = document.getElementById( graph +type).getContext('2d'); 
+                if(type == 'bp')
+                    index = 0;
+                else if(type == 'Node')
+                    index = 1;
+                else
+                    index = 2;
+
+                var cycleCanvas = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        datasets: [{
+                            label:'',
+                            data: Data[graph]['Coverage'][index],
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                type:'linear',
+                                position:'bottom',
+                                ticks:{
+                                    maxRotation: 0, // 设置为 0 表示水平显示
+                                    minRotation: 0, // 防止旋转
+                                    stepSize: 2 // 每隔 2 个显示一个标签
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false  // 这会隐藏整个图例（包括任何标签）
+                            }
+                        },
+                        responsive: false,  // 防止图表响应容器尺寸变化   
+                    }
+                })
+                
+            }
+
+            function draw(type){
+                graphList =['digraph','bidirectedGraph','biedgedGraph'];
+                const row = document.querySelector(\`#\${type}Row\`);
+                const tds = row.querySelectorAll('td');
+                tds.forEach((td,index)=>{
+                    if(index ==0){
+                        return;
+                    }
+                    else{
+                        if(Data[graphList[index-1]][type] == null){
+                            return;
+                        }
+                        const canvases = td.querySelectorAll('canvas');
+                        canvases.forEach(function(canvas) {
+                            canvas.remove();  // 删除该 <canvas> 元素
+                        });
+                        var canvas = document.createElement('canvas');
+                        canvas.id = index +type;
+                        canvas.width = 200;  // Set the width of the canvas
+                        canvas.height = 150; // Set the height of the canvas
+                        td.appendChild(canvas);
+                        var ctx = document.getElementById(index +type).getContext('2d'); 
+                        if(Data[graphList[index-1]][type].length == 2 ){
+                            new Chart(ctx, {
+                                type: 'bar',
+                                data: {
+                                    datasets: [
+                                        {
+                                            label: 'In-degree',
+                                            data: Data[graphList[index-1]][type][0],
+                                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                            borderColor: 'rgba(54, 162, 235, 1)',
+                                            borderWidth: 1
+                                        },
+                                        {
+                                            label: 'Out-degree',
+                                            data: Data[graphList[index-1]][type][1],
+                                            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                                            borderColor: 'rgba(255, 99, 132, 1)',
+                                            borderWidth: 1
+                                        }
+                                    ]
+                                },
+                                options: {
+                                    scales: {
+                                        x: {
+                                            type: 'linear',
+                                            position: 'bottom',
+                                            ticks: {
+                                                maxRotation: 0,
+                                                minRotation: 0,
+                                                stepSize: 2
+                                            },
+                                            title: { display: true, text: 'Degree' }
+                                        },
+                                        y: {
+                                            type: 'linear',
+                                            min: 0,
+                                            max: 1,
+                                            title: { display: true, text: 'Proportion' }
+                                        }
+                                    },
+                                    plugins: {
+                                        legend: {
+                                            display: true,
+                                            labels: { boxWidth: 10, padding: 10 }
+                                        },
+                                        // tooltip: {
+                                        //     callbacks: {
+                                        //         // label: function(context) {
+                                        //         //     const dataPoint = context.raw;
+                                        //         //     return \`Number: \${dataPoint.originalValue}\`;
+                                        //         // }
+                                        //     }
+                                        // }
+                                    },
+                                    responsive: false
+                                }
+                            });
+                        } 
+                        else if(Data[graphList[index-1]][type].length == 1 && type=="DegreeDistribution"){
+                             var cycleCanvas = new Chart(ctx, {
+                                type: 'bar',
+                                data: {
+                                    datasets: [{
+                                        label:'',
+                                        data: Data[graphList[index-1]][type][0],
+                                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                        borderColor: 'rgba(54, 162, 235, 1)',
+                                        borderWidth: 1
+                                    }]
+                                },
+                                options: {
+                                    scales: {
+                                        x: {
+                                            type: 'linear',
+                                            position: 'bottom',
+                                            ticks: {
+                                                maxRotation: 0,
+                                                minRotation: 0,
+                                                stepSize: 2
+                                            },
+                                            title: { display: true, text: 'Degree' }
+                                        },
+                                        y: {
+                                            type: 'linear',
+                                            min: 0,
+                                            max: 1,
+                                            title: { display: true, text: 'Proportion' }
+                                        }
+                                    },
+                                    plugins: {
+                                        legend: {
+                                            display: false,
+                                            labels: { boxWidth: 10, padding: 10 }
+                                        },
+                                        // tooltip: {
+                                        //     callbacks: {
+                                        //         // label: function(context) {
+                                        //         //     const dataPoint = context.raw;
+                                        //         //     return \`Number: \${dataPoint.originalValue}\`;
+                                        //         // }
+                                        //     }
+                                        // }
+                                    },
+                                    responsive: false
+                                }
+                            })
+                        }
+                        else if(Data[graphList[index-1]][type].length == 1){
+                        
+                            var cycleCanvas = new Chart(ctx, {
+                                type: 'bar',
+                                data: {
+                                    datasets: [{
+                                        label:'',
+                                        data: Data[graphList[index-1]][type][0],
+                                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                        borderColor: 'rgba(54, 162, 235, 1)',
+                                        borderWidth: 1
+                                    }]
+                                },
+                                options: {
+                                    scales: {
+                                        x: {
+                                            type:'linear',
+                                            position:'bottom',
+                                            ticks:{
+                                                maxRotation: 0, // 设置为 0 表示水平显示
+                                                minRotation: 0, // 防止旋转
+                                                stepSize: 2 // 每隔 2 个显示一个标签
+                                            }
+                                        }
+                                    },
+                                    plugins: {
+                                        legend: {
+                                            display: false  // 这会隐藏整个图例（包括任何标签）
+                                        }
+                                    },
+                                    responsive: false,  // 防止图表响应容器尺寸变化   
+                                }
+                            })
+                        }
+                        else{
+                            return;
+                        }
+
+                    }
+                })
+            }
+            window.onload = selectAllCheckboxes();
+            <\/script>
+            
+            </body>
+            </html>`;
+        zip.file("index.html",htmlContent);
+        // 创建 Blob 对象
+        // var blob = new Blob([htmlContent], { type: 'text/html' });
+
+        // // 创建临时下载链接
+        // var link = document.createElement('a');
+        // link.href = URL.createObjectURL(blob);
+        // link.download = 'downloaded_part.html'; // 下载文件名
+
+        // // 触发点击事件开始下载
+        // link.click();
+        // const imageFiles =['../styles/icon_56x57.png','../styles/check.png','../styles/reduce.png',
+        //     '../styles/add.png','../styles/detail.png','../styles/dig.png','../styles/bidig.png','../styles/bieg.png'];
+        const imageFiles =['icon_56x57.png','check.png','reduce.png',
+            'add.png','detail.png','dig.png','bidig.png','bieg.png'];
+        const imageFolder = zip.folder("static/styles");
+        imageFiles.forEach((imageName) => {
+            // 读取每个图片文件并添加到 ZIP 文件中
+            fetch(imageName)
+                .then(response => response.blob())
+                .then(blob => {
+                    imageFolder.file(imageName, blob);
+                });
+        });
+        Promise.all(imageFiles.map(imageName => {
+            return fetch(imageName)
+                .then(response => response.blob())
+                .then(blob => {
+                    imageFolder.file(imageName, blob);
+                })
+                .catch(error => console.error(`Error loading image: ${imageName}`, error));
+        })).then(() => {
+            // 生成并下载 ZIP 文件
+            zip.generateAsync({ type: "blob" }).then(function (content) {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(content);
+                link.download = "website.zip";
+                link.click();
+            });
+        });
+    }
+
+    // 下载完成后修改按钮状态
+    setTimeout(() => {
+        // 修改图标和按钮文字
+        button.querySelector(".icon-image").src = "static/styles/icon-arrival.png";
+        const buttonText = button.querySelector("span");
+        if (buttonText) {
+            buttonText.innerText = "Completed"; // 修改文字内容
+            buttonText.style.fontSize = "12px";  // 修改字体大小
+        }
+        button.classList.remove("active"); // 移除动画
+
+        // 恢复按钮状态为“Download”
+        setTimeout(() => {
+            button.querySelector(".icon-image").src = "static/styles/icon_download.png";
+            button.querySelector("span").innerText = "HTML";
+            button.querySelector("span").style.fontSize = "16px";
+        }, 3000); // 设置5秒延迟来恢复按钮文本和图标
+    }, 10); // 0.001秒后执行下载完成的操作
 }
 
 function downloadZip() {
     const buttons = document.querySelectorAll(".download-btn");
-    const button = buttons[1];
+    const button = buttons[2];
 
     // 防止多次点击
     if (button.classList.contains("active")) {
@@ -284,55 +1036,63 @@ function downloadZip() {
         startDownload();
     }, 1000); // 动画时长1秒
     ShowAllCoverage();
-}
 
-// 启动下载
-function startDownload() {
-    const buttons = document.querySelectorAll(".download-btn");
-    const button = buttons[1];
-    
-    // 发送请求并处理下载
-    if(flag.includes('+')) {
-        return;  // 防止不必要的重复请求
-    }
-
-    axios.get('/api/downloadZip', {
-        params: {
-            flag: flag  // 将文件路径作为查询参数传递
+    function startDownload() {
+        const buttons = document.querySelectorAll(".download-btn");
+        const button = buttons[2];
+        
+        // 发送请求并处理下载
+        if(flag.includes('+')) {
+            return;  // 防止不必要的重复请求
         }
-    })
-    .then(function (response) {
-        console.log(`./${flag}.zip`);
-        window.location.href = `./${flag}.zip`;  // 触发文件下载
-        console.log('命令执行输出:', response.data);
 
-        // 模拟下载完成后的按钮状态修改
-        setTimeout(() => {
-            // 修改图标和按钮文字
-            button.querySelector("i").classList.replace("bx-cloud-download", "bx-check-circle");
-            button.querySelector("span").innerText = "Completed";
-            button.classList.remove("active"); // 移除动画
+        axios.get('/api/downloadZip', {
+            params: {
+                flag: flag  // 将文件路径作为查询参数传递
+            }
+        })
+        .then(function (response) {
+            console.log(`./${flag}.zip`);
+            window.location.href = `./${flag}.zip`;  // 触发文件下载
+            console.log('命令执行输出:', response.data);
 
-            // 调用删除函数
-            deleteZip();
-
-            // 恢复按钮状态为“Download”
+            // 下载完成后修改按钮状态
             setTimeout(() => {
-                button.querySelector("i").classList.replace("bx-check-circle", "bx-cloud-download");
-                button.querySelector("span").innerText = "Download ZIP";
-            }, 2000); // 设置2秒延迟来恢复按钮文本和图标
-        }, 100); // 0.1秒后执行下载完成的操作
-    })
-    .catch(function (error) {
-        // 错误回调
-        console.error('命令执行失败:', error);
-        // 错误时恢复按钮状态
-        setTimeout(() => {
-            button.querySelector("i").classList.replace("bx-cloud-download", "bx-error");
-            button.querySelector("span").innerText = "Failed";
-            button.classList.remove("active");
-        }, 1000);
-    });
+                // 修改图标和按钮文字
+                button.querySelector(".icon-image").src = "static/styles/icon-arrival.png";
+                const buttonText = button.querySelector("span");
+                if (buttonText) {
+                    buttonText.innerText = "Completed"; // 修改文字内容
+                    buttonText.style.fontSize = "12px";  // 修改字体大小
+                }
+                button.classList.remove("active"); // 移除动画
+
+                // 调用删除函数
+                deleteZip();
+
+                // 恢复按钮状态为“Download”
+                setTimeout(() => {
+                    button.querySelector(".icon-image").src = "static/styles/icon_download.png";
+                    button.querySelector("span").innerText = "ZIP";
+                    button.querySelector("span").style.fontSize = "16px";
+                }, 3000); // 设置5秒延迟来恢复按钮文本和图标
+            }, 10); // 0.001秒后执行下载完成的操作
+        })
+        .catch(function (error) {
+            // 错误回调
+            console.error('命令执行失败:', error);
+            // 错误时恢复按钮状态
+            setTimeout(() => {
+                button.querySelector(".icon-image").src = "static/styles/icon-failed.png";
+                const buttonText = button.querySelector("span");
+                if (buttonText) {
+                    buttonText.innerText = "Failed"; // 修改文字内容
+                    buttonText.style.fontSize = "12px";  // 修改字体大小
+                }
+                button.classList.remove("active");
+            }, 3000);
+        });
+    }
 }
 
 function deleteZip(){
@@ -416,24 +1176,57 @@ function selectAllCheckboxes() {
 
     const allMenus = document.querySelectorAll('ul[id^="menu"]');  // 获取所有菜单（每个菜单的ID以 "menu" 开头）
     
+    let f=0;
     allMenus.forEach(function(menu) {
         const subCheckboxes = menu.querySelectorAll('input[type="checkbox"]');  // 获取该菜单下所有子复选框
         
         subCheckboxes.forEach(function(subCheckbox) {
             if (subCheckbox.checked == false) {
-                subCheckbox.checked = true; // 选中子复选框
-                toggleTableRow(subCheckbox); // 调用toggleTableRow处理每个复选框的变化
+                f=1;
             }
         });
     });
-
-    const checkboxes = document.querySelectorAll('.Check');
-
-    checkboxes.forEach(function(checkbox) {
-        if (checkbox.checked == false) {
-            checkbox.checked = true;  // 设置复选框为选中
-        }
-    });
+    
+    if(f){
+        allMenus.forEach(function(menu) {
+            const subCheckboxes = menu.querySelectorAll('input[type="checkbox"]');  // 获取该菜单下所有子复选框
+            
+            subCheckboxes.forEach(function(subCheckbox) {
+                if (subCheckbox.checked == false) {
+                    subCheckbox.checked = true; // 选中子复选框
+                    toggleTableRow(subCheckbox); // 调用toggleTableRow处理每个复选框的变化
+                }
+            });
+        });
+    
+        const checkboxes = document.querySelectorAll('.Check');
+    
+        checkboxes.forEach(function(checkbox) {
+            if (checkbox.checked == false) {
+                checkbox.checked = true;  // 设置复选框为选中
+            }
+        });
+    }
+    else{
+        allMenus.forEach(function(menu) {
+            const subCheckboxes = menu.querySelectorAll('input[type="checkbox"]');  // 获取该菜单下所有子复选框
+            
+            subCheckboxes.forEach(function(subCheckbox) {
+                // if (subCheckbox.checked == false) {
+                    subCheckbox.checked = false; // 选中子复选框
+                    toggleTableRow(subCheckbox); // 调用toggleTableRow处理每个复选框的变化
+                // }
+            });
+        });
+    
+        const checkboxes = document.querySelectorAll('.Check');
+    
+        checkboxes.forEach(function(checkbox) {
+            // if (checkbox.checked == false) {
+                checkbox.checked = false;  // 设置复选框为选中
+            // }
+        });
+    }
 }
 
 // 单个图类型复选框全选
@@ -477,9 +1270,6 @@ function unselectAllCheckboxes() {
         }
     });
 }
-
-
-
 
 
 // =======================================================
@@ -854,15 +1644,15 @@ function toggleTableRow(checkbox) {
         }
 }
 
-// 当页面加载完成后，隐藏页面上的一些特定表格行
-window.onload = function() {
-    document.getElementById('file_sizeRow').style.display = 'none';
-    document.getElementById('segmentsRow').style.display = 'none';
-    document.getElementById('linksRow').style.display = 'none';
-    document.getElementById('pathsRow').style.display = 'none';
-    document.getElementById('single_direction_segmentRow').style.display = 'none';
-    document.getElementById('bidirectional_direction_segmentRow').style.display = 'none';
-};
+// // 当页面加载完成后，隐藏页面上的一些特定表格行
+// window.onload = function() {
+//     document.getElementById('file_sizeRow').style.display = 'none';
+//     document.getElementById('segmentsRow').style.display = 'none';
+//     document.getElementById('linksRow').style.display = 'none';
+//     document.getElementById('pathsRow').style.display = 'none';
+//     document.getElementById('single_direction_segmentRow').style.display = 'none';
+//     document.getElementById('bidirectional_direction_segmentRow').style.display = 'none';
+// };
 
 
 
@@ -1679,7 +2469,7 @@ function appendLoop(index, filepath) {
                 // 如果文件为空，在表格中显示 "不存在"
                 const row = document.querySelector(`#LoopLengthRow`);
                 const td = row.children[index];
-                td.textContent = "Non-existent";
+                td.textContent = "N.A.";
                 return;
             }
 
@@ -1792,7 +2582,7 @@ function loadloopdata(index, filepath) {
                 // 如果文件为空，在表格中显示 "不存在"
                 const row = document.querySelector(`#LoopLengthRow`);
                 const td = row.children[index];
-                td.textContent = "Non-existent";
+                td.textContent = "N.A.";
                 return;
             }
 
@@ -1906,7 +2696,7 @@ function appendcycle(index, filepath) {
                 // 如果文件为空，在表格中显示 "不存在"
                 const row = document.querySelector(`#CycleDistributionRow`);
                 const td = row.children[index];
-                td.textContent = "Non-existent";
+                td.textContent = "N.A.";
                 return;
             }
 
@@ -2019,7 +2809,7 @@ function loadcycledata(index, filepath) {
                 // 如果文件为空，在表格中显示 "不存在"
                 const row = document.querySelector(`#CycleDistributionRow`);
                 const td = row.children[index];
-                td.textContent = "Non-existent";
+                td.textContent = "N.A.";
                 return;
             }
 
@@ -2133,7 +2923,7 @@ function appendBubbleChainsdata(index, filepath) {
                 // 如果文件为空，在表格中显示 "不存在"
                 const row = document.querySelector(`#BubbleChainsRow`);
                 const td = row.children[index];
-                td.textContent = "Non-existent";
+                td.textContent = "N.A.";
                 return;
             }
 
@@ -2243,7 +3033,7 @@ function loadBubbleChainsdata(index, filepath) {
                 // 如果文件为空，在表格中显示 "不存在"
                 const row = document.querySelector(`#BubbleChainsRow`);
                 const td = row.children[index];
-                td.textContent = "Non-existent";
+                td.textContent = "N.A.";
                 return;
             }
 
@@ -2353,7 +3143,7 @@ function appendNestedBubblesdata(index, filepath) {
                 // 如果文件为空，在表格中显示 "不存在"
                 const row = document.querySelector(`#NestedBubblesRow`);
                 const td = row.children[index];
-                td.textContent = "Non-existent";
+                td.textContent = "N.A.";
                 return;
             }
 
@@ -2467,7 +3257,7 @@ function loadNestedBubblesdata(index, filepath) {
                 // 如果文件为空，在表格中显示 "不存在"
                 const row = document.querySelector(`#NestedBubblesRow`);
                 const td = row.children[index];
-                td.textContent = "Non-existent";
+                td.textContent = "N.A.";
                 return;
             }
 
@@ -2615,7 +3405,7 @@ function GetAllCoverage() {
                     // 如果文件为空，在表格中显示 "不存在"
                     const row = document.querySelector(`#CoverageRow`);
                     let td = (index === 0) ? row.querySelector('td:nth-child(2)') : row.querySelector('td:nth-child(3)');
-                    td.textContent = "Non-existent";
+                    td.textContent = "N.A.";
                     return;
                 }
 
