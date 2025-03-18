@@ -22,34 +22,17 @@ function runcommand(filePath) {
         })
         .then(function (response) {
             // 成功回调
-            // const FileName = filePath.split('/')[1].split('.')[0];
             console.log('命令执行输出:', response.data);
             resolve();  // Resolve the promise when the command succeeds
         })
         .catch(function (error) {
             // 错误回调
-            // const FileName = filePath.split('/')[1].split('.')[0];
             console.error('命令执行失败:', error);
             reject(error);  // Reject the promise when the command fails
         });
     });
 }
 
-// =======================================================
-//                       获取ip
-// =======================================================
-
-function getIp(){
-    fetch('ip.php')
-                .then(response => response.json())  // 解析 JSON 响应
-                .then(data => {
-                    // 在控制台输出访问者的 IP 地址和访问次数
-                    ip = data.ip;
-                    console.log(ip);
-                })
-                .catch(error => console.error('Error:', error));
-}
-window.onload = getIp();
 
 // =======================================================
 //                        文件上传
@@ -77,11 +60,8 @@ function uploadGFAFile() {
     }
 
     const uploadUrl = '/api/upload';
-
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('userIp', ip);
-
     const uploadProgressArea = document.getElementById('uploadProgressArea');
     const progressBar = document.getElementById('progressBar');
     const progressText = document.getElementById('progressText');
@@ -91,7 +71,7 @@ function uploadGFAFile() {
     logoPlaceholder.style.display = 'none';
 
     // 显示加载覆盖层函数
-    const displayLoadingOverlay = () => {
+    const displayLoadingOverlay = () => {  
         const loadingOverlay = document.createElement('div');
         loadingOverlay.id = 'loading-overlay';
         loadingOverlay.style.position = 'fixed';
@@ -123,6 +103,7 @@ function uploadGFAFile() {
     };
 
     axios.post(uploadUrl, formData, {
+        
         headers: {
             'Content-Type': 'multipart/form-data'
         },
@@ -147,10 +128,11 @@ function uploadGFAFile() {
         const loadingOverlay = displayLoadingOverlay();
         
         const filePath = response.data.filePath;
+        // console.log(filePath);
+        ip = filePath.split('/')[4];
         const FileName = filePath.split('/').pop().split('.').slice(0, -1).join('.');
         fileUploaded = true;
         flag = FileName;
-
         // 后台任务
         runcommand(filePath)
             .then(() => {
@@ -183,7 +165,7 @@ function uploadZIPFile() {
         return;
     }
 
-    const fileExtension = file.name.split('.').pop().toLowerCase();
+    // const fileExtension = file.name.split('.').pop().toLowerCase();
     let uploadUrl, onSuccess, onFailure;
 
     uploadUrl = '/api/uploadZip';
@@ -241,6 +223,7 @@ function uploadZIPFile() {
 
 // 上传样例文件
 function uploadExampleFile(filePath) {
+    ip = "example";
     // 文件未上传时弹出提示
     if (!filePath) {
         alert("Error: Please select a valid example file path!");
@@ -253,31 +236,32 @@ function uploadExampleFile(filePath) {
     const logoPlaceholder = document.getElementById('logo-placeholder');
     logoPlaceholder.style.display = 'none';
 
-    // 创建一个加载框
-    const loadingOverlay = document.createElement('div');
-    loadingOverlay.id = 'loading-overlay';
-    loadingOverlay.style.position = 'fixed';
-    loadingOverlay.style.top = '0';
-    loadingOverlay.style.left = '0';
-    loadingOverlay.style.width = '100%';
-    loadingOverlay.style.height = '100%';
-    loadingOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-    loadingOverlay.style.display = 'flex';
-    loadingOverlay.style.alignItems = 'center';
-    loadingOverlay.style.justifyContent = 'center';
-    loadingOverlay.style.zIndex = '9999';
-
-    const loadingText = document.createElement('div');
-    loadingText.style.color = 'white';
-    loadingText.style.fontSize = '24px';
-    loadingText.innerText = 'Loading... Please wait...';
-
-    loadingOverlay.appendChild(loadingText);
-    document.body.appendChild(loadingOverlay);
-
+    
     if (selDom.length === 0) { // 如果标签页不存在，则创建新的标签
         alert('Successfully uploaded!');
         fileUploaded = true;
+
+        // 创建一个加载框
+        const loadingOverlay = document.createElement('div');
+        loadingOverlay.id = 'loading-overlay';
+        loadingOverlay.style.position = 'fixed';
+        loadingOverlay.style.top = '0';
+        loadingOverlay.style.left = '0';
+        loadingOverlay.style.width = '100%';
+        loadingOverlay.style.height = '100%';
+        loadingOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+        loadingOverlay.style.display = 'flex';
+        loadingOverlay.style.alignItems = 'center';
+        loadingOverlay.style.justifyContent = 'center';
+        loadingOverlay.style.zIndex = '9999';
+
+        const loadingText = document.createElement('div');
+        loadingText.style.color = 'white';
+        loadingText.style.fontSize = '24px';
+        loadingText.innerText = 'Loading... Please wait...';
+
+        loadingOverlay.appendChild(loadingText);
+        document.body.appendChild(loadingOverlay);
 
         // 执行异步命令并在命令完成后关闭加载框
         runcommand(filePath).then(() => {
@@ -298,8 +282,9 @@ function uploadExampleFile(filePath) {
         addCheckbox(FileName);
     }
     else{
-        flag = filePath.split('/')[1].split('.')[0];
+        flag = filePath.split('/')[2].split('.')[0];
         openTab(flag);
+        selectAllCheckboxes();
     }
    
 }
@@ -456,23 +441,24 @@ function downloadhtml(){
         }
     };
     const allPath = {
+
                         digraph:{
-                            DegreeDistribution:[`../../data/${flag}/digraph/inDegree.txt`,`../../data/${flag}/digraph/outDegree.txt`],
-                            LoopLength:[`../../data/${flag}/digraph/loop.txt`],
-                            CycleDistribution:[`../../data/${flag}/digraph/cycle.txt`]
+                            DegreeDistribution:[`../../data/${ip}/${flag}/digraph/inDegree.txt`,`../../data/${ip}/${flag}/digraph/outDegree.txt`],
+                            LoopLength:[`../../data/${ip}/${flag}/digraph/loop.txt`],
+                            CycleDistribution:[`../../data/${ip}/${flag}/digraph/cycle.txt`]
                         },
                         bidirectedGraph:{
-                            DegreeDistribution:[`../../data/${flag}/bidirectedGraph/degree.txt`],
-                            LoopLength:[`../../data/${flag}/bidirectedGraph/loop.txt`],
-                            NestedBubbles:[`../../data/${flag}/bidirectedGraph/nestedBubblesLevel.txt`],
-                            BubbleChains:[`../../data/${flag}/bidirectedGraph/bubbleChainLength.txt`]
+                            DegreeDistribution:[`../../data/${ip}/${flag}/bidirectedGraph/degree.txt`],
+                            LoopLength:[`../../data/${ip}/${flag}/bidirectedGraph/loop.txt`],
+                            NestedBubbles:[`../../data/${ip}/${flag}/bidirectedGraph/nestedBubblesLevel.txt`],
+                            BubbleChains:[`../../data/${ip}/${flag}/bidirectedGraph/bubbleChainLength.txt`]
                         },
                         biedgedGraph:{
-                            DegreeDistribution:[`../../data/${flag}/biedgedGraph/degree.txt`],
-                            LoopLength:[`../../data/${flag}/biedgedGraph/loop.txt`]
+                            DegreeDistribution:[`../../data/${ip}/${flag}/biedgedGraph/degree.txt`],
+                            LoopLength:[`../../data/${ip}/${flag}/biedgedGraph/loop.txt`]
                         }
                     };
-                    const CoveragePath=[`../../data/${flag}/digraph/coverage.txt`,`../../data/${flag}/bidirectedGraph/coverage.txt`];
+                    const CoveragePath=[`../../data/${ip}/${flag}/digraph/coverage.txt`,`../../data/${ip}/${flag}/bidirectedGraph/coverage.txt`];
                     CoveragePath.forEach((path,index)=>{
                         fetch(path)
                             .then(response => {
@@ -1048,12 +1034,13 @@ function downloadZip() {
 
         axios.get('/api/downloadZip', {
             params: {
+                userIp: ip,
                 flag: flag  // 将文件路径作为查询参数传递
             }
         })
         .then(function (response) {
             console.log(`./${flag}.zip`);
-            window.location.href = `./${flag}.zip`;  // 触发文件下载
+            window.location.href = `../data/${ip}/${flag}/${flag}.zip`;  // 触发文件下载
             console.log('命令执行输出:', response.data);
 
             // 下载完成后修改按钮状态
@@ -1517,12 +1504,12 @@ function load(){
         return;
     }
     fileMap={
-        bidirectedGraph: [`../../data/${flag}/bidirectedGraph/basicStatistics.txt`],
-        biedgedGraph: [`../../data/${flag}/biedgedGraph/basicStatistics.txt`],
-        digraph:[`../../data/${flag}/digraph/basicStatistics.txt`]
+        bidirectedGraph: [`../../data/${ip}/${flag}/bidirectedGraph/basicStatistics.txt`],
+        biedgedGraph: [`../../data/${ip}/${flag}/biedgedGraph/basicStatistics.txt`],
+        digraph:[`../../data/${ip}/${flag}/digraph/basicStatistics.txt`]
     };
     loadAllData();
-    loadGFAData(`../../data/${flag}/gfa/basicStatistics.txt`);
+    loadGFAData(`../../data/${ip}/${flag}/gfa/basicStatistics.txt`);
 }
 
 // 检查文件是否已上传
@@ -1847,7 +1834,7 @@ function CheckData(){
                     const trs = tableHead.querySelectorAll('tr');
                     // console.log(value);
                     GFAData={};
-                    loadGFAData(`../../data/${value}/gfa/basicStatistics.txt`)
+                    loadGFAData(`../../data/${ip}/${value}/gfa/basicStatistics.txt`)
                         .then(() => {
                             // console.log(GFAData);
                             trs.forEach((item,index) =>{
@@ -1881,7 +1868,7 @@ function CheckData(){
                         dibigraph: {},
                         digraph: {},
                     };
-                    fetch(`../../data/${value}/digraph/basicStatistics.txt`)
+                    fetch(`../../data/${ip}/${value}/digraph/basicStatistics.txt`)
                         .then(response => {
                             if (!response.ok) {
                                 throw new Error(`Failed to load the file: ${response.statusText}`);
@@ -1907,11 +1894,11 @@ function CheckData(){
                             trs.forEach((item, index) => {
                                 if (item.id) {
                                     if (item.id == 'DegreeDistributionRow') {
-                                        appenddegree(position,`../../data/${value}/digraph/inDegree.txt`, `../../data/${value}/data/digraph/outDegree.txt`);
+                                        appenddegree(position,`../../data/${ip}/${value}/digraph/inDegree.txt`, `../../data/${ip}/${value}/digraph/outDegree.txt`);
                                     } else if (item.id == 'LoopLengthRow') {
-                                        appendLoop(position+4,`../../data/${value}/digraph/loop.txt`);
+                                        appendLoop(position+4,`../../data/${ip}/${value}/digraph/loop.txt`);
                                     } else if (item.id == 'CycleDistributionRow') {
-                                        appendcycle(position+4,`../../data/${value}/digraph/cycle.txt`);
+                                        appendcycle(position+4,`../../data/${ip}/${value}/digraph/cycle.txt`);
                                     } else if (item.id == 'NestedBubblesRow' || item.id == 'BubbleChainsRow') {
                                         item.children[position+4].textContent="/";
                                     } else if( item.id == 'CoverageRow'){
@@ -1934,7 +1921,7 @@ function CheckData(){
                                         td.appendChild(button1);
                                         td.appendChild(button2);
                                         td.appendChild(button3);
-                                        const coveragePath = `../../data/${value}/digraph/coverage.txt`;
+                                        const coveragePath = `../../data/${ip}/${value}/digraph/coverage.txt`;
                                         const TypeList=['bp','Node','Edge'];
                                         fetch(coveragePath)
                                             .then(response => {
@@ -2070,7 +2057,7 @@ function CheckData(){
                         dibigraph: {},
                         digraph: {},
                     };
-                    fetch(`../../data/${value}/bidirectedGraph/basicStatistics.txt`)
+                    fetch(`../../data/${ip}/${value}/bidirectedGraph/basicStatistics.txt`)
                         .then(response => {
                             if (!response.ok) {
                                 throw new Error(`Failed to load the file: ${response.statusText}`);
@@ -2103,19 +2090,19 @@ function CheckData(){
                                     //     }
                                     // });
                                     if(item.id == 'DegreeDistributionRow'){
-                                        appenddegree2('bidirectedGraph',position+4+array[1],`../../data/${value}/bidirectedGraph/degree.txt`);
+                                        appenddegree2('bidirectedGraph',position+4+array[1],`../../data/${ip}/${value}/bidirectedGraph/degree.txt`);
                                     }
                                     else if(item.id == 'LoopLengthRow'){
-                                        appendLoop(position+4+array[1],`../../data/${value}/bidirectedGraph/loop.txt`);
+                                        appendLoop(position+4+array[1],`../../data/${ip}/${value}/bidirectedGraph/loop.txt`);
                                     }
                                     else if(item.id == 'CycleDistributionRow'){
                                         item.children[position+4+array[1]].textContent =  '/';
                                     }
                                     else if(item.id == 'NestedBubblesRow'){
-                                        appendNestedBubblesdata(position+4+array[1],`../../data/${value}/bidirectedGraph/nestedBubblesLevel.txt`);
+                                        appendNestedBubblesdata(position+4+array[1],`../../data/${ip}/${value}/bidirectedGraph/nestedBubblesLevel.txt`);
                                     }
                                     else if(item.id == 'BubbleChainsRow'){
-                                        appendBubbleChainsdata(position+4+array[1],`../../data/${value}/bidirectedGraph/bubbleChainLength.txt`);
+                                        appendBubbleChainsdata(position+4+array[1],`../../data/${ip}/${value}/bidirectedGraph/bubbleChainLength.txt`);
                                     }
                                     else if(item.id == 'CoverageRow'){
                                         const td = item.children[position+4+array[1]];
@@ -2137,7 +2124,7 @@ function CheckData(){
                                         td.appendChild(button1);
                                         td.appendChild(button2);
                                         td.appendChild(button3);
-                                        const coveragePath = `../../data/${value}/bidirectedGraph/coverage.txt`
+                                        const coveragePath = `../../data/${ip}/${value}/bidirectedGraph/coverage.txt`
                                         const TypeList=['bp','Node','Edge'];
                                         fetch(coveragePath)
                                             .then(response => {
@@ -2275,7 +2262,7 @@ function CheckData(){
                         dibigraph: {},
                         digraph: {},
                     };
-                    fetch(`../../data/${value}/biedgedGraph/basicStatistics.txt`)
+                    fetch(`../../data/${ip}/${value}/biedgedGraph/basicStatistics.txt`)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error(`Failed to load the file: ${response.statusText}`);
@@ -2308,10 +2295,10 @@ function CheckData(){
                                 //     }
                                 // });
                                 if(item.id == 'DegreeDistributionRow'){
-                                    appenddegree2('biedgedGraph',position+4+array[1]+array[2],`../../data/${value}/biedgedGraph/degree.txt`);
+                                    appenddegree2('biedgedGraph',position+4+array[1]+array[2],`../../data/${ip}/${value}/biedgedGraph/degree.txt`);
                                 }
                                 else if(item.id == 'LoopLengthRow'){
-                                    appendLoop(position+4+array[1]+array[2],`../../data/${value}/biedgedGraph/loop.txt`);
+                                    appendLoop(position+4+array[1]+array[2],`../../data/${ip}/${value}/biedgedGraph/loop.txt`);
                                 }
                                 else if ( item.id == 'CoverageRow') {
                                     item.children[position+4+array[1]+array[2]].textContent =  '/';
@@ -3360,21 +3347,21 @@ function loadNestedBubblesdata(index, filepath) {
 }
 
 function cycleFunction(){
-    loadcycledata(1,`../../data/${flag}/digraph/cycle.txt`);
+    loadcycledata(1,`../../data/${ip}/${flag}/digraph/cycle.txt`);
 }
 
 function NestedBubblesFunction(){
-    loadNestedBubblesdata(2,`../../data/${flag}/bidirectedGraph/nestedBubblesLevel.txt`);
+    loadNestedBubblesdata(2,`../../data/${ip}/${flag}/bidirectedGraph/nestedBubblesLevel.txt`);
 }
 
 function BubbleChainsFunction(){
-    loadBubbleChainsdata(2,`../../data/${flag}/bidirectedGraph/bubbleChainLength.txt`);
+    loadBubbleChainsdata(2,`../../data/${ip}/${flag}/bidirectedGraph/bubbleChainLength.txt`);
 }
 function loopFunction(){
     pathsum = [
-    `../../data/${flag}/digraph/loop.txt`,
-    `../../data/${flag}/bidirectedGraph/loop.txt`,
-    `../../data/${flag}/biedgedGraph/loop.txt`,
+    `../../data/${ip}/${flag}/digraph/loop.txt`,
+    `../../data/${ip}/${flag}/bidirectedGraph/loop.txt`,
+    `../../data/${ip}/${flag}/biedgedGraph/loop.txt`,
     ]
     pathsum.forEach((filepath,index)=>{
         loadloopdata(index+1,filepath);
@@ -3389,7 +3376,7 @@ function loopFunction(){
 // =======================================================
 
 function GetAllCoverage() {
-    const CoveragePath = [`../../data/${flag}/digraph/coverage.txt`, `../../data/${flag}/bidirectedGraph/coverage.txt`];
+    const CoveragePath = [`../../data/${ip}/${flag}/digraph/coverage.txt`, `../../data/${ip}/${flag}/bidirectedGraph/coverage.txt`];
     const TypeList = ['bp', 'Node', 'Edge'];
 
     CoveragePath.forEach((path, index) => {
@@ -3753,9 +3740,9 @@ function loaddegree4GraphData(filePath1, filePath2) {
 }
 
 function DegreeFunction(){
-    loaddegree1GraphData(`../../data/${flag}/bidirectedGraph/degree.txt`);
-    loaddegree2GraphData(`../../data/${flag}/biedgedGraph/degree.txt`);
-    loaddegree4GraphData(`../../data/${flag}/digraph/inDegree.txt`,`../../data/${flag}/digraph/outDegree.txt`);
+    loaddegree1GraphData(`../../data/${ip}/${flag}/bidirectedGraph/degree.txt`);
+    loaddegree2GraphData(`../../data/${ip}/${flag}/biedgedGraph/degree.txt`);
+    loaddegree4GraphData(`../../data/${ip}/${flag}/digraph/inDegree.txt`,`../../data/${ip}/${flag}/digraph/outDegree.txt`);
 }
 
 // =======================================================

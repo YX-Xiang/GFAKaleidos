@@ -6,21 +6,41 @@ const path = require('path');
 const archiver = require('archiver');
 const fs = require('fs');
 const AdmZip = require('adm-zip');
+const bodyParser = require('body-parser'); 
 
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        const userIp = req.body.userIp;
+        const userIp=req.headers['x-real-ip'];
         const uploadPath = path.join('/home/yxxiang/uploads/', userIp.toString());
-        
         // 确保目标文件夹存在
         fs.mkdirSync(uploadPath, { recursive: true }); // 创建文件夹，若已存在不会报错
-        
         cb(null, uploadPath); // 使用动态路径
     },
     filename: function (req, file, cb) {
-        // 使用上传文件的原始文件名来保存文件
-        cb(null, file.originalname); // 保持文件原名
+        const userIp = req.headers['x-real-ip'];
+        const uploadPath = path.join('/home/yxxiang/uploads/', userIp.toString());
+        
+        // 获取文件的扩展名
+        const extname = path.extname(file.originalname);
+        // 获取文件名（不带扩展名）
+        const basename = path.basename(file.originalname, extname);
+        
+        // 定义一个函数检查文件是否已经存在
+        const checkFileExists = (filePath) => {
+            return fs.existsSync(filePath);
+        };
+        
+        let newFileName = file.originalname;
+        let counter = 1;
+        
+        // 如果文件已存在，增加后缀 (1), (2) 等，直到找到一个不存在的文件名
+        while (checkFileExists(path.join(uploadPath, newFileName))) {
+            newFileName = `${basename}(${counter})${extname}`;
+            counter++;
+        }
+        // 返回新的文件名
+        cb(null, newFileName);
     }
 });
 
@@ -38,17 +58,19 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());  // 解析 JSON 请求体
+
 app.get('/api/gfaKaleidos', (req, res) => {
-    console.log('852369');
     const uploadPath = req.query.uploadPath;
-    console.log(uploadPath);
-    exec('bash algorithm/run.sh '+uploadPath, (error, stdout, stderr) => {
+
+    exec(`bash algorithm/run.sh "${uploadPath}"`, (error, stdout, stderr) => {
     // exec('python3 connect.py '+uploadPath, (error, stdout, stderr) => {
         if (error) {
             console.error(`执行错误: ${error.message}`);
             return res.status(500).send('命令执行失败');
         }
-        if (stderr) {
+        if (stderr) {``
             console.error(`${stderr}`);
         }
         console.log(`命令输出: ${stdout}`);
@@ -57,14 +79,14 @@ app.get('/api/gfaKaleidos', (req, res) => {
 });
 
 app.get('/api/downloadZip', (req, res) => {
-    // console.log(7559348578);
     const flag = req.query.flag;
-    const folderPath = path.join(__dirname,'data',flag); // 文件夹路径
+    const userIp = req.query.userIp;
+    const folderPath = path.join(__dirname,'data',userIp,flag); // 文件夹路径
     if (!fs.existsSync(folderPath)) {
         return res.status(404).send('文件夹不存在');
     }
     console.log(folderPath);
-    const zipFilePath = path.join(__dirname, `${flag}.zip`);
+    const zipFilePath = path.join(folderPath, `${flag}.zip`);
     const output = fs.createWriteStream(zipFilePath);
     const archive = archiver('zip', { zlib: { level: 9 } });
 
@@ -115,9 +137,8 @@ app.get('/api/deleteZip', (req, res) => {
 });
 
 app.post('/api/upload', upload.single('file'), (req, res) => {
-    // console.log('123456');
     if (req.file) {
-        const userIp = req.body.userIp;
+        const userIp=req.headers['x-real-ip'];
         const filePath = `/home/yxxiang/uploads/${userIp}/${req.file.filename}`;
       res.send({ message: '文件上传成功', filePath: filePath });
     } else {
@@ -127,14 +148,14 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
 
 app.post('/api/uploadZip', upload.single('file'), (req, res) => {
     const file = req.file;
-
+    const userIp=req.headers['x-real-ip'];
     if (!file) {
         return res.status(400).json({ success: false, message: 'No file uploaded.' });
     }
-
     // 标准化文件名
-    const zipFilePath = path.join('/home/yxxiang/uploads', file.originalname);
-    const outputFolder = path.join(__dirname, 'data', path.parse(file.originalname).name);
+    console.log(file.filename);
+    const zipFilePath = path.join(`/home/yxxiang/uploads/${userIp}/`,file.filename);
+    const outputFolder = path.join(__dirname, 'data',`${userIp}`, path.parse(file.filename).name);
 
     // 确保解压目标文件夹存在
     if (!fs.existsSync(outputFolder)) {

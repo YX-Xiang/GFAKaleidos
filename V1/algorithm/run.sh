@@ -3,8 +3,11 @@
 INPUT_GFA=$1
 FILENAME=$(basename "$INPUT_GFA" | sed 's/\.[^.]*$//')
 
-mkdir -p "data/$FILENAME"
-OUTPUT_PATH="data/$FILENAME"
+#获取ip
+ip=$(echo "$INPUT_GFA" | cut -d'/' -f5)
+
+mkdir -p "data/$ip/$FILENAME"
+OUTPUT_PATH="data/$ip/$FILENAME"
 
 make  -C ./algorithm clean > build.log 2>&1
 make  -C ./algorithm -j >> build.log 2>&1
