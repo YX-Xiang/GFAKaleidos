@@ -4,6 +4,7 @@
 3. [Installation](#Installation)
 4. [Online Interaction (option)](#online-interaction-option)
 5. [Examples](#Examples)
+6. [Acknowledgements](#Acknowledgements)
 
 ## Description
 `GFA Kaleidos` is a tool designed to analyze graph statistics using GFA format input. We characterized the GFA file by modeling it with 3 different graph representations: **directed graph, bidirected graph, and biedged graph**. For each model, we computed statistics on vertices, edges, and subgraphs.
@@ -125,4 +126,15 @@ Upload `01_dm_pggb.gfa` and `02_dm_mc.gfa`, and click all checkboxes in the wind
 ![Click all](click.gif)
 
 The final results are as follows:
-![Click all](page.png)
+![Page](page.png)
+
+
+
+## Acknowledgements
+GFA Kaleidos uses many different algorithms and individual code contributions. We are particularly grateful to:
+
+- Tarjan R. Depth-first search and linear graph algorithms. SIAM journal on computing, 1972, 1(2): 146–160
+- Gabow H N. Path-based depth-rst search for strong and biconnected components. Information Processing Letters, 2000
+- Szwarcfiter J L, Lauer P E. A search strategy for the elementary cycles of a directed graph. BIT Numerical Mathematics, 1976, 16(2): 192–204
+- Parmigiani L, Garrison E, Stoye J, et al. <a href='https://github.com/marschall-lab/panacus'>Panacus</a>: fast and exact pangenome growth and core size estimation. Bioinformatics, 2024, 40(12): btae720
+- Dabbaghie F, Ebler J, Marschall T. <a href='https://github.com/fawaz-dabbaghieh/bubble_gun'>BubbleGun</a>: enumerating bubbles and superbubbles in genome graphs. Bioinformatics, 2022, 38(17): 4217-4219

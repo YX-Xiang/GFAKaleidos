@@ -212,7 +212,10 @@
 		<div class="wrapper">
 			<a class="logo" href="#">Chase</a>
 			<div class="footer-left">
-				<p class="copyright">Copyright 2024 &copy; GFA Kaleidos</p>
+				<p class="copyright">Copyright <span id="year"></span> &copy; GFA Kaleidos</p>
+				<script>
+					document.getElementById("year").textContent = new Date().getFullYear();
+				</script>
 				<p class="footer-links"><span id="visits"></span></p>
 			</div>
 			<div class="footer-right">
