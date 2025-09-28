@@ -129,6 +129,11 @@ The final results are as follows:
 ![Page](page.png)
 
 
+## Citations
+Please cite our paper if you find GFAKaleidos useful:
+
+Yixin XIANG, Keyu LIU, Leqi WANG, Jianyu ZHOU. GFAKaleidos: a tool for computing and comparing pangenome graph statistics. [Front. Comput. Sci., 2026, 20(4)](https://journal.hep.com.cn/fcs/EN/10.1007/s11704-025-50324-0): 2004903 DOI:10.1007/s11704-025-50324-0.
+
 
 ## Acknowledgements
 GFA Kaleidos uses many different algorithms and individual code contributions. We are particularly grateful to:
