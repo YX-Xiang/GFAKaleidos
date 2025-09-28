@@ -5,6 +5,7 @@
 4. [Online Interaction (option)](#online-interaction-option)
 5. [Examples](#Examples)
 6. [Acknowledgements](#Acknowledgements)
+7. [Citations](#Citations)
 
 ## Description
 `GFA Kaleidos` is a tool designed to analyze graph statistics using GFA format input. We characterized the GFA file by modeling it with 3 different graph representations: **directed graph, bidirected graph, and biedged graph**. For each model, we computed statistics on vertices, edges, and subgraphs.
